@@ -3,17 +3,14 @@
 
 //INPUT OBJECT//
 const input = {
-    getShipAngle(){
-        ship.angle = -1;
-        if (this.right) ship.angle = 0;
-        if (this.up)    ship.angle = 90;
-        if (this.left)  ship.angle = 180;
-        if (this.down)  ship.angle = 270;
-        if (this.right && this.down) ship.angle = 315;
-        if (this.left  && this.down) ship.angle = 225;
-        if (this.left  && this.up)   ship.angle = 135;
-        if (this.right && this.up)   ship.angle = 45;
-        if (this.up && this.down || this.left && this.right) ship.angle = -1;
+    dir: [0,0,0,0], axis: [0,0],
+    getAxis(){
+        for (let i=0; i < 2; i++) {
+            let m;
+            if   (this.dir[i] + this.dir[i+2] === 0) m = 0
+            else this.dir[i] > this.dir[i+2] ? m = -1 : m = 1;
+            this.axis[i] = m;
+        }
     },
 }
 
@@ -21,15 +18,17 @@ const input = {
 const ship = {
     x: 0,     y: 0, 
     xSize:10, ySize:10, 
-    angle:-1, spd: 2,
+    spd: 2,   diagMultp: 0,
     startPos(){
         this.x = canvas.width/2 - this.xSize/2;
         this.y = canvas.height/2 - this.ySize/2; 
     },
     updatePos(){
-            this.angle *= Math.PI / 180; //Degrees to radians
-            this.x += Math.cos(this.angle) * this.spd;
-            this.y -= Math.sin(this.angle) * this.spd;
+        this.diagMultp = 0;
+        const sumAxis = input.axis[0]+input.axis[1];
+        Math.abs(sumAxis) === 2 ? this.diagMultp = 0.70710678118 : this.diagMultp = 1;
+        this.x += input.axis[0] * this.spd * this.diagMultp;
+        this.y += input.axis[1] * this.spd * this.diagMultp;
     },
     sprite: new Image(),
 };
@@ -65,8 +64,7 @@ function timestamp() {
 
 //UPDATE//
 function update(){
-    input.getShipAngle();
-    if (ship.angle !== -1) ship.updatePos();
+    ship.updatePos();
 }
 
 //RENDER//
@@ -90,21 +88,12 @@ function resizeCanvas () {
 
 //WINDOW RESIZE//
 window.addEventListener('resize', resizeCanvas); //Scale if window is resized
-//KEY DOWN//
+//KEY DOWN & KEY UP//
 window.addEventListener('keydown', function(e){
-    switch(e.code) {
-        case 'ArrowUp': input.up = true; break;
-        case 'ArrowDown': input.down = true; break;
-        case 'ArrowLeft': input.left = true; break;
-        case 'ArrowRight': input.right = true; break;        
-    }
+    input.dir[e.keyCode - 37] = 1;
+    input.getAxis();
 });
-//KEY UP//
 window.addEventListener('keyup', function(e){
-    switch(e.code) {
-        case 'ArrowUp': input.up = false; break;
-        case 'ArrowDown': input.down = false; break;
-        case 'ArrowLeft': input.left = false; break;
-        case 'ArrowRight': input.right = false; break;        
-    }
+    input.dir[e.keyCode - 37] = 0;
+    input.getAxis();
 });
