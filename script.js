@@ -21,7 +21,8 @@ const input = {
 //SHIP//
 const ship = {
     x: 0,     y: 0,
-    spd: 2,   diagMultp: 0,
+    spd: 2,   
+    // diagMultp: 0,
     setSprite(){
         this.sprite = new Image();
         this.sprite.src = 'ship.png';
@@ -31,13 +32,14 @@ const ship = {
         this.y = canvas.height/2; 
     },
     updatePos(){
-        //Get diagonal multiplier
-        this.diagMultp = 0;
-        const sumAxis = input.axis[0]+input.axis[1];
-        Math.abs(sumAxis) === 2 ? this.diagMultp = 0.70710678118 : this.diagMultp = 1;
-        //Update position
-        this.x += input.axis[0] * this.spd * this.diagMultp;
-        this.y += input.axis[1] * this.spd * this.diagMultp;
+        // //Get diagonal multiplier
+        // this.diagMultp = 0;
+        // const sumAxis = input.axis[0]+input.axis[1];
+        // Math.abs(sumAxis) === 2 ? this.diagMultp = 0.70710678118 : this.diagMultp = 1;
+
+        //Update position. //Aqui había que multiplicar tambien por diagMultp pero se anuló
+        this.x += input.axis[0] * this.spd;
+        this.y += input.axis[1] * this.spd;
         //Fix position if leaves the play area
         if (this.x > canvas.walls[2]) this.x = canvas.walls[2];
         if (this.x < canvas.walls[0]) this.x = canvas.walls[0];
@@ -51,7 +53,7 @@ const ship = {
 const canvas = document.getElementById('canvas1');  //Get canvas object
 const context = canvas.getContext('2d');            //Get context objects
 canvas.width = 160; canvas.height = 120;            //Set canvas original w/h
-canvas.setWalls = function (margin) {               //Function to get the frame boundaries
+canvas.setWalls = function (margin) {               //Function to set the frame boundaries
     this.walls = [margin,margin,this.width-margin,this.height-margin];
 }
 canvas.setWalls(4);     //Pass margin value here
