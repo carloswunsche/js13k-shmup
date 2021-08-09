@@ -10,6 +10,11 @@ const input = {
             else this.dir[i] > this.dir[i+2] ? m = -1 : m = 1;
             this.axis[i] = m;
         }
+       //Fix diagonals if pushing on walls
+       if (ship.y <= canvas.walls[1] && this.axis[1] === -1) this.axis[1] = 0;
+       if (ship.y >= canvas.walls[3] && this.axis[1] ===  1) this.axis[1] = 0;
+       if (ship.x >= canvas.walls[2] && this.axis[0] ===  1) this.axis[0] = 0;
+       if (ship.x <= canvas.walls[0] && this.axis[0] === -1) this.axis[0] = 0;
     },
 }
 
@@ -22,23 +27,34 @@ const ship = {
         this.sprite.src = 'ship.png';
     },
     startPos(){
-        this.x = canvas.width/2 - this.sprite.width/2;
-        this.y = canvas.height/2 - this.sprite.width/2; 
+        this.x = canvas.width/2;
+        this.y = canvas.height/2; 
     },
     updatePos(){
+        //Get diagonal multiplier
         this.diagMultp = 0;
         const sumAxis = input.axis[0]+input.axis[1];
         Math.abs(sumAxis) === 2 ? this.diagMultp = 0.70710678118 : this.diagMultp = 1;
+        //Update position
         this.x += input.axis[0] * this.spd * this.diagMultp;
         this.y += input.axis[1] * this.spd * this.diagMultp;
+        //Fix position if leaves the play area
+        if (this.x > canvas.walls[2]) this.x = canvas.walls[2];
+        if (this.x < canvas.walls[0]) this.x = canvas.walls[0];
+        if (this.y > canvas.walls[3]) this.y = canvas.walls[3];
+        if (this.y < canvas.walls[1]) this.y = canvas.walls[1];
     },
 };
 
 
 //INITIALIZATION//
 const canvas = document.getElementById('canvas1');  //Get canvas object
-const context = canvas.getContext('2d');            //Get context object
+const context = canvas.getContext('2d');            //Get context objects
 canvas.width = 160; canvas.height = 120;            //Set canvas original w/h
+canvas.setWalls = function (margin) {               //Function to get the frame boundaries
+    this.walls = [margin,margin,this.width-margin,this.height-margin];
+}
+canvas.setWalls(4);     //Pass margin value here
 let curr, dt = 0;       //Current frame and delta time variables
 let last = timestamp(); //Assign first timestamp to last frame variable
 let step = 1 / 60;      //Ideal step for the update function (16.66 ms)
@@ -46,7 +62,6 @@ let scale = 1;          //Initial scale factor
 resizeCanvas();         //Call resize canvas
 ship.setSprite();       //Set ship sprite
 ship.startPos();        //Set ship starting position
-
 
 //GAMELOOP//
 requestAnimationFrame(gameLoop); //Call it the first time
@@ -73,7 +88,11 @@ function update(){
 //RENDER//
 function render(){
     context.clearRect(0,0,canvas.width,canvas.height); //Clear Screen
-    context.drawImage(ship.sprite,Math.round(ship.x),Math.round(ship.y));
+    context.drawImage(                                 //Draw Ship
+        ship.sprite,
+        Math.round(ship.x - ship.sprite.width / 2),
+        Math.round(ship.y - ship.sprite.height / 2),
+    );
 } 
 
 //RESIZE CANVAS - SCALING//
@@ -85,7 +104,6 @@ function resizeCanvas () {
     canvas.style.width  = `${scale * canvas.width}px`
     canvas.style.height = `${scale * canvas.height}px`
 }
-
 
 /////////////////LISTENERS//////////////////
 
