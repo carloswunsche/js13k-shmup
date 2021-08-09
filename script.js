@@ -1,5 +1,4 @@
 "use strict";
-//ALTERNATIVE BRANCH//
 
 //INPUT OBJECT//
 const input = {
