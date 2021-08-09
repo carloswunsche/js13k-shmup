@@ -15,12 +15,15 @@ const input = {
 
 //SHIP//
 const ship = {
-    x: 0,     y: 0, 
-    xSize:10, ySize:10, 
+    x: 0,     y: 0,
     spd: 2,   diagMultp: 0,
+    setSprite(){
+        this.sprite = new Image();
+        this.sprite.src = 'ship.png';
+    },
     startPos(){
-        this.x = canvas.width/2 - this.xSize/2;
-        this.y = canvas.height/2 - this.ySize/2; 
+        this.x = canvas.width/2 - this.sprite.width/2;
+        this.y = canvas.height/2 - this.sprite.width/2; 
     },
     updatePos(){
         this.diagMultp = 0;
@@ -29,9 +32,8 @@ const ship = {
         this.x += input.axis[0] * this.spd * this.diagMultp;
         this.y += input.axis[1] * this.spd * this.diagMultp;
     },
-    sprite: new Image(),
 };
-ship.sprite.src = 'ship.png';
+
 
 //INITIALIZATION//
 const canvas = document.getElementById('canvas1');  //Get canvas object
@@ -42,7 +44,9 @@ let last = timestamp(); //Assign first timestamp to last frame variable
 let step = 1 / 60;      //Ideal step for the update function (16.66 ms)
 let scale = 1;          //Initial scale factor
 resizeCanvas();         //Call resize canvas
+ship.setSprite();       //Set ship sprite
 ship.startPos();        //Set ship starting position
+
 
 //GAMELOOP//
 requestAnimationFrame(gameLoop); //Call it the first time
@@ -68,8 +72,8 @@ function update(){
 
 //RENDER//
 function render(){
-    context.clearRect(0,0,canvas.width,canvas.height) //Clear Screen
-    context.drawImage(ship.sprite,Math.round(ship.x),Math.round(ship.y))
+    context.clearRect(0,0,canvas.width,canvas.height); //Clear Screen
+    context.drawImage(ship.sprite,Math.round(ship.x),Math.round(ship.y));
 } 
 
 //RESIZE CANVAS - SCALING//
