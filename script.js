@@ -21,7 +21,7 @@ const input = {
 //SHIP//
 const ship = {
     x: 0,     y: 0,
-    spd: 2,   
+    spd: 2,   diagMultp : 0,
     // diagMultp: 0,
     setSprite(){
         this.sprite = new Image();
@@ -32,14 +32,12 @@ const ship = {
         this.y = canvas.height/2; 
     },
     updatePos(){
-        // //Get diagonal multiplier
-        // this.diagMultp = 0;
-        // const sumAxis = input.axis[0]+input.axis[1];
-        // Math.abs(sumAxis) === 2 ? this.diagMultp = 0.70710678118 : this.diagMultp = 1;
-
-        //Update position. //Aqui había que multiplicar tambien por diagMultp pero se anuló
-        this.x += input.axis[0] * this.spd;
-        this.y += input.axis[1] * this.spd;
+        //Get diagonal multiplier
+        const sumAxis = input.axis[0]+input.axis[1];
+        Math.abs(sumAxis) === 2 ? this.diagMultp = 0.70710678118 : this.diagMultp = 1;
+        //Update position
+        this.x += input.axis[0] * this.spd * this.diagMultp;
+        this.y += input.axis[1] * this.spd * this.diagMultp;
         //Fix position if leaves the play area
         if (this.x > canvas.walls[2]) this.x = canvas.walls[2];
         if (this.x < canvas.walls[0]) this.x = canvas.walls[0];
@@ -92,16 +90,16 @@ function render(){
     context.clearRect(0,0,canvas.width,canvas.height); //Clear Screen
     context.drawImage(                                 //Draw Ship
         ship.sprite,
-        Math.round(ship.x - ship.sprite.width / 2),
-        Math.round(ship.y - ship.sprite.height / 2),
+        Math.trunc(ship.x - ship.sprite.width / 2),
+        Math.trunc(ship.y - ship.sprite.height / 2),
     );
 } 
 
 //RESIZE CANVAS - SCALING//
 function resizeCanvas () {
     scale = Math.min(
-      Math.floor(window.innerWidth  / canvas.width),
-      Math.floor(window.innerHeight / canvas.height)
+      Math.trunc(window.innerWidth  / canvas.width),
+      Math.trunc(window.innerHeight / canvas.height)
       )
     canvas.style.width  = `${scale * canvas.width}px`
     canvas.style.height = `${scale * canvas.height}px`
