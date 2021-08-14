@@ -92,8 +92,8 @@ function render(){
     context.clearRect(0,0,canvas.width,canvas.height); //Clear Screen
     context.drawImage(                                 //Draw Ship
         ship.sprite,
-        Math.trunc(ship.x - ship.sprite.width / 2),
-        Math.trunc(ship.y - ship.sprite.height / 2),
+        Math.round(ship.x - ship.sprite.width / 2),
+        Math.round(ship.y - ship.sprite.height / 2),
     );
 } 
 
@@ -120,3 +120,9 @@ window.addEventListener('keyup', function(e){
     input.dir[e.keyCode - 37] = 0;
     input.getAxis();
 });
+
+
+//Press enter to go fullscreen
+document.addEventListener("keydown", function(e) {
+    if (e.keyCode == 13) document.documentElement.requestFullscreen();
+}, false);
