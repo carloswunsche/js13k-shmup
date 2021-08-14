@@ -123,6 +123,7 @@ window.addEventListener('keyup', function(e){
 
 
 //Press enter to go fullscreen
-document.addEventListener("keydown", function(e) {
-    if (e.keyCode == 13) document.documentElement.requestFullscreen();
+document.addEventListener("click", function(e) {
+    document.documentElement.requestFullscreen();
 }, false);
+
