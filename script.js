@@ -3,18 +3,19 @@
 //INPUT OBJECT//
 const input = {
     dir: [0,0,0,0], axis: [0,0],
+    btn1: 0,
     getAxis(){
-        for (let i=0; i < 2; i++) {
+        for (let i=0; i<2; i++) {
             let m;
-            if   (this.dir[i] + this.dir[i+2] === 0) m = 0
+            if  (this.dir[i] + this.dir[i+2] === 0) m = 0
             else this.dir[i] > this.dir[i+2] ? m = -1 : m = 1;
             this.axis[i] = m;
-        }
-       //Fix diagonals if pushing on walls
-       if (ship.y <= canvas.walls[1] && this.axis[1] === -1) this.axis[1] = 0;
-       if (ship.y >= canvas.walls[3] && this.axis[1] ===  1) this.axis[1] = 0;
-       if (ship.x >= canvas.walls[2] && this.axis[0] ===  1) this.axis[0] = 0;
-       if (ship.x <= canvas.walls[0] && this.axis[0] === -1) this.axis[0] = 0;
+        };
+        //Fix diagonals if pushing on walls
+        if (ship.y <= canvas.walls[1] && this.axis[1] === -1) this.axis[1] = 0;
+        if (ship.y >= canvas.walls[3] && this.axis[1] ===  1) this.axis[1] = 0;
+        if (ship.x <= canvas.walls[0] && this.axis[0] === -1) this.axis[0] = 0;
+        if (ship.x >= canvas.walls[2] && this.axis[0] ===  1) this.axis[0] = 0;
     },
 }
 
@@ -63,6 +64,7 @@ resizeCanvas();         //Call resize canvas
 ship.setSprite();       //Set ship sprite
 ship.startPos();        //Set ship starting position
 
+
 //GAMELOOP//
 requestAnimationFrame(gameLoop); //Call it the first time
 function gameLoop() {
@@ -100,9 +102,9 @@ function resizeCanvas () {
     scale = Math.min(
       Math.trunc(window.innerWidth  / canvas.width),
       Math.trunc(window.innerHeight / canvas.height)
-      )
-    canvas.style.width  = `${scale * canvas.width}px`
-    canvas.style.height = `${scale * canvas.height}px`
+      );
+    canvas.style.width  = `${scale * canvas.width}px`;
+    canvas.style.height = `${scale * canvas.height}px`;
 }
 
 /////////////////LISTENERS//////////////////
