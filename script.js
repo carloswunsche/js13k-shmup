@@ -2,39 +2,39 @@
 
 //INPUT OBJECT//
 const input = {
-    dir: [0,0,0,0], axis: [0,0],
+    dir: [0, 0, 0, 0], axis: [0, 0],
     btn1: 0,
-    getAxis(){
-        for (let i=0; i<2; i++) {
+    getAxis() {
+        for (let i = 0; i < 2; i++) {
             let m;
-            if  (this.dir[i] + this.dir[i+2] === 0) m = 0
-            else this.dir[i] > this.dir[i+2] ? m = -1 : m = 1;
+            if (this.dir[i] + this.dir[i + 2] === 0) m = 0
+            else this.dir[i] > this.dir[i + 2] ? m = -1 : m = 1;
             this.axis[i] = m;
         };
         //Fix diagonals if pushing on walls
         if (ship.y <= canvas.walls[1] && this.axis[1] === -1) this.axis[1] = 0;
-        if (ship.y >= canvas.walls[3] && this.axis[1] ===  1) this.axis[1] = 0;
+        if (ship.y >= canvas.walls[3] && this.axis[1] === 1) this.axis[1] = 0;
         if (ship.x <= canvas.walls[0] && this.axis[0] === -1) this.axis[0] = 0;
-        if (ship.x >= canvas.walls[2] && this.axis[0] ===  1) this.axis[0] = 0;
+        if (ship.x >= canvas.walls[2] && this.axis[0] === 1) this.axis[0] = 0;
     },
 }
 
 //SHIP//
 const ship = {
-    x: 0,     y: 0,
-    spd: 2,   diagMultp : 0,
+    x: 0, y: 0,
+    spd: 2, diagMultp: 0,
     // diagMultp: 0,
-    setSprite(){
+    setSprite() {
         this.sprite = new Image();
         this.sprite.src = 'ship.png';
     },
-    startPos(){
-        this.x = canvas.width/2;
-        this.y = canvas.height/2; 
+    startPos() {
+        this.x = canvas.width / 2;
+        this.y = canvas.height / 2;
     },
-    updatePos(){
+    updatePos() {
         //Get diagonal multiplier
-        const sumAxis = input.axis[0]+input.axis[1];
+        const sumAxis = input.axis[0] + input.axis[1];
         Math.abs(sumAxis) === 2 ? this.diagMultp = 0.70710678118 : this.diagMultp = 1;
         //Update position
         this.x += input.axis[0] * this.spd * this.diagMultp;
@@ -53,7 +53,7 @@ const canvas = document.getElementById('canvas1');  //Get canvas object
 const context = canvas.getContext('2d');            //Get context objects
 canvas.width = 160; canvas.height = 120;            //Set canvas original w/h
 canvas.setWalls = function (margin) {               //Function to set the frame boundaries
-    this.walls = [margin,margin,this.width-margin,this.height-margin];
+    this.walls = [margin, margin, this.width - margin, this.height - margin];
 }
 canvas.setWalls(4);     //Pass margin value here
 let curr, dt = 0;       //Current frame and delta time variables
@@ -69,10 +69,10 @@ ship.startPos();        //Set ship starting position
 requestAnimationFrame(gameLoop); //Call it the first time
 function gameLoop() {
     curr = timestamp();
-    dt   = dt + (curr-last) / 1000;
+    dt = dt + (curr - last) / 1000;
     last = curr;
     while (dt > step) {
-        dt = dt - step; 
+        dt = dt - step;
         update();
     }
     render();
@@ -83,27 +83,27 @@ function timestamp() {
 }
 
 //UPDATE//
-function update(){
+function update() {
     ship.updatePos();
 }
 
 //RENDER//
-function render(){
-    context.clearRect(0,0,canvas.width,canvas.height); //Clear Screen
+function render() {
+    context.clearRect(0, 0, canvas.width, canvas.height); //Clear Screen
     context.drawImage(                                 //Draw Ship
         ship.sprite,
         Math.round(ship.x - ship.sprite.width / 2),
         Math.round(ship.y - ship.sprite.height / 2),
     );
-} 
+}
 
 //RESIZE CANVAS - SCALING//
-function resizeCanvas () {
+function resizeCanvas() {
     scale = Math.min(
-      Math.trunc(window.innerWidth  / canvas.width),
-      Math.trunc(window.innerHeight / canvas.height)
-      );
-    canvas.style.width  = `${scale * canvas.width}px`;
+        Math.trunc(window.innerWidth / canvas.width),
+        Math.trunc(window.innerHeight / canvas.height)
+    );
+    canvas.style.width = `${scale * canvas.width}px`;
     canvas.style.height = `${scale * canvas.height}px`;
 }
 
@@ -112,11 +112,11 @@ function resizeCanvas () {
 //WINDOW RESIZE//
 window.addEventListener('resize', resizeCanvas); //Scale if window is resized
 //KEY DOWN & KEY UP//
-window.addEventListener('keydown', function(e){
+window.addEventListener('keydown', function (e) {
     input.dir[e.keyCode - 37] = 1;
     input.getAxis();
 });
-window.addEventListener('keyup', function(e){
+window.addEventListener('keyup', function (e) {
     input.dir[e.keyCode - 37] = 0;
     input.getAxis();
 });
@@ -126,3 +126,6 @@ window.addEventListener('keyup', function(e){
 // document.addEventListener("click", function(e) {
 //     document.documentElement.requestFullscreen();
 // }, false);
+console.log('aver');
+// IMPROVE
+// BUG
