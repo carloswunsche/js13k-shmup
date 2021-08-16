@@ -115,15 +115,14 @@ window.addEventListener('resize', resizeCanvas); //Scale if window is resized
 window.addEventListener('keydown', function(e){
     input.dir[e.keyCode - 37] = 1;
     input.getAxis();
-}, true); // This is for capturing the event on the capturing phase instead on the bubbling phase. Not sure if its neccesary
+});
 window.addEventListener('keyup', function(e){
     input.dir[e.keyCode - 37] = 0;
     input.getAxis();
-}, true);
+});
 
 
 //Press enter to go fullscreen
 // document.addEventListener("click", function(e) {
 //     document.documentElement.requestFullscreen();
 // }, false);
-
