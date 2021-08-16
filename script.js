@@ -126,6 +126,4 @@ window.addEventListener('keyup', function (e) {
 // document.addEventListener("click", function(e) {
 //     document.documentElement.requestFullscreen();
 // }, false);
-console.log('aver');
-// IMPROVE
-// BUG
+
