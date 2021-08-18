@@ -22,23 +22,26 @@ const input = {
 //SHIP//
 const ship = {
     x: 0, y: 0,
-    spd: 2, diagMultp: 0,
+    spd: 2, diagMultp: 0, angle: 0,
     // diagMultp: 0,
     setSprite() {
         this.sprite = new Image();
-        this.sprite.src = 'ship.png';
+        this.sprite.src = 'ship-x32-optimized.png'; //PNG scaled + optimized 500b
+        this.sprite.width = 13 * scale;
+        this.sprite.height = 10 * scale;
     },
     startPos() {
         this.x = canvas.width / 2;
         this.y = canvas.height / 2;
+
     },
     updatePos() {
         //Get diagonal multiplier
         const sumAxis = input.axis[0] + input.axis[1];
         Math.abs(sumAxis) === 2 ? this.diagMultp = 0.70710678118 : this.diagMultp = 1;
         //Update position
-        this.x += input.axis[0] * this.spd * this.diagMultp;
-        this.y += input.axis[1] * this.spd * this.diagMultp;
+        this.x += input.axis[0] * this.spd * this.diagMultp * scale;
+        this.y += input.axis[1] * this.spd * this.diagMultp * scale;
         //Fix position if leaves the play area
         if (this.x > canvas.walls[2]) this.x = canvas.walls[2];
         if (this.x < canvas.walls[0]) this.x = canvas.walls[0];
@@ -51,15 +54,17 @@ const ship = {
 //INITIALIZATION//
 const canvas = document.getElementById('canvas1');  //Get canvas object
 const context = canvas.getContext('2d');            //Get context objects
-canvas.width = 160; canvas.height = 120;            //Set canvas original w/h
+const width = 160; const height = 120;
+canvas.width = width; canvas.height = height;            //Set canvas original w/h
 canvas.setWalls = function (margin) {               //Function to set the frame boundaries
     this.walls = [margin, margin, this.width - margin, this.height - margin];
 }
-canvas.setWalls(4);     //Pass margin value here
+let scale = 1;          //Initial scale factor
+canvas.setWalls(4*scale);     //Pass margin value here
 let curr, dt = 0;       //Current frame and delta time variables
 let last = timestamp(); //Assign first timestamp to last frame variable
 let step = 1 / 60;      //Ideal step for the update function (16.66 ms)
-let scale = 1;          //Initial scale factor
+
 resizeCanvas();         //Call resize canvas
 ship.setSprite();       //Set ship sprite
 ship.startPos();        //Set ship starting position
@@ -90,21 +95,38 @@ function update() {
 //RENDER//
 function render() {
     context.clearRect(0, 0, canvas.width, canvas.height); //Clear Screen
-    context.drawImage(                                 //Draw Ship
+
+    context.save();
+    context.translate(ship.x,ship.y);
+    context.rotate(ship.angle * Math.PI/180); //Rotation
+
+
+    context.drawImage( //Draw Ship
         ship.sprite,
-        Math.round(ship.x - ship.sprite.width / 2),
-        Math.round(ship.y - ship.sprite.height / 2),
+        Math.round(0 - ship.sprite.width / 2),
+        Math.round(0 - ship.sprite.height / 2),
+        ship.sprite.width, ship.sprite.height
     );
+    // context.drawImage(ship.sprite, (0- ship.sprite.width / 2), (0 - ship.sprite.height / 2), ship.sprite.width * 0.25, ship.sprite.height * 0.25);
+    // context.drawImage(ship.sprite, ship.x - ship.sprite.width / 2, ship.y - ship.sprite.height / 2, ship.sprite.width, ship.sprite.height);
+
+    context.restore();
+    // ship.angle += 4;
+
 }
 
 //RESIZE CANVAS - SCALING//
 function resizeCanvas() {
     scale = Math.min(
-        Math.trunc(window.innerWidth / canvas.width),
-        Math.trunc(window.innerHeight / canvas.height)
+        Math.trunc(window.innerWidth  / width),
+        Math.trunc(window.innerHeight / height)
     );
-    canvas.style.width = `${scale * canvas.width}px`;
-    canvas.style.height = `${scale * canvas.height}px`;
+    // canvas.style.width = `${scale * canvas.width}px`;
+    // canvas.style.height = `${scale * canvas.height}px`;
+    canvas.width = scale * width;
+    canvas.height = scale * height;
+
+    canvas.setWalls(4*scale);
 }
 
 /////////////////LISTENERS//////////////////
@@ -120,10 +142,3 @@ window.addEventListener('keyup', function (e) {
     input.dir[e.keyCode - 37] = 0;
     input.getAxis();
 });
-
-
-//Press enter to go fullscreen
-// document.addEventListener("click", function(e) {
-//     document.documentElement.requestFullscreen();
-// }, false);
-
