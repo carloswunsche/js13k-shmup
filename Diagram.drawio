@@ -1,61 +1,61 @@
-<mxfile host="app.diagrams.net" modified="2021-08-17T15:43:43.025Z" agent="5.0 (X11; CrOS x86_64 13982.69.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.130 Safari/537.36" etag="QUfXUdVC8t9Mvtjenmrj" version="14.9.7" type="github">
-  <diagram id="R0P0jk8W3eX0sR2WrKLu" name="Page-1">
-    <mxGraphModel dx="898" dy="1010" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" background="#DAD2D8" math="0" shadow="0">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="xowOyP4QKrm03nZHnSHo-1" style="edgeStyle=orthogonalEdgeStyle;curved=0;rounded=1;sketch=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontColor=#143642;strokeColor=#A8201A;fillColor=#FAE5C7;labelBackgroundColor=#DAD2D8;" edge="1" parent="1" source="xowOyP4QKrm03nZHnSHo-3" target="xowOyP4QKrm03nZHnSHo-7">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="xowOyP4QKrm03nZHnSHo-2" style="edgeStyle=orthogonalEdgeStyle;curved=0;rounded=1;sketch=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontColor=#143642;strokeColor=#A8201A;fillColor=#FAE5C7;labelBackgroundColor=#DAD2D8;" edge="1" parent="1" source="xowOyP4QKrm03nZHnSHo-3" target="xowOyP4QKrm03nZHnSHo-4">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="xowOyP4QKrm03nZHnSHo-3" value="&lt;b&gt;Engine&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAE5C7;strokeColor=#0F8B8D;fontColor=#143642;" vertex="1" parent="1">
-          <mxGeometry x="320" y="130" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="xowOyP4QKrm03nZHnSHo-4" value="&lt;b&gt;Display&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAE5C7;strokeColor=#0F8B8D;fontColor=#143642;" vertex="1" parent="1">
-          <mxGeometry x="240" y="240" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="xowOyP4QKrm03nZHnSHo-13" style="edgeStyle=orthogonalEdgeStyle;curved=0;rounded=1;sketch=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontColor=#143642;strokeColor=#A8201A;fillColor=#FAE5C7;" edge="1" parent="1" source="xowOyP4QKrm03nZHnSHo-6" target="xowOyP4QKrm03nZHnSHo-7">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="xowOyP4QKrm03nZHnSHo-6" value="&lt;b&gt;Input&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAE5C7;strokeColor=#0F8B8D;fontColor=#143642;" vertex="1" parent="1">
-          <mxGeometry x="400" y="340" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="xowOyP4QKrm03nZHnSHo-7" value="&lt;b&gt;Main logic&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;sketch=0;fontColor=#143642;strokeColor=#0F8B8D;fillColor=#FAE5C7;" vertex="1" parent="1">
-          <mxGeometry x="400" y="240" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="xowOyP4QKrm03nZHnSHo-8" style="edgeStyle=orthogonalEdgeStyle;curved=0;rounded=1;sketch=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontColor=#143642;fillColor=#FAE5C7;dashed=1;labelBackgroundColor=#DAD2D8;strokeColor=#A8201A;" edge="1" parent="1" source="xowOyP4QKrm03nZHnSHo-9" target="xowOyP4QKrm03nZHnSHo-3">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="xowOyP4QKrm03nZHnSHo-9" value="&lt;b&gt;Setup&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;sketch=0;fontColor=#143642;strokeColor=#0F8B8D;fillColor=#FAE5C7;" vertex="1" parent="1">
-          <mxGeometry x="320" y="30" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="xowOyP4QKrm03nZHnSHo-10" value="&lt;b&gt;The idea is to try to make all modules as independent as possible&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;sketch=0;fontColor=#143642;" vertex="1" parent="1">
-          <mxGeometry x="255" y="-45" width="250" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="xowOyP4QKrm03nZHnSHo-11" value="&lt;ul&gt;&lt;li&gt;Keyboard&lt;/li&gt;&lt;li&gt;Touch&lt;/li&gt;&lt;li&gt;Gamepad&lt;/li&gt;&lt;li&gt;Resize window&lt;/li&gt;&lt;/ul&gt;" style="text;strokeColor=none;fillColor=none;html=1;whiteSpace=wrap;verticalAlign=middle;overflow=hidden;rounded=0;sketch=0;fontColor=#143642;" vertex="1" parent="1">
-          <mxGeometry x="510" y="330" width="140" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="xowOyP4QKrm03nZHnSHo-12" value="&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;text-align: center&quot;&gt;Initialize variables&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;text-align: center&quot;&gt;Load assets, level layout, and timeline&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;text-align: center&quot;&gt;Start engine&lt;/span&gt;&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;" style="text;strokeColor=none;fillColor=none;html=1;whiteSpace=wrap;verticalAlign=middle;overflow=hidden;rounded=0;sketch=0;fontColor=#143642;" vertex="1" parent="1">
-          <mxGeometry x="430" y="15" width="280" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="xowOyP4QKrm03nZHnSHo-14" value="&lt;ul&gt;&lt;li&gt;Call update() and render() accordingly&lt;/li&gt;&lt;li&gt;FPS adjustment&lt;/li&gt;&lt;li&gt;Pause method and frame-by-frame&lt;/li&gt;&lt;/ul&gt;" style="text;strokeColor=none;fillColor=none;html=1;whiteSpace=wrap;verticalAlign=middle;overflow=hidden;rounded=0;sketch=0;fontColor=#143642;" vertex="1" parent="1">
-          <mxGeometry x="430" y="115" width="260" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="xowOyP4QKrm03nZHnSHo-15" value="&lt;ul&gt;&lt;li&gt;Game logic&lt;/li&gt;&lt;li&gt;Update function&lt;/li&gt;&lt;/ul&gt;" style="text;strokeColor=none;fillColor=none;html=1;whiteSpace=wrap;verticalAlign=middle;overflow=hidden;rounded=0;sketch=0;fontColor=#143642;" vertex="1" parent="1">
-          <mxGeometry x="510" y="225" width="130" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="xowOyP4QKrm03nZHnSHo-16" value="&lt;ul&gt;&lt;li&gt;Scale canvas&lt;/li&gt;&lt;li&gt;Resize viewport&lt;/li&gt;&lt;li&gt;Render function&lt;/li&gt;&lt;/ul&gt;" style="text;strokeColor=none;fillColor=none;html=1;whiteSpace=wrap;verticalAlign=middle;overflow=hidden;rounded=0;sketch=0;fontColor=#143642;" vertex="1" parent="1">
-          <mxGeometry x="90" y="225" width="140" height="80" as="geometry" />
-        </mxCell>
-        <mxCell id="xowOyP4QKrm03nZHnSHo-18" value="Graphic features" style="rounded=1;whiteSpace=wrap;html=1;sketch=1;fontColor=#143642;strokeColor=#0F8B8D;fillColor=#FAE5C7;shadow=0;glass=0;" vertex="1" parent="1">
-          <mxGeometry x="800" y="30" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="xowOyP4QKrm03nZHnSHo-19" value="&lt;ul&gt;&lt;li&gt;Sprite rotation&lt;/li&gt;&lt;li&gt;Sprite scaling&lt;/li&gt;&lt;li&gt;Pixelated look&lt;/li&gt;&lt;li&gt;Pixel perfect scaling&lt;/li&gt;&lt;li&gt;User defined FPS value&lt;/li&gt;&lt;li&gt;User defined graphic detail&lt;/li&gt;&lt;/ul&gt;" style="text;strokeColor=none;fillColor=none;html=1;verticalAlign=top;overflow=hidden;rounded=0;shadow=0;glass=0;sketch=1;fontColor=#143642;horizontal=1;labelPosition=center;verticalLabelPosition=middle;align=left;spacing=2;" vertex="1" parent="1">
-          <mxGeometry x="780" y="70" width="210" height="190" as="geometry" />
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
+<mxfile host="65bd71144e">
+    <diagram id="R0P0jk8W3eX0sR2WrKLu" name="Page-1">
+        <mxGraphModel dx="642" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" background="#DAD2D8" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-1" style="edgeStyle=orthogonalEdgeStyle;curved=0;rounded=1;sketch=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontColor=#143642;strokeColor=#A8201A;fillColor=#FAE5C7;labelBackgroundColor=#DAD2D8;" parent="1" source="xowOyP4QKrm03nZHnSHo-3" target="xowOyP4QKrm03nZHnSHo-7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-2" style="edgeStyle=orthogonalEdgeStyle;curved=0;rounded=1;sketch=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontColor=#143642;strokeColor=#A8201A;fillColor=#FAE5C7;labelBackgroundColor=#DAD2D8;" parent="1" source="xowOyP4QKrm03nZHnSHo-3" target="xowOyP4QKrm03nZHnSHo-4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-3" value="&lt;b&gt;Engine&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAE5C7;strokeColor=#0F8B8D;fontColor=#143642;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="130" width="120" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-4" value="&lt;b&gt;Display&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAE5C7;strokeColor=#0F8B8D;fontColor=#143642;" parent="1" vertex="1">
+                    <mxGeometry x="240" y="240" width="120" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-13" style="edgeStyle=orthogonalEdgeStyle;curved=0;rounded=1;sketch=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontColor=#143642;strokeColor=#A8201A;fillColor=#FAE5C7;" parent="1" source="xowOyP4QKrm03nZHnSHo-6" target="xowOyP4QKrm03nZHnSHo-7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-6" value="&lt;b&gt;Input&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAE5C7;strokeColor=#0F8B8D;fontColor=#143642;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="340" width="120" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-7" value="&lt;b&gt;Main logic (Game)&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;sketch=0;fontColor=#143642;strokeColor=#0F8B8D;fillColor=#FAE5C7;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="240" width="120" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-8" style="edgeStyle=orthogonalEdgeStyle;curved=0;rounded=1;sketch=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontColor=#143642;fillColor=#FAE5C7;dashed=1;labelBackgroundColor=#DAD2D8;strokeColor=#A8201A;" parent="1" source="xowOyP4QKrm03nZHnSHo-9" target="xowOyP4QKrm03nZHnSHo-3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-9" value="&lt;b&gt;Setup&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;sketch=0;fontColor=#143642;strokeColor=#0F8B8D;fillColor=#FAE5C7;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="30" width="120" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-10" value="&lt;b&gt;The idea is to try to make all modules as independent as possible&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;sketch=0;fontColor=#143642;" parent="1" vertex="1">
+                    <mxGeometry x="255" y="-45" width="250" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-11" value="&lt;ul&gt;&lt;li&gt;Keyboard&lt;/li&gt;&lt;li&gt;Touch&lt;/li&gt;&lt;li&gt;Gamepad&lt;/li&gt;&lt;li&gt;Resize window&lt;/li&gt;&lt;/ul&gt;" style="text;strokeColor=none;fillColor=none;html=1;whiteSpace=wrap;verticalAlign=middle;overflow=hidden;rounded=0;sketch=0;fontColor=#143642;" parent="1" vertex="1">
+                    <mxGeometry x="510" y="330" width="140" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-12" value="&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;text-align: center&quot;&gt;Initialize variables&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;span style=&quot;text-align: center&quot;&gt;Start engine&lt;/span&gt;&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;" style="text;strokeColor=none;fillColor=none;html=1;whiteSpace=wrap;verticalAlign=middle;overflow=hidden;rounded=0;sketch=0;fontColor=#143642;" parent="1" vertex="1">
+                    <mxGeometry x="430" y="15" width="280" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-14" value="&lt;ul&gt;&lt;li&gt;Call update() and render() accordingly&lt;/li&gt;&lt;li&gt;FPS adjustment&lt;/li&gt;&lt;li&gt;Stop method and frame-by-frame&lt;/li&gt;&lt;/ul&gt;" style="text;strokeColor=none;fillColor=none;html=1;whiteSpace=wrap;verticalAlign=middle;overflow=hidden;rounded=0;sketch=0;fontColor=#143642;" parent="1" vertex="1">
+                    <mxGeometry x="430" y="115" width="260" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-15" value="&lt;ul&gt;&lt;li&gt;Game logic&lt;/li&gt;&lt;li&gt;Update function&lt;/li&gt;&lt;/ul&gt;" style="text;strokeColor=none;fillColor=none;html=1;whiteSpace=wrap;verticalAlign=middle;overflow=hidden;rounded=0;sketch=0;fontColor=#143642;" parent="1" vertex="1">
+                    <mxGeometry x="510" y="225" width="130" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-16" value="&lt;ul&gt;&lt;li&gt;Scale canvas&lt;/li&gt;&lt;li&gt;Resize viewport&lt;/li&gt;&lt;li&gt;Render function&lt;/li&gt;&lt;/ul&gt;" style="text;strokeColor=none;fillColor=none;html=1;whiteSpace=wrap;verticalAlign=middle;overflow=hidden;rounded=0;sketch=0;fontColor=#143642;" parent="1" vertex="1">
+                    <mxGeometry x="90" y="225" width="140" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-18" value="Graphic features" style="rounded=1;whiteSpace=wrap;html=1;sketch=1;fontColor=#143642;strokeColor=#0F8B8D;fillColor=#FAE5C7;shadow=0;glass=0;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="30" width="120" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="xowOyP4QKrm03nZHnSHo-19" value="&lt;ul&gt;&lt;li&gt;Sprite rotation&lt;/li&gt;&lt;li&gt;Sprite scaling&lt;/li&gt;&lt;li&gt;Pixelated look&lt;/li&gt;&lt;li&gt;Pixel perfect scaling&lt;/li&gt;&lt;li&gt;User defined FPS value&lt;/li&gt;&lt;li&gt;User defined graphic detail&lt;/li&gt;&lt;/ul&gt;" style="text;strokeColor=none;fillColor=none;html=1;verticalAlign=top;overflow=hidden;rounded=0;shadow=0;glass=0;sketch=1;fontColor=#143642;horizontal=1;labelPosition=center;verticalLabelPosition=middle;align=left;spacing=2;" parent="1" vertex="1">
+                    <mxGeometry x="780" y="70" width="210" height="190" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
 </mxfile>

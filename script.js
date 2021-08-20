@@ -23,10 +23,9 @@ const input = {
 const ship = {
     x: 0, y: 0,
     spd: 2, diagMultp: 0, angle: 0,
-    // diagMultp: 0,
     setSprite() {
         this.sprite = new Image();
-        this.sprite.src = 'ship-x32-optimized.png'; //PNG scaled + optimized 500b
+        this.sprite.src = 'ship-x32-optimized.png'; //PNG scaled + optimized = 500 bytes
         this.sprite.width = 13 * scale;
         this.sprite.height = 10 * scale;
     },
@@ -61,30 +60,28 @@ canvas.setWalls = function (margin) {               //Function to set the frame 
 }
 let scale = 1;          //Initial scale factor
 canvas.setWalls(4*scale);     //Pass margin value here
-let curr, dt = 0;       //Current frame and delta time variables
-let last = timestamp(); //Assign first timestamp to last frame variable
-let step = 1 / 60;      //Ideal step for the update function (16.66 ms)
+let dt = 0;       //Current frame and delta time variables
+let last = performance && performance.now ? performance.now() : new Date().getTime(); //Assign first timestamp like this
+let step = 1000/60;      //Ideal step for the update function (16.66 ms)
 
 resizeCanvas();         //Call resize canvas
 ship.setSprite();       //Set ship sprite
 ship.startPos();        //Set ship starting position
 
 
-//GAMELOOP//
-requestAnimationFrame(gameLoop); //Call it the first time
-function gameLoop() {
-    curr = timestamp();
-    dt = dt + (curr - last) / 1000;
-    last = curr;
+// GAMELOOP
+requestAnimationFrame(loop); // Call it the first time and passes a timestamp
+function loop(timestamp) {
+    let updateFlag = false;
+    dt += timestamp - last;
+    last = timestamp;
     while (dt > step) {
-        dt = dt - step;
-        update();
+        dt -= step; 
+        update(); 
+        updateFlag = true; 
     }
-    render();
-    requestAnimationFrame(gameLoop); //Request another frame and so on...
-}
-function timestamp() {
-    return performance && performance.now ? performance.now() : new Date().getTime();
+    if (updateFlag) render();
+    requestAnimationFrame(loop); // Call it again passing a timestamp and so one...
 }
 
 //UPDATE//
@@ -107,12 +104,12 @@ function render() {
         Math.round(0 - ship.sprite.height / 2),
         ship.sprite.width, ship.sprite.height
     );
+
     // context.drawImage(ship.sprite, (0- ship.sprite.width / 2), (0 - ship.sprite.height / 2), ship.sprite.width * 0.25, ship.sprite.height * 0.25);
     // context.drawImage(ship.sprite, ship.x - ship.sprite.width / 2, ship.y - ship.sprite.height / 2, ship.sprite.width, ship.sprite.height);
 
     context.restore();
     // ship.angle += 4;
-
 }
 
 //RESIZE CANVAS - SCALING//
@@ -121,18 +118,16 @@ function resizeCanvas() {
         Math.trunc(window.innerWidth  / width),
         Math.trunc(window.innerHeight / height)
     );
-    // canvas.style.width = `${scale * canvas.width}px`;
-    // canvas.style.height = `${scale * canvas.height}px`;
-    canvas.width = scale * width;
-    canvas.height = scale * height;
+
+    canvas.width    = scale * width;
+    canvas.height   = scale * height;
 
     canvas.setWalls(4*scale);
 }
 
 /////////////////LISTENERS//////////////////
-
-//WINDOW RESIZE//
-window.addEventListener('resize', resizeCanvas); //Scale if window is resized
+// RESIZE 
+window.addEventListener('resize', resizeCanvas);
 //KEY DOWN & KEY UP//
 window.addEventListener('keydown', function (e) {
     input.dir[e.keyCode - 37] = 1;
