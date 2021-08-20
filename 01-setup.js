@@ -4,7 +4,7 @@
   ////////////////////
 
 // Una vez que se cargaron todos los .js, recien ahi declarar objetos y arrancar engine
-window.addEventListener("load", function() { 
+window.onload = function(){
 
   // Game screen initial dimensions
   const initW = 160;
@@ -30,4 +30,4 @@ window.addEventListener("load", function() {
   
   engine.start();
 
-});
+};

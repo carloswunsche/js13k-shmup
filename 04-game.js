@@ -49,10 +49,13 @@ const Player = function(initW, initH) {
 function setSprite(obj, png){
     obj.sprite = new Image();
     //PNG always needs to be scaled x32 + optimized.
-    obj.sprite.src = png; 
-    //Now scale it down to initial size
-    obj.sprite.width  = obj.sprite.width / 32; 
-    obj.sprite.height = obj.sprite.height / 32;
+    obj.sprite.src = png;
+    //Now scale it down to initial size (Only when it finishes loading)
+    obj.sprite.addEventListener('load', function() {
+        obj.sprite.width  = obj.sprite.width / 32; 
+        obj.sprite.height = obj.sprite.height / 32;
+        removeEventListener('load', obj.sprite);
+    });
 };
 
 function toRadians(degrees){return degrees * Math.PI/180};
