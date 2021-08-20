@@ -23,7 +23,7 @@ const Display = function(canvasID, initW, initH, integral) {
                     obj.sprite.height * this.scale
                 )
                 this.ctx.restore();
-                // obj.angle += 5;
+                obj.angle += 5;
             };
         };
 
