@@ -7,6 +7,7 @@
 const Game = function(initW, initH) {
 
     this.objects = new Map(); // Create objects map
+    // Order in which objects should be drawn on screen
     this.objects.set('background',  []);
     this.objects.set('enemies',     []);
     this.objects.set('pBullets',    []);
@@ -50,7 +51,7 @@ function setSprite(obj, png){
     obj.sprite = new Image();
     //PNG always needs to be scaled x32 + optimized.
     obj.sprite.src = png;
-    //Now scale it down to initial size (Only when it finishes loading)
+    //Now scale it down to initial size (Only when it finishes loading png)
     obj.sprite.addEventListener('load', function() {
         obj.sprite.width  = obj.sprite.width / 32; 
         obj.sprite.height = obj.sprite.height / 32;
