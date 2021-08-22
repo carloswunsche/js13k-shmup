@@ -15,7 +15,6 @@ const Game = function(initW, initH, rawInput) {
                 .set('eBullets',    [])
                 .set('hud',         []);
 
-
     this.gameInput = new Array(6); // Btn1, Btn2, left,right,up,down
     
     this.toGameInput = function(rawInput) {
@@ -24,8 +23,6 @@ const Game = function(initW, initH, rawInput) {
             if(!rawInput[i]) this.gameInput[i] = 0;
         };
     };
-
-
 
     this.update = function() {
         this.toGameInput(rawInput); // Convert rawInput to gameInput
