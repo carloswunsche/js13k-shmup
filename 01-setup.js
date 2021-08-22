@@ -20,22 +20,16 @@ window.onload = function(){
       display.render(game.objects);
   };
 
-
   // Create Engine passing: step, updateFunction, renderFunction
   const engine  = new Engine(1000/60, update, render);
   // Create Input object
   const input   = new Input();
-
-  // Create Game passing: initW, initH
-  const game    = new Game(initW, initH);
+  // Create Game passing: initW, initH, rawInput Map
+  const game    = new Game(initW, initH, input.rawInput);
   // Create Display passing: canvasID, initW, initH, integralScaling
   const display = new Display('canvas1', initW, initH, true);
 
-  
+  // Go!
   engine.start();
-
-  window.addEventListener('keydown', function(e) {
-    Input.inputted.push(e.code);
-  });
 };
 

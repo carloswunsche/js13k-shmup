@@ -9,7 +9,7 @@ const Display = function(canvasID, initW, initH, integral) {
     this.render = function(gameObjects) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
-        //Loop over each object to draw it
+        //Loop over objects Map to draw each "object"
         for (const [key, arr] of gameObjects){
             for (const [index, obj] of arr.entries()) {
                 this.ctx.save();
@@ -21,11 +21,10 @@ const Display = function(canvasID, initW, initH, integral) {
                     Math.round(-(obj.sprite.height * this.scale) / 2),
                     obj.sprite.width  * this.scale, 
                     obj.sprite.height * this.scale
-                )
+                );
                 this.ctx.restore();
             };
         };
-
     };
 
     this.resizeCanvas = function(initW, initH, integral) {
@@ -48,7 +47,8 @@ const Display = function(canvasID, initW, initH, integral) {
         this.canvas.width  = initW;
         this.canvas.height = initH;
         this.resizeCanvas(initW, initH, integral); // Call resizeCanvas
-        window.addEventListener('resize', this.resizeCanvas.bind(this, initW, initH, integral));
+        // Use an arrow function when adding an event listener if you don't need it to have a this keyword
+        window.addEventListener('resize', () => this.resizeCanvas(initW, initH, integral));
     };
     this.setCanvas(canvasID, initW, initH); // Call setCanvas automatically
 };
