@@ -27,7 +27,7 @@ window.onload = function(){
   // Create Game passing: initW, initH, rawInput Map
   const game    = new Game(initW, initH, input.rawInput);
   // Create Display passing: canvasID, initW, initH, integralScaling
-  const display = new Display('canvas1', initW, initH, true);
+  const display = new Display('layer1', initW, initH, true);
 
   // Go!
   engine.start();

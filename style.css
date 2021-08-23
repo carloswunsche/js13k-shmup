@@ -4,10 +4,11 @@ html, body {
     margin: 0;
     padding: 0;
 }
-  
-#canvas1 {
+
+img { display: none; }
+
+canvas {
     position: absolute;
-    background: linear-gradient(0deg, #f5f4eb -15%, #b0a9de 20%, #9ec2e8 25%, #7664fe 70%, #453e78 90%, #191028 110%); 
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
@@ -17,4 +18,8 @@ html, body {
     image-rendering: -o-crisp-edges;
     image-rendering: pixelated;
     -ms-interpolation-mode: nearest-neighbor;
+}
+
+#layer1 {
+    background: linear-gradient(0deg, #f5f4eb -15%, #b0a9de 20%, #9ec2e8 25%, #7664fe 70%, #453e78 90%, #191028 110%); 
 }

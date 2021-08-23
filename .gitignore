@@ -7,3 +7,8 @@ Array Methods Chart.png
 midi sketch.js.txt
 git-cheat-sheet-education.pdf
 sources
+other
+dist
+.parcel-cache
+package.json
+package-lock.json

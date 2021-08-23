@@ -5,7 +5,7 @@
 
 // Game constructor
 const Game = function(initW, initH, rawInput) {
-
+    // this.spritesheet = document.querySelector('img');
     this.objects = new Map();
     // Order in which objects should be drawn on screen
     this.objects.set('background',  [])
@@ -40,7 +40,8 @@ const Player = function(initW, initH) {
     this.diagMultp = 1;
     this.spd = 2;
     this.angle = 0;
-    setSprite(this, 'ship-x32-optimized.png');
+    this.column = 1;
+    setSprite(this, 'ship-x32-optimized.png', 1);
 
     this.setAxis = function(gameInput) {
         this.axis = [0,0];
@@ -68,15 +69,15 @@ const Player = function(initW, initH) {
         this.x = this.x + this.axis[0] * this.spd * this.diagMultp;
         this.y = this.y + this.axis[1] * this.spd * this.diagMultp;
     };
-
 };
 
 ////////////////////////////////
 // GENERAL PURPOSE FUNCTIONS //
 ////////////////////////////////
 
-function setSprite(obj, png){
-    obj.sprite = new Image();
+function setSprite(obj, png, column){
+    // obj.sprite = document.createElement('img'); // same as new Image()
+    obj.sprite = document.createElement('img'); // same as new Image()
     //PNG always needs to be scaled x32 + optimized.
     obj.sprite.src = png;
     //Now scale it down to initial size (Only when it finishes loading png)

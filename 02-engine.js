@@ -19,18 +19,18 @@ const Engine = function(step, updateFunction, renderFunction) {
         let updateFlag = false;
         while (this.delta > this.step) {
             this.delta -= this.step; 
-            this.update(); 
+            this.update();
             updateFlag = true; 
         }
-        if (updateFlag) this.render();
+        if (updateFlag) this.render(); 
 
-        window.requestAnimationFrame(this.loop.bind(this)); // Call loop again passing timestamp and so on...
+        window.requestAnimationFrame((newStamp) => this.loop(newStamp)); // Call loop again passing timestamp and so on...
     };
 
     // ENGINE START
     this.start = function() {
         this.delta = this.step; // 1000/60 = 16.66ms each frame = 60FPS
         this.lastStamp = performance && performance.now ? performance.now() : new Date().getTime(); // First timestamp
-        window.requestAnimationFrame(this.loop.bind(this)); // Call loop for the 1st time and pass timestamp
+        window.requestAnimationFrame((newStamp) => this.loop(newStamp)); // Call loop for the 1st time and pass timestamp
     }
 };

@@ -4,14 +4,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="style.css" />
         <title>New Shmup</title>
+
+        <script async type="text/javascript" src="01-setup.js"></script>
+        <script async type="text/javascript" src="02-engine.js"></script>
+        <script async type="text/javascript" src="03-input.js"></script>
+        <script async type="text/javascript" src="04-game.js"></script>
+        <script async type="text/javascript" src="05-display.js"></script>
+
     </head>
     <body id='body'>
-        <canvas id='canvas1'><p>Your browser doesn't support canvas. Boo hoo!</p></canvas>
-
-        <script type="text/javascript" src="01-setup.js"></script>
-        <script type="text/javascript" src="02-engine.js"></script>
-        <script type="text/javascript" src="03-input.js"></script>
-        <script type="text/javascript" src="04-game.js"></script>
-        <script type="text/javascript" src="05-display.js"></script>
+        <canvas id='layer1'><p>Your browser doesn't support canvas. Boo hoo!</p></canvas>
+        <img id="spritesheet" src="ship-x32-optimized.png" />
     </body>
 </html>
