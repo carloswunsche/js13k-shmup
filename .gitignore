@@ -12,3 +12,4 @@ dist
 .parcel-cache
 package.json
 package-lock.json
+levelData.js
