@@ -16,6 +16,11 @@ const Input = function() {
       case 'ArrowRight':this.rawInput[3] = trueOrFalse; return;
       case 'ArrowUp':   this.rawInput[4] = trueOrFalse; return;
       case 'ArrowDown': this.rawInput[5] = trueOrFalse; return;
+
+      case 'Digit0':    this.rawInput[2] = trueOrFalse; return;
+      case 'Equal':     this.rawInput[3] = trueOrFalse; return;
+      case 'Minus':     this.rawInput[4] = trueOrFalse; return;
+      case 'Comma':     this.rawInput[5] = trueOrFalse; return;
     };
   };
 
@@ -23,6 +28,7 @@ const Input = function() {
     // Use an arrow function when adding an event listener if you don't need it to have a this keyword
     window.addEventListener('keydown', key => {
       this.keyIntoArray(key.code, true);
+      // console.log(key.code)
     });
     window.addEventListener('keyup', key => {
       this.keyIntoArray(key.code, false);

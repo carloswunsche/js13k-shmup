@@ -5,11 +5,16 @@
 
 // Game constructor
 const Game = function(initW, initH, rawInput) {
-    // this.spritesheet = document.querySelector('img');
+    this.level1 = {
+        pattern: [3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1],
+        y: 0,
+        spd: 1,
+    };
+    setSprite(this.level1, 'spritesheet.png', false);
+
     this.objects = new Map();
     // Order in which objects should be drawn on screen
-    this.objects.set('background',  [])
-                .set('enemies',     [])
+    this.objects.set('enemies',     [])
                 .set('pBullets',    [])
                 .set('player', [new Player(initW, initH)])
                 .set('eBullets',    [])
@@ -25,6 +30,8 @@ const Game = function(initW, initH, rawInput) {
     };
 
     this.update = function() {
+        this.level1.y ++;
+        if (this.level1.y === 10) this.level1.y = 0;
         this.toGameInput(rawInput); // Convert rawInput to gameInput
         this.objects.get('player')[0].updatePos(this.gameInput) // Player position
     };
@@ -41,7 +48,7 @@ const Player = function(initW, initH) {
     this.spd = 2;
     this.angle = 0;
     this.column = 1;
-    setSprite(this, 'ship-x32-optimized.png', 1);
+    setSprite(this, 'ship-x32-optimized.png', true, 32);
 
     this.setAxis = function(gameInput) {
         this.axis = [0,0];
@@ -75,17 +82,18 @@ const Player = function(initW, initH) {
 // GENERAL PURPOSE FUNCTIONS //
 ////////////////////////////////
 
-function setSprite(obj, png, column){
-    // obj.sprite = document.createElement('img'); // same as new Image()
+function setSprite(obj, png, scale, scaleValue){
     obj.sprite = document.createElement('img'); // same as new Image()
     //PNG always needs to be scaled x32 + optimized.
     obj.sprite.src = png;
-    //Now scale it down to initial size (Only when it finishes loading png)
-    obj.sprite.addEventListener('load', function() {
-        obj.sprite.width  = obj.sprite.width / 32; 
-        obj.sprite.height = obj.sprite.height / 32;
-        removeEventListener('load', obj.sprite);
-    });
+    if (scale) {
+        //Scale it down to initial size (Only when it finishes loading png)
+        obj.sprite.addEventListener('load', function() {
+            obj.sprite.width  = obj.sprite.width / scaleValue; 
+            obj.sprite.height = obj.sprite.height / scaleValue;
+            removeEventListener('load', obj.sprite);
+        });
+    }
 };
 
 function toRadians(degrees){return degrees * Math.PI/180};

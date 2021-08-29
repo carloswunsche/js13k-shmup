@@ -5,11 +5,43 @@
 
 // Display constructor function
 const Display = function(canvasID, initW, initH, integral) {
-    
-    this.render = function(gameObjects) {
+
+    this.render = function(gameObjects, level1) {
+        // Clean canvas first
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
-        //Loop over objects Map to draw each "object"
+        // Draw background
+        const bgCols = 3;    // Columns in the spritesheet image file
+        const tileSize = 10; // Initial tile size
+        const sourceScale = 32;
+        let bgIndex = 0;     // Index of pattern array
+        for (let y=0;  y<initH;  y+=tileSize) {
+            for (let x=0;  x<initW;  x+=tileSize) {
+                let tile = level1.pattern[bgIndex];
+                if(tile !== 0) {    // Check if tile is not transparent
+                    tile -= 1;      // Adjust so sourceX and Y are calculated properly
+                    this.ctx.drawImage(
+                        level1.sprite,              // Image
+                        (tile % bgCols) * tileSize * sourceScale,            // sourceX
+                        Math.floor((tile / bgCols)) * tileSize * sourceScale,// sourceY
+                        tileSize * sourceScale,     // Clipped width
+                        tileSize * sourceScale,     // Clipped height
+                        x * this.scale,             // X placement
+                        (y * this.scale) + (level1.y * level1.spd * this.scale), // Y placement
+                        tileSize * this.scale,      // destination width
+                        tileSize * this.scale       // destination height
+                    );
+                }
+                bgIndex ++;
+            }
+        }
+
+
+
+
+
+
+        //Loop over gameObjects to draw each "object"
         for (const [key, arr] of gameObjects){
             for (const [index, obj] of arr.entries()) {
                 this.ctx.save();

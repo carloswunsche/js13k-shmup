@@ -17,11 +17,11 @@ window.onload = function(){
 
   // Render function
   const render = function() {
-      display.render(game.objects);
+      display.render(game.objects, game.level1);
   };
 
-  // Create Engine passing: step, updateFunction, renderFunction
-  const engine  = new Engine(1000/60, update, render);
+  // Create Engine passing: minimum step in ms, FPS, updateFunction, renderFunction
+  const engine  = new Engine(1000/60, 60, update, render);
   // Create Input object
   const input   = new Input();
   // Create Game passing: initW, initH, rawInput Map
