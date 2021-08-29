@@ -13,3 +13,4 @@ dist
 package.json
 package-lock.json
 levelData.js
+.gitignore
