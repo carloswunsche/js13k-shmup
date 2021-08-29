@@ -10,7 +10,7 @@ const Game = function(initW, initH, rawInput) {
         y: 0,
         spd: 1,
     };
-    setSprite(this.level1, 'spritesheet.png', false);
+    setSprite(this.level1, 'img/spritesheet.png', false);
 
     this.objects = new Map();
     // Order in which objects should be drawn on screen
@@ -48,7 +48,7 @@ const Player = function(initW, initH) {
     this.spd = 2;
     this.angle = 0;
     this.column = 1;
-    setSprite(this, 'ship-x32-optimized.png', true, 32);
+    setSprite(this, 'img/ship-x32-optimized.png', true, 32);
 
     this.setAxis = function(gameInput) {
         this.axis = [0,0];
