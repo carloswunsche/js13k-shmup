@@ -17,7 +17,7 @@ window.onload = function(){
 
   // Render function
   const render = function() {
-      display.render(game.objects, game.level1);
+      display.render(game.objects, game.bg);
   };
 
   // Create Engine passing: minimum step in ms, FPS, updateFunction, renderFunction

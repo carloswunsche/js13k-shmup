@@ -5,43 +5,35 @@
 
 // Display constructor function
 const Display = function(canvasID, initW, initH, integral) {
+    this.render = function(gameObjects, bg) {
 
-    this.render = function(gameObjects, level1) {
         // Clean canvas first
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
         // Draw background
-        const bgCols = 3;    // Columns in the spritesheet image file
-        const tileSize = 10; // Initial tile size
-        const sourceScale = 32;
-        let bgIndex = 0;     // Index of pattern array
-        for (let y=0;  y<initH;  y+=tileSize) {
-            for (let x=0;  x<initW;  x+=tileSize) {
-                let tile = level1.pattern[bgIndex];
+        let bgArrIndex = 0; // Index of pattern array  
+        for (let y=0; y<bg.rowsPos.length; y++) {
+            for (let x=0;  x<initW;  x+=bg.tileSize) {
+                let tile = bg.array[bgArrIndex];
                 if(tile !== 0) {    // Check if tile is not transparent
                     tile -= 1;      // Adjust so sourceX and Y are calculated properly
                     this.ctx.drawImage(
-                        level1.sprite,              // Image
-                        (tile % bgCols) * tileSize * sourceScale,            // sourceX
-                        Math.floor((tile / bgCols)) * tileSize * sourceScale,// sourceY
-                        tileSize * sourceScale,     // Clipped width
-                        tileSize * sourceScale,     // Clipped height
-                        x * this.scale,             // X placement
-                        (y * this.scale) + (level1.y * level1.spd * this.scale), // Y placement
-                        tileSize * this.scale,      // destination width
-                        tileSize * this.scale       // destination height
+                        bg.sprite, // Image
+                        (tile % bg.spriteCols) * bg.tileSize * bg.pngScale,            // sourceX
+                        Math.floor((tile / bg.spriteCols)) * bg.tileSize * bg.pngScale,// sourceY
+                        bg.tileSize * bg.pngScale,              // Clipped width
+                        bg.tileSize * bg.pngScale,              // Clipped height
+                        x * this.scale,                         // X placement
+                        Math.floor(bg.rowsPos[y] * this.scale), // Y placement
+                        bg.tileSize * this.scale,               // destination width
+                        bg.tileSize * this.scale                // destination height
                     );
-                }
-                bgIndex ++;
-            }
-        }
+                };
+                bgArrIndex ++;
+            };
+        };
 
-
-
-
-
-
-        //Loop over gameObjects to draw each "object"
+        // Draw gameObjects
         for (const [key, arr] of gameObjects){
             for (const [index, obj] of arr.entries()) {
                 this.ctx.save();
@@ -58,6 +50,7 @@ const Display = function(canvasID, initW, initH, integral) {
             };
         };
     };
+
 
     this.resizeCanvas = function(initW, initH, integral) {
         if (integral){
@@ -82,5 +75,5 @@ const Display = function(canvasID, initW, initH, integral) {
         // Use an arrow function when adding an event listener if you don't need it to have a this keyword
         window.addEventListener('resize', () => this.resizeCanvas(initW, initH, integral));
     };
-    this.setCanvas(canvasID, initW, initH); // Call setCanvas automatically
+    this.setCanvas(canvasID, initW, initH); // Call setCanvas on initialization
 };

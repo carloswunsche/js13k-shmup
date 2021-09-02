@@ -6,7 +6,7 @@
 // Input constructor
 const Input = function() {
 
-  this.rawInput = new Array(6).fill(false); // Btn1, Btn2, left,right,up,down
+  this.rawInput = new Array(8).fill(false); // Btn1, Btn2, left,right,up,down, spdDown, spdUp
 
   this.keyIntoArray = function(rawKey, trueOrFalse) {
     switch (rawKey) {
@@ -17,10 +17,13 @@ const Input = function() {
       case 'ArrowUp':   this.rawInput[4] = trueOrFalse; return;
       case 'ArrowDown': this.rawInput[5] = trueOrFalse; return;
 
-      case 'Digit0':    this.rawInput[2] = trueOrFalse; return;
-      case 'Equal':     this.rawInput[3] = trueOrFalse; return;
-      case 'Minus':     this.rawInput[4] = trueOrFalse; return;
-      case 'Comma':     this.rawInput[5] = trueOrFalse; return;
+      // case 'Digit0':    this.rawInput[2] = trueOrFalse; return;
+      // case 'Equal':     this.rawInput[3] = trueOrFalse; return;
+      // case 'Minus':     this.rawInput[4] = trueOrFalse; return;
+      // case 'Comma':     this.rawInput[5] = trueOrFalse; return;
+
+      case 'Minus':     this.rawInput[6] = trueOrFalse; return;
+      case 'Equal':     this.rawInput[7] = trueOrFalse; return;
     };
   };
 
