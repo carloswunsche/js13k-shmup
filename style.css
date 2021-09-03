@@ -3,6 +3,7 @@ html, body {
     width: 100%;
     margin: 0;
     padding: 0;
+    background-color: black;
 }
 
 img { display: none; }
@@ -21,5 +22,5 @@ canvas {
 }
 
 #layer1 {
-    background: linear-gradient(0deg, #f5f4eb -15%, #b0a9de 20%, #9ec2e8 25%, #7664fe 70%, #453e78 90%, #191028 110%); 
+    background-color: black; 
 }

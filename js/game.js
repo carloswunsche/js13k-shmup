@@ -11,19 +11,23 @@ const Game = function(initW, initH, rawInput) {
     this.level1 = { // this could also be a Map?
         png:      'spritesheet.png',
         pattern_01: [3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1],
-        pattern_02: [4, 5, 5, 5, 5, 5, 6, 4, 6, 4, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 6, 4, 6, 4, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 6, 4, 6, 4, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 6, 4, 6, 4, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 6, 4, 6, 4, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 6, 4, 6, 4, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 6, 4, 6, 4, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 6, 4, 6, 4, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 6, 4, 6, 4, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 6, 4, 6, 4, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 6, 4, 6, 4, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 6, 4, 6, 4, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 6, 4, 6, 4, 5, 5, 5, 5, 5, 6],
+        pattern_02: [3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 2, 3, 4, 5, 5, 6, 1, 2, 1, 2, 1, 3, 2, 3, 2, 2, 2, 2, 3, 4, 5, 5, 6, 1, 1, 2, 1, 3, 2, 3, 2, 2, 2, 2, 2, 3, 4, 5, 5, 6, 1, 2, 1, 3, 2, 3, 2, 2, 2, 2, 3, 4, 5, 5, 6, 1, 1, 2, 1, 3, 2, 3, 2, 2, 2, 3, 4, 5, 5, 6, 1, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 3, 4, 5, 5, 6, 1, 2, 2, 2, 1, 2, 1, 3, 2, 3, 3, 4, 5, 5, 6, 1, 2, 2, 2, 2, 1, 2, 1, 3, 2, 3, 4, 5, 5, 6, 1, 2, 2, 2, 2, 2, 1, 2, 1, 3, 2, 3, 3, 4, 5, 5, 6, 1, 2, 2, 2, 2, 1, 2, 1, 3, 2, 3, 2, 3, 4, 5, 5, 6, 1, 2, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1],
+        pattern_03: [3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 3, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 1, 3, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 1, 3, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 2, 1, 3, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 2, 1, 3, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 2, 1, 3, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 2, 1, 3, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5, 5, 5, 5, 5, 6, 2, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5, 5, 5, 5, 5, 6, 2, 1, 2, 1, 3, 2, 3, 2, 2, 4, 5, 5, 5, 5, 6, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 4, 5, 5, 5, 5, 6, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1],
+        pattern_04: [4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6],
         /// ETC...
     };
 
     this.bg = {
         array: [...this.level1.pattern_01],
+        queue: [],
         rowsPos: [-10,0,10,20,30,40,50,60,70,80,90,100,110],
+        canChange: false,
         speed: 1,
         sprite: undefined,
         spriteCols: 3,
         tileSize: 10,
         pngScale: 32,
-        canChange: false,
+        blackFadeOpacity: 100,
     }
     setSprite(this.bg, 'img/'+this.level1.png , false);
 
@@ -46,24 +50,36 @@ const Game = function(initW, initH, rawInput) {
     };
 
     this.update = function() {
+        // Level events
+        if (this.frame === 120) this.bg.queue = [...this.level1.pattern_02];
+        if (this.frame === 500) this.bg.queue = [...this.bg.queue,...this.level1.pattern_03, ...this.level1.pattern_04];
+
         // Update Frame Counter
         this.frame++;
 
-        // Background: Scroll each row
+        // Background: Scrolling and changing pattern of array
         for (let i=0; i < this.bg.rowsPos.length; i++) {
             this.bg.rowsPos[i] += this.bg.speed; // Add bg.speed to row Y position
             if (this.bg.rowsPos[i] >= initH) {      // If Y position is more than canvas height...
                 this.bg.rowsPos[i] -= initH + 10;   // ... Set Y position to top of canvas.
-                if (i === this.bg.rowsPos.length-1) this.bg.canChange = true; // If last row of the pattern, activate canChange flag
+                if (i === this.bg.rowsPos.length-1 && this.bg.queue.length >= 208) this.bg.canChange = true; // If last row of the pattern AND bg.queue is full, activate canChange flag
                 // If canChange is true... change each tile of that row for the next pattern one
                 if (this.bg.canChange) {
                     for (let x=0; x<16; x++) {
-                        this.bg.array[x + (i*16)] = this.level1.pattern_02[x + (i*16)];
+                        this.bg.array[x + (i*16)] = this.bg.queue[x + (i*16)];
                     };
-                    if (i === 0) this.bg.canChange = false; // And if this was the first row of the pattern, deactivate canChange flag after updating
+                    if (i === 0) {
+                        this.bg.canChange = false; // And if this was the first row of the pattern, deactivate canChange flag after updating it
+                        this.bg.queue.splice(0, 16*13); // Also delete 1 full pattern from queue
+                        console.log('Game.js: Pattern change inside bg.array done');
+                    } 
                 };
             };
-        };    
+        };
+
+        // Black fade opacity
+        if (this.frame > 1 && this.bg.blackFadeOpacity >= 0) this.bg.blackFadeOpacity -= 1;
+
 
         // Convert rawInput to gameInput
         this.toGameInput(rawInput);
@@ -85,7 +101,7 @@ const Player = function(initW, initH) {
     this.diagMultp = 1;
     this.spd = 2;
     this.angle = 0;
-    this.column = 1;
+    this.opacity = 100;
     setSprite(this, 'img/ship-x32-optimized.png', true);
 
     this.setAxis = function(gameInput) {

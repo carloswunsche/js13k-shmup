@@ -36,6 +36,7 @@ const Display = function(canvasID, initW, initH, integral) {
         // Draw gameObjects
         for (const [key, arr] of gameObjects){
             for (const [index, obj] of arr.entries()) {
+                this.ctx.globalAlpha = obj.opacity / 100;
                 this.ctx.save();
                 this.ctx.translate(obj.x * this.scale, obj.y * this.scale);
                 this.ctx.rotate(toRadians(obj.angle));
@@ -47,9 +48,22 @@ const Display = function(canvasID, initW, initH, integral) {
                     obj.sprite.height * this.scale
                 );
                 this.ctx.restore();
+                this.ctx.globalAlpha = 1;
             };
         };
+
+        // Draw Black Fade (still don't know how this works!! LOL)
+        if (bg.blackFadeOpacity >= 0) {
+            this.ctx.globalAlpha = bg.blackFadeOpacity / 100;
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.globalAlpha = 1;
+        };
     };
+    // END OF RENDER FUNCTION 
+
+
+
+
 
 
     this.resizeCanvas = function(initW, initH, integral) {
@@ -74,6 +88,7 @@ const Display = function(canvasID, initW, initH, integral) {
         this.resizeCanvas(initW, initH, integral); // Call resizeCanvas
         // Use an arrow function when adding an event listener if you don't need it to have a this keyword
         window.addEventListener('resize', () => this.resizeCanvas(initW, initH, integral));
+        this.ctx.globalAlpha = 1; // Opacity
     };
     this.setCanvas(canvasID, initW, initH); // Call setCanvas on initialization
 };
