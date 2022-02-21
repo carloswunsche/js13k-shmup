@@ -17,11 +17,6 @@ const Input = function() {
       case 'ArrowUp':   this.rawInput[4] = trueOrFalse; return;
       case 'ArrowDown': this.rawInput[5] = trueOrFalse; return;
 
-      // case 'Digit0':    this.rawInput[2] = trueOrFalse; return;
-      // case 'Equal':     this.rawInput[3] = trueOrFalse; return;
-      // case 'Minus':     this.rawInput[4] = trueOrFalse; return;
-      // case 'Comma':     this.rawInput[5] = trueOrFalse; return;
-
       case 'Minus':     this.rawInput[6] = trueOrFalse; return;
       case 'Equal':     this.rawInput[7] = trueOrFalse; return;
     };

@@ -5,7 +5,6 @@
 
 // Engine constructor function
 const Engine = function(minStep, fps, updateFunction, renderFunction) {
-
     this.delta      = 0;    // Amount of time that's accumulated since the last update.
     this.lastStamp  = 0;    // The most recent timestamp of loop execution.
     this.minStep    = minStep; // 1000/60 = 16.66ms minimum update time

@@ -4,12 +4,12 @@
   ////////////////////
 
 // Game constructor
-const Game = function(initW, initH, rawInput) {
+const Game = function(initW, initH, rawInput, gfx) {
 
     this.frame = 0;
 
     this.level1 = { // this could also be a Map?
-        png:      'spritesheet.png',
+        png:        'spritesheet.png',
         pattern_01: [3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1],
         pattern_02: [3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 2, 3, 4, 5, 5, 6, 1, 2, 1, 2, 1, 3, 2, 3, 2, 2, 2, 2, 3, 4, 5, 5, 6, 1, 1, 2, 1, 3, 2, 3, 2, 2, 2, 2, 2, 3, 4, 5, 5, 6, 1, 2, 1, 3, 2, 3, 2, 2, 2, 2, 3, 4, 5, 5, 6, 1, 1, 2, 1, 3, 2, 3, 2, 2, 2, 3, 4, 5, 5, 6, 1, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 3, 4, 5, 5, 6, 1, 2, 2, 2, 1, 2, 1, 3, 2, 3, 3, 4, 5, 5, 6, 1, 2, 2, 2, 2, 1, 2, 1, 3, 2, 3, 4, 5, 5, 6, 1, 2, 2, 2, 2, 2, 1, 2, 1, 3, 2, 3, 3, 4, 5, 5, 6, 1, 2, 2, 2, 2, 1, 2, 1, 3, 2, 3, 2, 3, 4, 5, 5, 6, 1, 2, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1],
         pattern_03: [3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 3, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 1, 3, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 1, 3, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 2, 1, 3, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 2, 1, 3, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 2, 1, 3, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 2, 1, 3, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5, 5, 5, 5, 5, 6, 2, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5, 5, 5, 5, 5, 6, 2, 1, 2, 1, 3, 2, 3, 2, 2, 4, 5, 5, 5, 5, 6, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 4, 5, 5, 5, 5, 6, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1],
@@ -28,20 +28,19 @@ const Game = function(initW, initH, rawInput) {
         tileSize: 10,
         pngScale: 32,
         blackFadeOpacity: 100,
-    }
-    setSprite(this.bg, 'img/'+this.level1.png , false);
-
+        sprite: gfx.bg.image
+    };
 
     this.objects = new Map();
     // Important! Order in which objects should be drawn on screen:
     this.objects.set('enemies',     [])
                 .set('pBullets',    [])
-                .set('player', [new Player(initW, initH)])
+                .set('player',      [new Player(initW, initH, gfx)])
                 .set('eBullets',    [])
                 .set('hud',         []);
 
+    this.inputEnabled = true;
     this.gameInput = new Array(6); // Btn1, Btn2, left,right,up,down
-    
     this.toGameInput = function(rawInput) {
         for (const i in rawInput) {        // Write state (1, 2, or 0)
             if(rawInput[i] && this.gameInput[i] < 2) this.gameInput[i]++;
@@ -50,9 +49,11 @@ const Game = function(initW, initH, rawInput) {
     };
 
     this.update = function() {
-        // Level events
-        if (this.frame === 120) this.bg.queue = [...this.level1.pattern_02];
-        if (this.frame === 500) this.bg.queue = [...this.bg.queue,...this.level1.pattern_03, ...this.level1.pattern_04];
+        // Level BG events
+        if (this.frame === 120)  console.log(gfx);
+        if (this.frame === 120)  this.bg.queue = [...this.bg.queue,...this.level1.pattern_02];
+        if (this.frame === 500)  this.bg.queue = [...this.bg.queue,...this.level1.pattern_03,...this.level1.pattern_04];
+        if (this.frame === 2000) this.bg.queue = [...this.bg.queue,...this.level1.pattern_01];
 
         // Update Frame Counter
         this.frame++;
@@ -72,7 +73,7 @@ const Game = function(initW, initH, rawInput) {
                         this.bg.canChange = false; // And if this was the first row of the pattern, deactivate canChange flag after updating it
                         this.bg.queue.splice(0, 16*13); // Also delete 1 full pattern from queue
                         console.log('Game.js: Pattern change inside bg.array done');
-                    } 
+                    };
                 };
             };
         };
@@ -80,12 +81,30 @@ const Game = function(initW, initH, rawInput) {
         // Black fade opacity
         if (this.frame > 1 && this.bg.blackFadeOpacity >= 0) this.bg.blackFadeOpacity -= 1;
 
+        // Update player position
+        if (this.inputEnabled) {
+            // Convert rawInput to gameInput first
+            this.toGameInput(rawInput);
 
-        // Convert rawInput to gameInput
-        this.toGameInput(rawInput);
-        // Player position
-        this.objects.get('player')[0].updatePos(this.gameInput);
-        //Scrolling speed debugger
+            // if any Arrow key was pressed, update player position 
+            if (this.gameInput[2] || this.gameInput[3] || this.gameInput[4] || this.gameInput[5]) { 
+                // Tell player to do it
+                this.objects.get('player')[0].updatePos(this.gameInput);
+            };
+
+            // Player shot 1: if Btn1 is pressed then tell player to create bullet
+            if (this.gameInput[0] > 0) this.objects.get('player')[0].shot1(this.objects);
+        };
+
+        // Update pBullets position (if any)
+        if(this.objects.get('pBullets').length > 0) {
+            let bulletArray = this.objects.get('pBullets');
+            for (let i = 0; i < bulletArray.length; i++) { 
+                bulletArray[i].updatePos();
+            };
+        };
+
+        // Scrolling speed debugger
         if (rawInput[7] === true) {this.bg.speed += 0.25; rawInput[7] = false; console.log(this.bg.speed);}
         if (rawInput[6] === true) {this.bg.speed -= 0.25; rawInput[6] = false; console.log(this.bg.speed);}
     };
@@ -93,8 +112,7 @@ const Game = function(initW, initH, rawInput) {
 
 
 // Player constructor
-const Player = function(initW, initH) {
-
+const Player = function(initW, initH, gfx) {
     this.x = initW / 2;
     this.y = initH / 2;
     this.axis = [0,0];
@@ -102,7 +120,9 @@ const Player = function(initW, initH) {
     this.spd = 2;
     this.angle = 0;
     this.opacity = 100;
-    setSprite(this, 'img/ship-x32-optimized.png', true);
+    this.sprite = gfx.player.image;
+    this.shotBufferInit = 4; // Buffer de shot 1
+    this.shotBuffer = 0;
 
     this.setAxis = function(gameInput) {
         this.axis = [0,0];
@@ -130,24 +150,29 @@ const Player = function(initW, initH) {
         this.x = this.x + this.axis[0] * this.spd * this.diagMultp;
         this.y = this.y + this.axis[1] * this.spd * this.diagMultp;
     };
+
+    this.shot1 = function(gameObjects) {
+        if (this.shotBuffer === 0) {
+            gameObjects.get('pBullets').push(new pBullet(this.x, this.y, gfx)); 
+            this.shotBuffer = this.shotBufferInit;
+        };
+        if (this.shotBuffer > 0) this.shotBuffer --;
+    };
 };
 
-////////////////////////////////
-// GENERAL PURPOSE FUNCTIONS //
-////////////////////////////////
 
-function setSprite(obj, png, scale = false, scaleValue = 32){
-    obj.sprite = document.createElement('img'); // same as new Image()
-    //PNG always needs to be scaled x32 + optimized.
-    obj.sprite.src = png;
-    if (scale) {
-        //Scale it down to initial size (Only when it finishes loading png)
-        obj.sprite.addEventListener('load', function() {
-            obj.sprite.width  = obj.sprite.width / scaleValue; 
-            obj.sprite.height = obj.sprite.height / scaleValue;
-            removeEventListener('load', obj.sprite);
-        });
-    }
+// Bullet constructor
+const pBullet = function(initW, initH, gfx) {
+    this.x = initW;
+    this.y = initH - 8;
+    this.spd = 2;
+    this.angle = 0;
+    this.opacity = 100;
+    this.sprite = gfx.pBullet.image;
+
+    this.updatePos = function() {
+        this.y = this.y - 1 * this.spd;
+    };
 };
 
-function toRadians(degrees){return degrees * Math.PI/180};
+
