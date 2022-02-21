@@ -6,7 +6,6 @@
 // Display constructor function
 const Display = function(canvasID, initW, initH, integral) {
     this.render = function(gameObjects, bg) {
-
         // Clean canvas first
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
@@ -59,12 +58,6 @@ const Display = function(canvasID, initW, initH, integral) {
             this.ctx.globalAlpha = 1;
         };
     };
-    // END OF RENDER FUNCTION 
-
-
-
-
-
 
     this.resizeCanvas = function(initW, initH, integral) {
         if (integral){
@@ -90,5 +83,6 @@ const Display = function(canvasID, initW, initH, integral) {
         window.addEventListener('resize', () => this.resizeCanvas(initW, initH, integral));
         this.ctx.globalAlpha = 1; // Opacity
     };
+
     this.setCanvas(canvasID, initW, initH); // Call setCanvas on initialization
 };
