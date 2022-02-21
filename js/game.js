@@ -81,7 +81,15 @@ const Game = function(initW, initH, rawInput, gfx) {
         // Black fade opacity
         if (this.frame > 1 && this.bg.blackFadeOpacity >= 0) this.bg.blackFadeOpacity -= 1;
 
-        // Update player position
+        // Update pBullets position (if any)
+        if(this.objects.get('pBullets').length > 0) {
+            let bulletArray = this.objects.get('pBullets');
+            for (let i = 0; i < bulletArray.length; i++) { 
+                bulletArray[i].updatePos();
+            };
+        };
+
+        // Update player position and Shot
         if (this.inputEnabled) {
             // Convert rawInput to gameInput first
             this.toGameInput(rawInput);
@@ -94,14 +102,6 @@ const Game = function(initW, initH, rawInput, gfx) {
 
             // Player shot 1: if Btn1 is pressed then tell player to create bullet
             if (this.gameInput[0] > 0) this.objects.get('player')[0].shot1(this.objects);
-        };
-
-        // Update pBullets position (if any)
-        if(this.objects.get('pBullets').length > 0) {
-            let bulletArray = this.objects.get('pBullets');
-            for (let i = 0; i < bulletArray.length; i++) { 
-                bulletArray[i].updatePos();
-            };
         };
 
         // Scrolling speed debugger
