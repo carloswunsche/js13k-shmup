@@ -171,7 +171,7 @@ const pBullet = function(initW, initH, gfx) {
     this.sprite = gfx.pBullet.image;
 
     this.updatePos = function() {
-        this.y = this.y - 2 * this.spd;
+        this.y = this.y - 1.5 * this.spd;
     };
 };
 
