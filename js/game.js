@@ -23,7 +23,6 @@ const Game = function(initW, initH, rawInput, gfx) {
         rowsPos: [-10,0,10,20,30,40,50,60,70,80,90,100,110],
         canChange: false,
         speed: 1,
-        sprite: undefined,
         spriteCols: 3,
         tileSize: 10,
         pngScale: 32,
@@ -40,7 +39,7 @@ const Game = function(initW, initH, rawInput, gfx) {
                 .set('hud',         []);
 
     this.inputEnabled = true;
-    this.gameInput = new Array(6); // Btn1, Btn2, left,right,up,down
+    this.gameInput = new Array(6); // Btn1, Btn2, left,right,up,down 
     this.toGameInput = function(rawInput) {
         for (const i in rawInput) {        // Write state (1, 2, or 0)
             if(rawInput[i] && this.gameInput[i] < 2) this.gameInput[i]++;
@@ -49,6 +48,19 @@ const Game = function(initW, initH, rawInput, gfx) {
     };
 
     this.update = function() {
+        // Black fade opacity
+        if (this.frame > 1 && this.bg.blackFadeOpacity >= 0) this.bg.blackFadeOpacity -= 1;
+
+        // Delete game objects that have flag Destroy = true
+        for (const [key, arr] of this.objects) {
+            for (let [i, obj] of arr.entries()) {
+                if (obj.destroy === true) {
+                    arr.splice(i, 1);
+                    i--;
+                };
+            };
+        };
+
         // Level BG events
         if (this.frame === 120)  console.log(gfx);
         if (this.frame === 120)  this.bg.queue = [...this.bg.queue,...this.level1.pattern_02];
@@ -78,18 +90,18 @@ const Game = function(initW, initH, rawInput, gfx) {
             };
         };
 
-        // Black fade opacity
-        if (this.frame > 1 && this.bg.blackFadeOpacity >= 0) this.bg.blackFadeOpacity -= 1;
-
-        // Update pBullets position (if any)
+        // If pBullets exist
         if(this.objects.get('pBullets').length > 0) {
-            let bulletArray = this.objects.get('pBullets');
-            for (let i = 0; i < bulletArray.length; i++) { 
-                bulletArray[i].updatePos();
+            let pBulletsArray = this.objects.get('pBullets');
+            for (let i = 0; i < pBulletsArray.length; i++) { 
+                // Update pBullets position
+                pBulletsArray[i].updatePos();
+                // Flag Destroy = true if out of the screen
+                if (pBulletsArray[i].y < 0) pBulletsArray[i].destroy = true;
             };
         };
 
-        // Update player position and Shot
+        // Input related updates
         if (this.inputEnabled) {
             // Convert rawInput to gameInput first
             this.toGameInput(rawInput);
@@ -112,17 +124,18 @@ const Game = function(initW, initH, rawInput, gfx) {
 
 
 // Player constructor
-const Player = function(initW, initH, gfx) {
-    this.x = initW / 2;
-    this.y = initH / 2;
+const Player = function(initX, initY, gfx) {
+    this.x = initX / 2;
+    this.y = initY / 2;
     this.axis = [0,0];
     this.diagMultp = 1;
     this.spd = 2;
     this.angle = 0;
     this.opacity = 100;
     this.sprite = gfx.player.image;
-    this.shotBufferInit = 4; // Buffer de shot 1
+    this.shotBufferInit = 4;
     this.shotBuffer = 0;
+    this.destroy = false;
 
     this.setAxis = function(gameInput) {
         this.axis = [0,0];
@@ -153,7 +166,8 @@ const Player = function(initW, initH, gfx) {
 
     this.shot1 = function(gameObjects) {
         if (this.shotBuffer === 0) {
-            gameObjects.get('pBullets').push(new pBullet(this.x, this.y, gfx)); 
+            gameObjects.get('pBullets').push(new pBullet(this.x, this.y, gfx, -1));
+            gameObjects.get('pBullets').push(new pBullet(this.x, this.y, gfx,  1)); 
             this.shotBuffer = this.shotBufferInit;
         };
         if (this.shotBuffer > 0) this.shotBuffer --;
@@ -162,16 +176,17 @@ const Player = function(initW, initH, gfx) {
 
 
 // Bullet constructor
-const pBullet = function(initW, initH, gfx) {
-    this.x = initW;
-    this.y = initH - 8;
-    this.spd = 2;
+const pBullet = function(initX, initY, gfx, side) {
+    this.x = initX - 4 * side;
+    this.y = initY - 6;
+    this.spd = 5;
     this.angle = 0;
     this.opacity = 100;
-    this.sprite = gfx.pBullet.image;
+    this.sprite = gfx.pBullet.image; 
+    this.destroy = false;
 
     this.updatePos = function() {
-        this.y = this.y - 1.5 * this.spd;
+        this.y = this.y - 1 * this.spd;
     };
 };
 
