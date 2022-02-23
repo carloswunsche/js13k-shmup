@@ -48,6 +48,10 @@ const Game = function(initW, initH, rawInput, gfx) {
     };
 
     this.update = function() {
+        // Convert rawInput to gameInput first
+        if (this.inputEnabled) this.toGameInput(rawInput);
+
+
         // Black fade opacity
         if (this.frame > 1 && this.bg.blackFadeOpacity >= 0) this.bg.blackFadeOpacity -= 1;
 
@@ -66,6 +70,7 @@ const Game = function(initW, initH, rawInput, gfx) {
         if (this.frame === 120)  this.bg.queue = [...this.bg.queue,...this.level1.pattern_02];
         if (this.frame === 500)  this.bg.queue = [...this.bg.queue,...this.level1.pattern_03,...this.level1.pattern_04];
         if (this.frame === 2000) this.bg.queue = [...this.bg.queue,...this.level1.pattern_01];
+        if (this.frame === 50) this.objects.get('enemies').push(new Enemy(initW, initH, gfx));
 
         // Update Frame Counter
         this.frame++;
@@ -90,31 +95,16 @@ const Game = function(initW, initH, rawInput, gfx) {
             };
         };
 
-        // If pBullets exist
-        if(this.objects.get('pBullets').length > 0) {
-            let pBulletsArray = this.objects.get('pBullets');
-            for (let i = 0; i < pBulletsArray.length; i++) { 
-                // Update pBullets position
-                pBulletsArray[i].updatePos();
-                // Flag Destroy = true if out of the screen
-                if (pBulletsArray[i].y < 0) pBulletsArray[i].destroy = true;
+        // Run updatePos and updateData on all objects
+        for (const [key, arr] of this.objects){
+            for (const [i, obj] of arr.entries()) {
+                obj.updatePos(this.gameInput);
+                obj.updateData();
             };
         };
 
-        // Input related updates
-        if (this.inputEnabled) {
-            // Convert rawInput to gameInput first
-            this.toGameInput(rawInput);
-
-            // if any Arrow key was pressed, update player position 
-            if (this.gameInput[2] || this.gameInput[3] || this.gameInput[4] || this.gameInput[5]) { 
-                // Tell player to do it
-                this.objects.get('player')[0].updatePos(this.gameInput);
-            };
-
-            // Player shot 1: if Btn1 is pressed then tell player to create bullet
-            if (this.gameInput[0] > 0) this.objects.get('player')[0].shot1(this.objects);
-        };
+        // Player shot 1: if Btn1 is pressed then tell player to shot
+        if (this.gameInput[0] > 0) this.objects.get('player')[0].shot1(this.objects);
 
         // Scrolling speed debugger
         if (rawInput[7] === true) {this.bg.speed += 0.25; rawInput[7] = false; console.log(this.bg.speed);}
@@ -124,15 +114,17 @@ const Game = function(initW, initH, rawInput, gfx) {
 
 
 // Player constructor
-const Player = function(initX, initY, gfx) {
-    this.x = initX / 2;
-    this.y = initY / 2;
+const Player = function(initW, initH, gfx) {
+    this.x = initW / 2;
+    this.y = initH / 2;
     this.axis = [0,0];
     this.diagMultp = 1;
     this.spd = 2;
     this.angle = 0;
     this.opacity = 100;
     this.sprite = gfx.player.image;
+    this.width = gfx.player.image.width;
+    this.height = gfx.player.image.height;
     this.shotBufferInit = 4;
     this.shotBuffer = 0;
     this.destroy = false;
@@ -164,6 +156,8 @@ const Player = function(initX, initY, gfx) {
         this.y = this.y + this.axis[1] * this.spd * this.diagMultp;
     };
 
+    this.updateData = function() {};
+
     this.shot1 = function(gameObjects) {
         if (this.shotBuffer === 0) {
             gameObjects.get('pBullets').push(new pBullet(this.x, this.y, gfx, -1));
@@ -174,20 +168,46 @@ const Player = function(initX, initY, gfx) {
     };
 };
 
-
 // Bullet constructor
-const pBullet = function(initX, initY, gfx, side) {
-    this.x = initX - 4 * side;
-    this.y = initY - 6;
+const pBullet = function(initW, initH, gfx, side) {
+    this.x = initW - 4 * side;
+    this.y = initH - 6;
     this.spd = 5;
     this.angle = 0;
     this.opacity = 100;
-    this.sprite = gfx.pBullet.image; 
+    this.sprite = gfx.pBullet.image;
+    this.width = gfx.pBullet.image.width;
+    this.height = gfx.pBullet.image.height;
     this.destroy = false;
 
     this.updatePos = function() {
         this.y = this.y - 1 * this.spd;
     };
+
+    this.updateData = function() {
+        // Destroy = true if out of the screen
+        if (this.y < 0) this.destroy = true;
+    };
 };
 
+// Enemy constructor
+const Enemy = function(initW, initH, gfx) {
+    this.x = initW / 2;
+    this.y = 100;
+    this.spd = 0.2;
+    this.angle = 0;
+    this.opacity = 100;
+    this.sprite = gfx.enemy.image;
+    this.width = gfx.enemy.image.width;
+    this.height = gfx.enemy.image.height;
+    this.destroy = false;
 
+    this.updatePos = function() {
+        this.y = this.y + 1 * this.spd;
+    };
+
+    this.updateData = function() {
+        // Destroy = true if out of the screen
+        if (this.y > initH-this.height/2) this.destroy = true;
+    };
+};

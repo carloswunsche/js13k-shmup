@@ -5,13 +5,14 @@
 
 // // Graphics constructor
 const Gfx = function() {
-  // Source PNGs always need to be scaled by x32 + optimized using online PNG Optimizer!
+  // Source PNGs always need to be scaled by x32 + optimized using https://tinypng.com/
 this.scaleFactor = 32;
   this.imgDir = 'img/';
   this.associations = {
-    bg:     "spritesheet.png",
-    player:   "ship-x32-optimized.png",
-    pBullet: "pBullet-x32-optimized.png",
+    bg:     "bg.png",
+    player:   "player.png",
+    pBullet: "pBullet.png",
+    enemy: "enemy.png",
   };
 
   this.setImage = function(obj, png, scale = true, scaleValue = 32){
