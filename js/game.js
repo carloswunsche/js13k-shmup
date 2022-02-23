@@ -51,21 +51,20 @@ const Game = function(initW, initH, rawInput, gfx) {
         // Convert rawInput to gameInput first
         if (this.inputEnabled) this.toGameInput(rawInput);
 
-
         // Black fade opacity
         if (this.frame > 1 && this.bg.blackFadeOpacity >= 0) this.bg.blackFadeOpacity -= 1;
 
-        // Delete game objects that have flag Destroy = true
+        // Delete game objects if destroy===true
         for (const [key, arr] of this.objects) {
-            for (let [i, obj] of arr.entries()) {
-                if (obj.destroy === true) {
+            for (let i=0; i < arr.length; i++) {
+                if (arr[i].destroy === true) {
                     arr.splice(i, 1);
                     i--;
                 };
             };
         };
 
-        // Level BG events
+        // Level events
         if (this.frame === 120)  console.log(gfx);
         if (this.frame === 120)  this.bg.queue = [...this.bg.queue,...this.level1.pattern_02];
         if (this.frame === 500)  this.bg.queue = [...this.bg.queue,...this.level1.pattern_03,...this.level1.pattern_04];
@@ -89,7 +88,7 @@ const Game = function(initW, initH, rawInput, gfx) {
                     if (i === 0) {
                         this.bg.canChange = false; // And if this was the first row of the pattern, deactivate canChange flag after updating it
                         this.bg.queue.splice(0, 16*13); // Also delete 1 full pattern from queue
-                        console.log('Game.js: Pattern change inside bg.array done');
+                        // console.log('Game.js: Pattern change inside bg.array done');
                     };
                 };
             };
@@ -103,10 +102,25 @@ const Game = function(initW, initH, rawInput, gfx) {
             };
         };
 
+        // Collisions early test
+        if (this.objects.get('enemies').length > 0 && this.objects.get('pBullets').length > 0) { // Si hay pBullets y enemies
+            for (const [i, pBullet] of this.objects.get('pBullets').entries()){
+                for (const [i, enemy] of this.objects.get('enemies').entries()){
+                    if (pBullet.x1Hitbox < enemy.x2Hitbox && 
+                        enemy.x1Hitbox < pBullet.x2Hitbox &&
+                        pBullet.y1Hitbox < enemy.y2Hitbox && 
+                        enemy.y1Hitbox < pBullet.y2Hitbox) {
+                        pBullet.destroy = true;
+                        enemy.life--;
+                    };
+                };
+            };
+        };
+
         // Player shot 1: if Btn1 is pressed then tell player to shot
         if (this.gameInput[0] > 0) this.objects.get('player')[0].shot1(this.objects);
 
-        // Scrolling speed debugger
+        // Scrolling speed tester
         if (rawInput[7] === true) {this.bg.speed += 0.25; rawInput[7] = false; console.log(this.bg.speed);}
         if (rawInput[6] === true) {this.bg.speed -= 0.25; rawInput[6] = false; console.log(this.bg.speed);}
     };
@@ -115,6 +129,9 @@ const Game = function(initW, initH, rawInput, gfx) {
 
 // Player constructor
 const Player = function(initW, initH, gfx) {
+    this.sprite = gfx.player.image;
+    this.width = gfx.player.image.width;
+    this.height = gfx.player.image.height;
     this.x = initW / 2;
     this.y = initH / 2;
     this.axis = [0,0];
@@ -122,12 +139,15 @@ const Player = function(initW, initH, gfx) {
     this.spd = 2;
     this.angle = 0;
     this.opacity = 100;
-    this.sprite = gfx.player.image;
-    this.width = gfx.player.image.width;
-    this.height = gfx.player.image.height;
     this.shotBufferInit = 4;
     this.shotBuffer = 0;
     this.destroy = false;
+    this.updateHitbox = function() {
+        this.x1Hitbox = this.x - this.width/2;
+        this.x2Hitbox = this.x + this.width/2;
+        this.y1Hitbox = this.y - this.height/2;
+        this.y2Hitbox = this.y + this.height/2;
+    };
 
     this.setAxis = function(gameInput) {
         this.axis = [0,0];
@@ -154,9 +174,12 @@ const Player = function(initW, initH, gfx) {
         this.setDiag(gameInput);
         this.x = this.x + this.axis[0] * this.spd * this.diagMultp;
         this.y = this.y + this.axis[1] * this.spd * this.diagMultp;
+        this.updateHitbox();
     };
 
-    this.updateData = function() {};
+    this.updateData = function() {
+
+    };
 
     this.shot1 = function(gameObjects) {
         if (this.shotBuffer === 0) {
@@ -166,48 +189,71 @@ const Player = function(initW, initH, gfx) {
         };
         if (this.shotBuffer > 0) this.shotBuffer --;
     };
+
+    this.updateHitbox();
 };
 
 // Bullet constructor
 const pBullet = function(initW, initH, gfx, side) {
+    this.sprite = gfx.pBullet.image;
+    this.width = gfx.pBullet.image.width;
+    this.height = gfx.pBullet.image.height;
     this.x = initW - 4 * side;
     this.y = initH - 6;
     this.spd = 5;
     this.angle = 0;
     this.opacity = 100;
-    this.sprite = gfx.pBullet.image;
-    this.width = gfx.pBullet.image.width;
-    this.height = gfx.pBullet.image.height;
     this.destroy = false;
+    this.updateHitbox = function() {
+        this.x1Hitbox = this.x - this.width/2;
+        this.x2Hitbox = this.x + this.width/2;
+        this.y1Hitbox = this.y - this.height/2;
+        this.y2Hitbox = this.y + this.height/2;
+    };
 
     this.updatePos = function() {
         this.y = this.y - 1 * this.spd;
+        this.updateHitbox();
     };
 
     this.updateData = function() {
         // Destroy = true if out of the screen
         if (this.y < 0) this.destroy = true;
     };
+
+    this.updateHitbox();
 };
 
 // Enemy constructor
 const Enemy = function(initW, initH, gfx) {
-    this.x = initW / 2;
-    this.y = 100;
-    this.spd = 0.2;
-    this.angle = 0;
-    this.opacity = 100;
     this.sprite = gfx.enemy.image;
     this.width = gfx.enemy.image.width;
     this.height = gfx.enemy.image.height;
+    this.x = initW / 2;
+    this.y = -this.height/2;
+    this.spd = 0.2;
+    this.angle = 0;
+    this.opacity = 100;
+    this.life = 5;
     this.destroy = false;
+    this.updateHitbox = function() {
+        this.x1Hitbox = this.x - this.width/2;
+        this.x2Hitbox = this.x + this.width/2;
+        this.y1Hitbox = this.y - this.height/2;
+        this.y2Hitbox = this.y + this.height/2;
+    };
 
     this.updatePos = function() {
         this.y = this.y + 1 * this.spd;
+        this.updateHitbox();
     };
 
     this.updateData = function() {
-        // Destroy = true if out of the screen
-        if (this.y > initH-this.height/2) this.destroy = true;
+        // destroy=true if out of the screen
+        if (this.y > initH+this.height/2) this.destroy = true;
+        // destroy = true if life <= 0
+        if (this.life <= 0) this.destroy = true;
     };
+
+    this.updateHitbox();
 };
