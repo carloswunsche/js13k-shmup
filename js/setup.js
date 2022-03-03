@@ -42,9 +42,3 @@ window.onload = function(){
 ///////////////////////////////
 
 function toRadians(degrees){return degrees * Math.PI/180};
-
-////////////
-// TO-DOs //
-////////////
-
-// Change sprite property in various objects game.js and then the references in display.js
