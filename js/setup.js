@@ -37,14 +37,11 @@ window.onload = function(){
   engine.start();
 };
 
-
-
 ///////////////////////////////
 // GENERAL PURPOSE FUNCTIONS //
 ///////////////////////////////
 
 function toRadians(degrees){return degrees * Math.PI/180};
-
 
 ////////////
 // TO-DOs //

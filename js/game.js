@@ -5,10 +5,9 @@
 
 // Game constructor
 const Game = function(initW, initH, rawInput, gfx) {
-
     this.frame = 0;
 
-    this.level1 = { // this could also be a Map?
+    this.level1 = {
         png:        'spritesheet.png',
         pattern_01: [3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1],
         pattern_02: [3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 2, 3, 4, 5, 5, 6, 1, 2, 1, 2, 1, 3, 2, 3, 2, 2, 2, 2, 3, 4, 5, 5, 6, 1, 1, 2, 1, 3, 2, 3, 2, 2, 2, 2, 2, 3, 4, 5, 5, 6, 1, 2, 1, 3, 2, 3, 2, 2, 2, 2, 3, 4, 5, 5, 6, 1, 1, 2, 1, 3, 2, 3, 2, 2, 2, 3, 4, 5, 5, 6, 1, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 3, 4, 5, 5, 6, 1, 2, 2, 2, 1, 2, 1, 3, 2, 3, 3, 4, 5, 5, 6, 1, 2, 2, 2, 2, 1, 2, 1, 3, 2, 3, 4, 5, 5, 6, 1, 2, 2, 2, 2, 2, 1, 2, 1, 3, 2, 3, 3, 4, 5, 5, 6, 1, 2, 2, 2, 2, 1, 2, 1, 3, 2, 3, 2, 3, 4, 5, 5, 6, 1, 2, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1],
@@ -30,8 +29,7 @@ const Game = function(initW, initH, rawInput, gfx) {
         sprite: gfx.bg.image
     };
 
-    this.objects = new Map();
-    // Important! Order in which objects should be drawn on screen:
+    this.objects = new Map(); // Important! Order in which objects should be drawn on screen:
     this.objects.set('enemies',     [])
                 .set('pBullets',    [])
                 .set('player',      [new Player(initW, initH, gfx)])
@@ -39,7 +37,9 @@ const Game = function(initW, initH, rawInput, gfx) {
                 .set('hud',         []);
 
     this.inputEnabled = true;
+
     this.gameInput = new Array(6); // Btn1, Btn2, left,right,up,down 
+    
     this.toGameInput = function(rawInput) {
         for (const i in rawInput) {        // Write state (1, 2, or 0)
             if(rawInput[i] && this.gameInput[i] < 2) this.gameInput[i]++;
