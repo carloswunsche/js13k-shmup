@@ -123,6 +123,7 @@ const Game = function(initW, initH, rawInput, gfx) {
         // Scrolling speed tester
         if (rawInput[7] === true) {this.bg.speed += 0.25; rawInput[7] = false; console.log(this.bg.speed);}
         if (rawInput[6] === true) {this.bg.speed -= 0.25; rawInput[6] = false; console.log(this.bg.speed);}
+        if (rawInput[8] === true) this.objects.get('enemies').push(new Enemy(initW, initH, gfx));
     };
 };
 
