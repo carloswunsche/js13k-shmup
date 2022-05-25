@@ -13,11 +13,10 @@ const Game = function(initW, initH, rawInput, gfx) {
         pattern_02: [3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 2, 3, 4, 5, 5, 6, 1, 2, 1, 2, 1, 3, 2, 3, 2, 2, 2, 2, 3, 4, 5, 5, 6, 1, 1, 2, 1, 3, 2, 3, 2, 2, 2, 2, 2, 3, 4, 5, 5, 6, 1, 2, 1, 3, 2, 3, 2, 2, 2, 2, 3, 4, 5, 5, 6, 1, 1, 2, 1, 3, 2, 3, 2, 2, 2, 3, 4, 5, 5, 6, 1, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1, 3, 2, 3, 2, 3, 4, 5, 5, 6, 1, 2, 2, 2, 1, 2, 1, 3, 2, 3, 3, 4, 5, 5, 6, 1, 2, 2, 2, 2, 1, 2, 1, 3, 2, 3, 4, 5, 5, 6, 1, 2, 2, 2, 2, 2, 1, 2, 1, 3, 2, 3, 3, 4, 5, 5, 6, 1, 2, 2, 2, 2, 1, 2, 1, 3, 2, 3, 2, 3, 4, 5, 5, 6, 1, 2, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1],
         pattern_03: [3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 3, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 1, 3, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 1, 3, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 2, 1, 3, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 2, 1, 3, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 2, 1, 3, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 2, 1, 3, 2, 3, 4, 5, 5, 5, 5, 5, 5, 5, 5, 6, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5, 5, 5, 5, 5, 6, 2, 1, 2, 1, 3, 2, 3, 2, 4, 5, 5, 5, 5, 5, 5, 6, 2, 1, 2, 1, 3, 2, 3, 2, 2, 4, 5, 5, 5, 5, 6, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 4, 5, 5, 5, 5, 6, 2, 2, 1, 2, 1, 3, 2, 3, 2, 2, 3, 4, 5, 5, 6, 1, 2, 2, 1, 2, 1],
         pattern_04: [4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6],
-        /// ETC...
     };
 
     this.bg = {
-        array: [...this.level1.pattern_01],
+        array: this.level1.pattern_01,
         queue: [],
         rowsPos: [-10,0,10,20,30,40,50,60,70,80,90,100,110],
         canChange: false,
@@ -29,15 +28,13 @@ const Game = function(initW, initH, rawInput, gfx) {
         sprite: gfx.bg.image
     };
 
-    this.objects = new Map(); // Important! Order in which objects should be drawn on screen:
-    this.objects.set('enemies',     [])
-                .set('pBullets',    [])
-                .set('player',      [new Player(initW, initH, gfx)])
-                .set('eBullets',    [])
-                .set('hud',         []);
+    this.objects = new Map().set('enemies',     [])
+                            .set('pBullets',    [])
+                            .set('player',      [new Player(initW, initH, gfx)])
+                            .set('eBullets',    [])
+                            .set('hud',         []);
 
     this.inputEnabled = true;
-
     this.gameInput = new Array(6); // Btn1, Btn2, left,right,up,down 
     
     this.toGameInput = function(rawInput) {
@@ -52,7 +49,7 @@ const Game = function(initW, initH, rawInput, gfx) {
         if (this.inputEnabled) this.toGameInput(rawInput);
 
         // Black fade opacity
-        if (this.frame > 1 && this.bg.blackFadeOpacity >= 0) this.bg.blackFadeOpacity -= 1;
+        if (this.frame > 0 && this.bg.blackFadeOpacity > 0) this.bg.blackFadeOpacity--;
 
         // Delete game objects if destroy===true
         for (const [key, arr] of this.objects) {
@@ -65,7 +62,7 @@ const Game = function(initW, initH, rawInput, gfx) {
         };
 
         // Level events
-        if (this.frame === 120)  console.log(gfx);
+        // if (this.frame === 120)  console.log(gfx);
         if (this.frame === 120)  this.bg.queue = [...this.bg.queue,...this.level1.pattern_02];
         if (this.frame === 500)  this.bg.queue = [...this.bg.queue,...this.level1.pattern_03,...this.level1.pattern_04];
         if (this.frame === 2000) this.bg.queue = [...this.bg.queue,...this.level1.pattern_01];
@@ -120,7 +117,7 @@ const Game = function(initW, initH, rawInput, gfx) {
         // Player shot 1: if Btn1 is pressed then tell player to shot
         if (this.gameInput[0] > 0) this.objects.get('player')[0].shot1(this.objects);
 
-        // Scrolling speed tester
+        // Debugger
         if (rawInput[7] === true) {this.bg.speed += 0.25; rawInput[7] = false; console.log(this.bg.speed);}
         if (rawInput[6] === true) {this.bg.speed -= 0.25; rawInput[6] = false; console.log(this.bg.speed);}
         if (rawInput[8] === true) this.objects.get('enemies').push(new Enemy(initW, initH, gfx));
@@ -166,7 +163,7 @@ const Player = function(initW, initH, gfx) {
         this.diagMultp = 1;
         for (let i=2; i<4; i++) { //Solo evalua gameInput[2 y 3]
             if (gameInput[i] && gameInput[4] || gameInput[i] && gameInput[5])
-            {this.diagMultp = 0.70710678118; return;};
+            {this.diagMultp = 0.8; return;};
         };
     };
 
