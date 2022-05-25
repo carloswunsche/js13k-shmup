@@ -16,7 +16,7 @@ const Game = function(initW, initH, rawInput, gfx) {
     };
 
     this.bg = {
-        array: this.level1.pattern_01,
+        array: this.level1.pattern_02,
         queue: [],
         rowsPos: [-10,0,10,20,30,40,50,60,70,80,90,100,110],
         canChange: false,
