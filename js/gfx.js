@@ -15,7 +15,7 @@ this.scaleFactor = 32;
     enemy: "enemy.png",
   };
 
-  this.setImage = function(obj, png, scale = true, scaleValue = 32){
+  this.setImage = function(obj, png, scale = true, scaleValue = 16){
     obj.image = document.createElement('img'); // same as new Image()
     // Source PNG always needs to be scaled by x32 + optimized using online PNG Optimizer!
     obj.image.src = png;

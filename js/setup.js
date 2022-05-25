@@ -11,8 +11,8 @@ window.onload = () => {
   const p = document.querySelector('p');
 
   // Game screen initial dimensions
-  const initW = 160;
-  const initH = 120;
+  const initW = 320;
+  const initH = 240;
 
   // Update function
   const update = function() {
