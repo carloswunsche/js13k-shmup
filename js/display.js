@@ -59,16 +59,10 @@ const Display = function(canvasID, initW, initH, integer) {
         };
     };
 
-    this.resizeCanvas = function(initW, initH, integer) {
-        if (integer){
-            this.scale = Math.min(
-                Math.trunc(window.innerWidth  / initW),
-                Math.trunc(window.innerHeight / initH));
-        } else {
-            this.scale = Math.min(
-                window.innerWidth / initW,
-                window.innerHeight / initH);
-        }
+    this.resizeCanvas = function(initW, initH) {
+        this.scale = Math.min(
+            Math.trunc(window.innerWidth  / initW),
+            Math.trunc(window.innerHeight / initH));
         this.canvas.width  = this.scale * initW;
         this.canvas.height = this.scale * initH;
     };
@@ -78,10 +72,10 @@ const Display = function(canvasID, initW, initH, integer) {
         this.ctx    = this.canvas.getContext('2d');
         this.canvas.width  = initW;
         this.canvas.height = initH;
-        this.resizeCanvas(initW, initH, integer); // Call resizeCanvas
+        this.resizeCanvas(initW, initH); // Call resizeCanvas
 
         // Call anonimous function so the this keyword scopes the constructor function
-        window.addEventListener('resize', () => this.resizeCanvas(initW, initH, integer));
+        window.addEventListener('resize', () => this.resizeCanvas(initW, initH));
     };
 
     this.setCanvas(canvasID, initW, initH); // Call setCanvas on initialization

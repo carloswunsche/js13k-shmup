@@ -16,13 +16,13 @@ const Game = function(initW, initH, rawInput, gfx) {
     };
 
     this.bg = {
-        array: this.level1.pattern_02,
+        array: this.level1.pattern_04,
         queue: [],
-        rowsPos: [-10,0,10,20,30,40,50,60,70,80,90,100,110],
+        rowsPos: [-20,0,20,40,60,80,100,120,140,160,180,200,220],
         canChange: false,
-        speed: 1,
+        speed: 2,
         spriteCols: 3,
-        tileSize: 10,
+        tileSize: 20,
         pngScale: 32,
         blackFadeOpacity: 100,
         sprite: gfx.bg.image
@@ -64,9 +64,8 @@ const Game = function(initW, initH, rawInput, gfx) {
         // Level events
         // if (this.frame === 120)  console.log(gfx);
         if (this.frame === 120)  this.bg.queue = [...this.bg.queue,...this.level1.pattern_02];
-        if (this.frame === 500)  this.bg.queue = [...this.bg.queue,...this.level1.pattern_03,...this.level1.pattern_04];
-        if (this.frame === 2000) this.bg.queue = [...this.bg.queue,...this.level1.pattern_01];
-        if (this.frame === 50) this.objects.get('enemies').push(new Enemy(initW, initH, gfx));
+        if (this.frame === 500)  this.bg.queue = [...this.bg.queue,...this.level1.pattern_01,...this.level1.pattern_02];
+        // if (this.frame === 50) this.objects.get('enemies').push(new Enemy(initW, initH, gfx));
 
         // Update Frame Counter
         this.frame++;
@@ -75,7 +74,7 @@ const Game = function(initW, initH, rawInput, gfx) {
         for (let i=0; i < this.bg.rowsPos.length; i++) {
             this.bg.rowsPos[i] += this.bg.speed; // Add bg.speed to row Y position
             if (this.bg.rowsPos[i] >= initH) {      // If Y position is more than canvas height...
-                this.bg.rowsPos[i] -= initH + 10;   // ... Set Y position to top of canvas.
+                this.bg.rowsPos[i] -= initH + 20;   // ... Set Y position to top of canvas.
                 if (i === this.bg.rowsPos.length-1 && this.bg.queue.length >= 208) this.bg.canChange = true; // If last row of the pattern AND bg.queue is full, activate canChange flag
                 // If canChange is true... change each tile of that row for the next pattern one
                 if (this.bg.canChange) {
@@ -95,7 +94,6 @@ const Game = function(initW, initH, rawInput, gfx) {
         for (const [key, arr] of this.objects){
             for (const [i, obj] of arr.entries()) {
                 obj.updatePos(this.gameInput);
-                obj.updateData();
             };
         };
 
@@ -118,9 +116,14 @@ const Game = function(initW, initH, rawInput, gfx) {
         if (this.gameInput[0] > 0) this.objects.get('player')[0].shot1(this.objects);
 
         // Debugger
-        if (rawInput[7] === true) {this.bg.speed += 0.25; rawInput[7] = false; console.log(this.bg.speed);}
-        if (rawInput[6] === true) {this.bg.speed -= 0.25; rawInput[6] = false; console.log(this.bg.speed);}
-        if (rawInput[8] === true) this.objects.get('enemies').push(new Enemy(initW, initH, gfx));
+        // if (this.gameInput[0] === 1) {
+        //     this.objects.get('player')[0].spd++;
+        //     console.log(this.objects.get('player')[0].spd);
+        // }
+        // if (this.gameInput[1] === 1) {
+        //     this.objects.get('player')[0].spd--;
+        //     console.log(this.objects.get('player')[0].spd); 
+        // }
     };
 };
 
@@ -134,7 +137,7 @@ const Player = function(initW, initH, gfx) {
     this.y = initH / 2;
     this.axis = [0,0];
     this.diagMultp = 1;
-    this.spd = 2;
+    this.spd = 3;
     this.angle = 0;
     this.opacity = 100;
     this.shotBufferInit = 4;
@@ -162,8 +165,9 @@ const Player = function(initW, initH, gfx) {
     this.setDiag = function(gameInput) {
         this.diagMultp = 1;
         for (let i=2; i<4; i++) { //Solo evalua gameInput[2 y 3]
-            if (gameInput[i] && gameInput[4] || gameInput[i] && gameInput[5])
-            {this.diagMultp = 0.8; return;};
+            if (gameInput[i] && gameInput[4] || gameInput[i] && gameInput[5]) {
+                this.diagMultp = 0.75;
+            };
         };
     };
 
@@ -171,12 +175,9 @@ const Player = function(initW, initH, gfx) {
         this.setAxis(gameInput);
         this.setDiag(gameInput);
         this.x = this.x + this.axis[0] * this.spd * this.diagMultp;
-        this.y = this.y + this.axis[1] * this.spd * this.diagMultp;
+        this.y = this.y + this.axis[1] * this.spd * this.diagMultp
         this.updateHitbox();
-    };
-
-    this.updateData = function() {
-
+        // console.log(this.x, this.y);
     };
 
     this.shot1 = function(gameObjects) {
@@ -196,9 +197,9 @@ const pBullet = function(initW, initH, gfx, side) {
     this.sprite = gfx.pBullet.image;
     this.width = gfx.pBullet.image.width;
     this.height = gfx.pBullet.image.height;
-    this.x = initW - 4 * side;
+    this.x = initW - 8 * side;
     this.y = initH - 6;
-    this.spd = 5;
+    this.spd = 10;
     this.angle = 0;
     this.opacity = 100;
     this.destroy = false;
