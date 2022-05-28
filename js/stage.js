@@ -31,7 +31,7 @@ class Stage {
             tileSize: 16,
             rowsPos: [-16, 0, 16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224],
             canChange: false,
-            speed: 2,
+            speed: 1,
             spriteCols: 4,
             pngScale: 32,
             sprite: assets['bg' + stageNum]
