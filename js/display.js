@@ -1,88 +1,134 @@
-         "use strict";
-      //////////////////
-    ///// DISPLAY /////
-  ////////////////////
+//////////////////////////
+// DISPLAY
+//////////////////////////
 
-// Display constructor function
-const Display = function(canvasID, initW, initH, integral) {
-    this.render = function(gameObjects, bg) {
-        // Clean canvas first
+class Display {
+    constructor(width, height) {
+        this.width = width;
+        this.height = height;
+        this.canvas = this.setCanvas();
+        this.ctx = this.canvas.getContext('2d');
+        this.fade = {value: 100, mode: 'none', amount: 1};
+
+        // Resize canvas on init
+        this.scale = this.setScale();  
+        this.resizeCanvas(this.canvas, this.scale);
+        window.addEventListener('resize', () => {
+            this.scale = this.setScale();
+            this.resizeCanvas(this.canvas, this.scale);
+        });
+    }
+
+    setCanvas() {
+        let canvas = document.querySelector('canvas');
+        canvas.width  = this.width;
+        canvas.height = this.height;
+        return canvas;
+    }
+
+    setScale() {
+        let scale;
+        scale = Math.min(
+            Math.trunc(window.innerWidth / this.width),
+            Math.trunc(window.innerHeight / this.height));
+        return scale;
+    }
+
+    resizeCanvas (canvas, scale) {
+        canvas.width = scale * this.width;
+        canvas.height = scale * this.height;
+    }
+
+    render (gameObjects, stage) {
+        // Clear canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        
-        // Draw background
-        let bgArrIndex = 0; // Index of pattern array  
-        for (let y=0; y<bg.rowsPos.length; y++) {
-            for (let x=0;  x<initW;  x+=bg.tileSize) {
-                let tile = bg.array[bgArrIndex];
-                if(tile !== 0) {    // Check if tile is not transparent
-                    tile -= 1;      // Adjust so sourceX and Y are calculated properly
+
+        // Render Background
+        this.renderBackground(stage);
+
+        // Render Game Objects
+        this.renderGameObjects(gameObjects);
+
+        // Fade
+        if (this.fade.value > 0) this.renderFade();
+    }
+
+    renderBackground (stage) {
+        let bgArrIndex = 0;
+        for (let y = 0; y < stage.bg.rowsPos.length; y++) {
+            for (let x = 0; x < this.width; x += stage.bg.tileSize) {
+                let tile = stage.bg.array[bgArrIndex]; // This is just to simplify the code syntax
+                if (tile > 0) { // Check if tile is not transparent
+                    tile--; // Adjust so sourceX and Y are calculated properly
                     this.ctx.drawImage(
-                        bg.sprite, // Image
-                        (tile % bg.spriteCols) * bg.tileSize * bg.pngScale,            // sourceX
-                        Math.floor((tile / bg.spriteCols)) * bg.tileSize * bg.pngScale,// sourceY
-                        bg.tileSize * bg.pngScale,              // Clipped width
-                        bg.tileSize * bg.pngScale,              // Clipped height
-                        x * this.scale,                         // X placement
-                        Math.floor(bg.rowsPos[y] * this.scale), // Y placement
-                        bg.tileSize * this.scale,               // destination width
-                        bg.tileSize * this.scale                // destination height
+                        stage.bg.sprite,
+                        (tile % stage.bg.spriteCols) * stage.bg.tileSize * stage.bg.pngScale,
+                        Math.floor((tile / stage.bg.spriteCols)) * stage.bg.tileSize * stage.bg.pngScale,
+                        stage.bg.tileSize * stage.bg.pngScale,
+                        stage.bg.tileSize * stage.bg.pngScale,
+                        x * this.scale,
+                        Math.floor(stage.bg.rowsPos[y] * this.scale),
+                        stage.bg.tileSize * this.scale,
+                        stage.bg.tileSize * this.scale // destination height
                     );
                 };
-                bgArrIndex ++;
+                bgArrIndex++;
             };
         };
+    }
 
-        // Draw gameObjects
-        for (const [key, arr] of gameObjects){
-            for (const [index, obj] of arr.entries()) {
-                this.ctx.globalAlpha = obj.opacity / 100;
+    renderGameObjects (gameObjects) {
+        for (const arr of gameObjects.values()) {
+            for (const obj of arr.values()) {
+                // Save canvas' context state
                 this.ctx.save();
-                this.ctx.translate(obj.x * this.scale, obj.y * this.scale);
-                this.ctx.rotate(toRadians(obj.angle));
+
+                // Set object's opacity
+                this.ctx.globalAlpha = obj.opacity / 100;
+
+                // Translate canvas to render position
+                this.ctx.translate(
+                    obj.x * this.scale, 
+                    obj.y * this.scale
+                );
+
+                // Rotate if obj angle !== 0
+                if (obj.angle) this.ctx.rotate(toRadians(obj.angle));
+
+                // Draw
                 this.ctx.drawImage(
+                    // Img
                     obj.sprite,
-                    Math.round(-(obj.sprite.width  * this.scale) / 2),
-                    Math.round(-(obj.sprite.height * this.scale) / 2),
-                    obj.sprite.width  * this.scale, 
+                    // Translate (-50%, -50%) before drawing
+                    -(obj.sprite.width * this.scale) / 2,
+                    -(obj.sprite.height * this.scale) / 2,
+                    // Draw acording to img size * scaled
+                    obj.sprite.width * this.scale,
                     obj.sprite.height * this.scale
                 );
+
+                // Undo opacity, translation and rotation 
                 this.ctx.restore();
-                this.ctx.globalAlpha = 1;
             };
         };
+    }
 
-        // Draw Black Fade (still don't know how this works!! LOL)
-        if (bg.blackFadeOpacity >= 0) {
-            this.ctx.globalAlpha = bg.blackFadeOpacity / 100;
-            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.globalAlpha = 1;
-        };
-    };
+    initFade(mode, amount) {
+        this.fade.mode = mode;
+        this.fade.amount = amount;
+        if (mode === 'fromBlack') this.fade.value = 100;
+        if (mode === 'toBlack') this.fade.value = 0;
+    }
 
-    this.resizeCanvas = function(initW, initH, integral) {
-        if (integral){
-            this.scale = Math.min(
-                Math.trunc(window.innerWidth  / initW),
-                Math.trunc(window.innerHeight / initH));
-        } else {
-            this.scale = Math.min(
-                window.innerWidth / initW,
-                window.innerHeight / initH);
-        }
-        this.canvas.width  = this.scale * initW;
-        this.canvas.height = this.scale * initH;
-    };
+    updateFade() {
+        if (this.fade.mode === 'fromBlack') this.fade.value -= this.fade.amount;
+        if (this.fade.mode === 'toBlack')   this.fade.value += this.fade.amount;
+        if (this.fade.value === 0 || this.fade.value === 100) this.initFade('none', 1)
+    }
 
-    this.setCanvas = function(canvasID, initW, initH) {
-        this.canvas = document.getElementById(canvasID);
-        this.ctx    = this.canvas.getContext('2d');
-        this.canvas.width  = initW;
-        this.canvas.height = initH;
-        this.resizeCanvas(initW, initH, integral); // Call resizeCanvas
-        // Use an arrow function when adding an event listener if you don't need it to have a this keyword
-        window.addEventListener('resize', () => this.resizeCanvas(initW, initH, integral));
-        this.ctx.globalAlpha = 1; // Opacity
-    };
-
-    this.setCanvas(canvasID, initW, initH); // Call setCanvas on initialization
+    renderFade () {
+        this.ctx.globalAlpha = this.fade.value / 100; // 1.0 ~ 0.0
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.globalAlpha = 1; // Canvas globalAlpha fix
+    }
 };

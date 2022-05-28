@@ -1,44 +1,35 @@
-         "use strict";
-      //////////////////
-    ////// SETUP ////// 
-  ////////////////////
+"use strict";
+//////////////////////////
+// LOAD ASSETS
+//////////////////////////
 
-// Una vez que se cargaron todos los .js, recien ahi declarar objetos y arrancar engine
-window.onload = function(){
 
-  console.clear();
 
-  // Game screen initial dimensions
-  const initW = 160;
-  const initH = 120;
+//////////////////////////
+// SETUP
+//////////////////////////
 
-  // Update function
-  const update = function() {
-    game.update();
-  };
-
-  // Render function
-  const render = function() {
-      display.render(game.objects, game.bg);
-  };
-
-  // Create graphics object to store all images
-  const gfx     = new Gfx();
-  // Create Engine passing: minimum step in ms, FPS, updateFunction, renderFunction
-  const engine  = new Engine(1000/60, 60, update, render);
-  // Create Input object
-  const input   = new Input();
-  // Create Game passing: initW, initH, rawInput Map, and graphics object
-  const game    = new Game(initW, initH, input.rawInput, gfx);
-  // Create Display passing: canvasID, initW, initH, integralScaling
-  const display = new Display('layer1', initW, initH, true);
-
-  // Go!
-  engine.start();
+const fns = {
+  update:     () => game.update(),
+  render:     () => display.render(game.objects, game.stage),
+  rawToGame:  () => input.rawToGame(),
+  initFade:   (a,b) => display.initFade(a, b),
+  updateFade: () => display.updateFade(),
+  start:      () => engine.start()
 };
+
+const assets  = new Assets(fns);
+const input   = new Input();
+const engine  = new Engine(60, 60, fns);
+const display = new Display(320, 240);
+const game    = new Game(display.width, display.height, assets, fns);
+
+// engine.start();
+
 
 ///////////////////////////////
 // GENERAL PURPOSE FUNCTIONS //
 ///////////////////////////////
 
 function toRadians(degrees){return degrees * Math.PI/180};
+function getDecimal(n){return n - Math.floor(n)};

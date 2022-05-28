@@ -3,17 +3,21 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="style.css" />
-        <title>New Shmup</title>
-
-        <script async type="text/javascript" src="js/gfx.js"></script>
-        <script async type="text/javascript" src="js/setup.js"></script>
-        <script async type="text/javascript" src="js/engine.js"></script>
-        <script async type="text/javascript" src="js/input.js"></script>
-        <script async type="text/javascript" src="js/game.js"></script>
-        <script async type="text/javascript" src="js/display.js"></script>
-
+        <title>Javascript Shmup</title>
     </head>
-    <body id='body'>
-        <canvas id='layer1'><p>Your browser doesn't support canvas. Boo hoo!</p></canvas>
+    <body>
+        <!-- Load body markup first -->
+        <canvas></canvas>
+        <div>Loading</div>
+        <button onClick="engine.pause()">engine.pause()</button>
+        <button onClick="engine.start()">engine.start()</button>
+        <!-- Then load scripts in order -->
+        <script type="text/javascript" src="js/assets.js"></script>
+        <script type="text/javascript" src="js/stage.js"></script>
+        <script type="text/javascript" src="js/engine.js"></script>
+        <script type="text/javascript" src="js/input.js"></script>
+        <script type="text/javascript" src="js/game.js"></script>
+        <script type="text/javascript" src="js/display.js"></script>
+        <script type="text/javascript" src="js/setup.js"></script>
     </body>
 </html>
