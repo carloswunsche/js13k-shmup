@@ -3,11 +3,13 @@
 //////////////////////////
 
 class Display {
-    constructor(width, height) {
+    constructor(width, height, scanlines = false, intensity) {
         this.width = width;
         this.height = height;
         this.canvas = this.setCanvas();
         this.ctx = this.canvas.getContext('2d');
+        this.scanlines = scanlines;
+        this.intensity = intensity;
         this.fade = {value: 100, mode: 'none', amount: 1};
 
         // Resize canvas on init
@@ -51,6 +53,9 @@ class Display {
 
         // Fade
         if (this.fade.value > 0) this.renderFade();
+
+        // Scanlines
+        if (this.scanlines) this.renderScanlines(this.intensity);
     }
 
     renderBackground (stage) {
@@ -129,6 +134,14 @@ class Display {
     renderFade () {
         this.ctx.globalAlpha = this.fade.value / 100; // 1.0 ~ 0.0
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.globalAlpha = 1; // Canvas globalAlpha fix
+    }
+
+    renderScanlines(intensity) {
+        this.ctx.globalAlpha = intensity / 100;
+        for (let y = 0; y < this.height; y++){
+            this.ctx.fillRect(0, y * this.scale, this.canvas.width, 0.5 * this.scale);
+        }
         this.ctx.globalAlpha = 1; // Canvas globalAlpha fix
     }
 };
