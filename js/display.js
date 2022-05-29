@@ -52,7 +52,7 @@ class Display {
         this.renderGameObjects(gameObjects);
 
         // Fade
-        // if (this.fade.value > 0) this.renderFade();
+        if (this.fade.value > 0) this.renderFade();
 
         // Scanlines
         if (this.scanlines) this.renderScanlines(this.intensity);
