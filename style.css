@@ -3,7 +3,7 @@ html, body {
     width: 100%;
     margin: 0;
     padding: 0;
-    /* background-color: black; */
+    background-color: #000;
 }
 
 img { display: none; }
@@ -19,8 +19,4 @@ canvas {
     image-rendering: -o-crisp-edges;
     image-rendering: pixelated;
     -ms-interpolation-mode: nearest-neighbor;
-}
-
-#layer1 {
-    background-color: black; 
 }
