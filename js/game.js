@@ -5,7 +5,7 @@
 class Game {
     constructor(initW, initH, assets, fns) {
         this.frame = 0;
-        this.stage = new Stage(1, assets);
+        this.stage = new Stage(1, assets, initW, initH);
         this.objects = new Map()
         .set('enemies', [])
         .set('pBullets', [])
@@ -30,39 +30,51 @@ class Game {
             // Level events
             if (this.frame === 0) 
                 fns.initFade('fromBlack', 1);
-            // if (this.frame === 120)
-            //     this.stage.bg.queue = [...this.stage.bg.queue, ...this.stage.pattern2];
-            // if (this.frame === 500)
-            //     this.stage.bg.queue = [...this.stage.bg.queue, ...this.stage.pattern3, ...this.stage.pattern4];
-            // if (this.frame === 2000)
-            //     this.stage.bg.queue = [...this.stage.bg.queue, ...this.stage.pattern1];
+            if (this.frame === 100)
+                this.stage.bg.queue.push(...this.stage.pattern2);
+            if (this.frame === 300)
+                this.stage.bg.queue.push(...this.stage.pattern1, ...this.stage.pattern2);
+            if (this.frame === 1000)
+                this.stage.bg.queue.push(...this.stage.pattern1);
             // if (this.frame === 50) this.objects.get('enemies').push(new Enemy(initW, initH, assets));
             
+
             // Update Frame Counter
             this.frame++;
 
-            // Background: Scrolling and changing pattern of array
-            for (let i = 0; i < this.stage.bg.rowsPos.length; i++) {
-                this.stage.bg.rowsPos[i] += this.stage.bg.speed; // Add bg.speed to row Y position
-                if (this.stage.bg.rowsPos[i] >= initH) { // If Y position is more than canvas height...
-                    this.stage.bg.rowsPos[i] -= initH + this.stage.bg.tileSize; // ... Set Y position to top of canvas.
-                    if (i === this.stage.bg.rowsPos.length - 1 && this.stage.bg.queue.length >= 208)
-                        this.stage.bg.canChange = true; // If last row of the pattern AND bg.queue is full, activate canChange flag
 
-                    // If canChange is true... change each tile of that row for the next pattern one
-                    if (this.stage.bg.canChange) {
-                        for (let x = 0; x < 16; x++) {
-                            this.stage.bg.array[x + (i * 16)] = this.stage.bg.queue[x + (i * 16)];
-                        };
-                        if (i === 0) {
-                            this.stage.bg.canChange = false; // And if this was the first row of the pattern, deactivate canChange flag after updating it
-                            this.stage.bg.queue.splice(0, 16 * 13); // Also delete 1 full pattern from queue
+            // Background scrolling
+            this.stage.bg.rows.forEach((_,i) => {
+                // Move by applying background speed to current row position
+                this.stage.bg.rows[i] += this.stage.bg.speed;
 
-                            // console.log('Game.js: Pattern change inside bg.array done');
+                // If row position is greater than display height
+                if (this.stage.bg.rows[i] >= initH) { 
+                    // Move to the top
+                    this.stage.bg.rows[i] -= initH + this.stage.bg.tileSize;
+
+                    // If i === last row AND if queue is full, activate changePattern flag
+                    // changePattern will remain true until all rows has been replaced in array
+                    if (i === this.stage.bg.rows.length-1 && this.stage.bg.queue.length >= this.stage.bg.tileQty) {
+                        this.stage.bg.changePattern = true;
+                    }
+
+                    // If changePattern is true, change each next row for next pattern's row
+                    if (this.stage.bg.changePattern) {
+                        for (let tile = 0; tile < this.stage.bg.numCols; tile++) {
+                            this.stage.bg.array[tile + (i * this.stage.bg.numCols)] = this.stage.bg.queue[tile + (i * this.stage.bg.numCols)];
                         };
                     };
+
+                    // If changePattern is true but i === 0, deactivate changePattern flag
+                    if (this.stage.bg.changePattern && i === 0) {
+                        this.stage.bg.changePattern = false;
+                        // Also delete 1 full pattern from queue
+                        this.stage.bg.queue.splice(0, this.stage.bg.numCols * this.stage.bg.rows.length);
+                    };
                 };
-            };
+            });
+
 
             // Run updatePos and updateData on all objects
             for (const [key, arr] of this.objects) {
@@ -71,6 +83,7 @@ class Game {
                     // obj.updateData();
                 };
             };
+
 
             // Collisions early test
             if (this.objects.get('enemies').length > 0 && this.objects.get('pBullets').length > 0) { // Si hay pBullets y enemies
@@ -86,6 +99,7 @@ class Game {
                     };
                 };
             };
+
 
             // Player shot 1: if Btn1 is pressed then tell player to shot
             if (input.game[0] > 0) this.objects.get('player')[0].shot1(this.objects);

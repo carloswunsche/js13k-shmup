@@ -52,7 +52,7 @@ class Display {
         this.renderGameObjects(gameObjects);
 
         // Fade
-        if (this.fade.value > 0) this.renderFade();
+        // if (this.fade.value > 0) this.renderFade();
 
         // Scanlines
         if (this.scanlines) this.renderScanlines(this.intensity);
@@ -60,7 +60,7 @@ class Display {
 
     renderBackground (stage) {
         let bgArrIndex = 0;
-        for (let y = 0; y < stage.bg.rowsPos.length; y++) {
+        for (let y = 0; y < stage.bg.rows.length; y++) {
             for (let x = 0; x < this.width; x += stage.bg.tileSize) {
                 let tile = stage.bg.array[bgArrIndex]; // This is just to simplify the code syntax
                 if (tile > 0) { // Check if tile is not transparent
@@ -72,7 +72,7 @@ class Display {
                         stage.bg.tileSize * stage.bg.pngScale,
                         stage.bg.tileSize * stage.bg.pngScale,
                         x * this.scale,
-                        Math.floor(stage.bg.rowsPos[y] * this.scale),
+                        Math.floor(stage.bg.rows[y] * this.scale),
                         stage.bg.tileSize * this.scale,
                         stage.bg.tileSize * this.scale // destination height
                     );

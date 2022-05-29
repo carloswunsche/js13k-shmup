@@ -15,7 +15,8 @@ const fns = {
   rawToGame:  () => input.rawToGame(),
   initFade:   (a,b) => display.initFade(a, b),
   updateFade: () => display.updateFade(),
-  start:      () => engine.start()
+  start:      () => engine.start(),
+  pause:      () => engine.pause()
 };
 
 const assets  = new Assets(fns);
