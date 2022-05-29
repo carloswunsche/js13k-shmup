@@ -10,7 +10,7 @@ class Game {
             this.objects = {
                 enemies: [],
                 pBullets: [],
-                player: [new Player(assets)],
+                player: [new Player(assets, call.input.game)],
                 eBullets: [],
                 hud: [],
             };
@@ -74,16 +74,12 @@ class Game {
             loopOver(this.objects, (_, arr) => {
                 arr.forEach(obj => {
                     // If player, pass movement data
-                    if (obj instanceof Player) obj.update(call.input.getPlayerMovementData());
-                    // For any other object
-                    else obj.update(call.input.get('axis'));
+                    if (obj instanceof Player) {
+                        obj.update(call.input.playerInputData());
+                    } else obj.update();
                 });
             });
 
-
-            if (this.objects.player[0].hitbox[0] < 0) {
-                this.objects.player[0].x = 0
-            };
 
 
             // Collisions early test
@@ -102,7 +98,7 @@ class Game {
             // };
 
             // Shot
-            if (call.input.get('game')[0] > 0) this.objects.player[0].shot(this.objects);
+            if (call.input.get('game')[4] > 0) this.objects.player[0].shot(this.objects);
 
             // Update fade transparency
             call.display.updateFade();
@@ -117,17 +113,28 @@ class Entity {
         this.yDecimal = 0;
     }
     update (options) {
+        if (this instanceof Player) {
+            this.changeInputIfBoundary(options)
+            this.setVectorAmplitude(options)
+        }
+
+        // General objects
         this.updateData();
         this.updatePos(options);
         this.roundPos();
-        this.hitbox = this.setHitbox(this.xMargin, this.yMargin, this.xOffset, this.yOffset);
+        this.hitbox = this.setHitbox();
+
+        if (this instanceof Player) {
+            this.fixBoundaries();
+            this.hitbox = this.setHitbox();
+        }
     }
-    setHitbox (xMargin = 0, yMargin = 0, xOffset = 0, yOffset = 0) {
+    setHitbox (xMargin = 2, yMargin = 2, xOffset = 0, yOffset = 0) {
         if (!this.hitbox) {
             this.xMargin = xMargin;
             this.yMargin = yMargin;
-            this.yOffset = yOffset;
             this.xOffset = xOffset;
+            this.yOffset = yOffset;
         };
         return [
             this.x - this.xMargin + this.xOffset,  //x1
@@ -149,7 +156,7 @@ class Entity {
 
 
 class Player extends Entity {
-    constructor(assets) {
+    constructor(assets, inputGame) {
         super ()
         this.image = assets.player;
         this.width = assets.player.width;
@@ -157,24 +164,45 @@ class Player extends Entity {
         this.x = display.width / 2;
         this.y = display.height / 2;
         this.axis = [0, 0];
-        this.diagMultp = 1;
+        this.amplitude = 1;
         this.spd = 2.8;
         this.angle = 0;
         this.opacity = 100;
         this.shotBufferInit = 4;
         this.shotBuffer = 0;
         this.hp = 1;
-        // this.hitbox = this.setHitbox(4,4,0,3);
-        this.hitbox = this.setHitbox(20,20);
+        this.hitbox = this.setHitbox(4,4,0,3);
 
-        this.updatePos = function({axis, amplitude}) {
-            this.x += this.spd * axis[0] * amplitude;
-            this.y += this.spd * axis[1] * amplitude;
+        this.updatePos = function({axis}) {
+            this.x += this.spd * axis[0] * this.amplitude;
+            this.y += this.spd * axis[1] * this.amplitude;
+        };
+
+        this.fixBoundaries = function() {
+            if (this.hitbox[0] < 0) this.x = this.xMargin - this.xOffset;
+            if (this.hitbox[1] > display.width) this.x = display.width - this.xMargin - this.xOffset;
+            if (this.hitbox[2] < 0) this.y = this.yMargin - this.yOffset;
+            if (this.hitbox[3] > display.height) this.y = display.height - this.yMargin - this.yOffset;
+        };
+
+        this.changeInputIfBoundary = function ({axis, inputGame}) {
+            if (this.hitbox[0] <= 0) inputGame[3] = 0;
+            if (this.hitbox[1] >= display.width) inputGame[1] = 0;
+            if (this.hitbox[2] <= 0) inputGame[0] = 0;
+            if (this.hitbox[3] >= display.height) inputGame[2] = 0
+        }
+
+        this.setVectorAmplitude = function ({axis, inputGame}) {
+            this.amplitude =
+                     inputGame[0] && inputGame[1] || 
+                    inputGame[1] && inputGame[2] ||
+                    inputGame[2] && inputGame[3] || 
+                    inputGame[3] && inputGame[0] ? 0.707 : 1;
         };
 
         this.updateData = function() {
             if (this.shotBuffer > 0) this.shotBuffer--;
-        }
+        };
 
         this.shot = function (gameObjects) {
             if (this.shotBuffer === 0) {
@@ -198,7 +226,7 @@ class pBullet extends Entity {
         this.angle = 0;
         this.opacity = 100;
         this.hp = 1;
-        this.hitbox = this.setHitbox();
+        this.hitbox = this.setHitbox(this.width/2, this.height/2);
 
         this.updatePos = function () {
             this.y = this.y - 1 * this.spd;

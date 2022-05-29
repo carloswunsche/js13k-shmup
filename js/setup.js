@@ -11,8 +11,8 @@ const functions = {
   },
   input: {
     rawToGame: () => input.rawToGame(),
-    setAxis: () => input.setAxis(),
-    getPlayerMovementData: () => input.getPlayerMovementData(),
+    // getAxis: () => input.getAxis(),
+    playerInputData: () => input.playerInputData(),
     get: (property) => input[property],
   },
   display: {

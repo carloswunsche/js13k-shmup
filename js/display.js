@@ -147,6 +147,7 @@ class Display {
         loopOver(gameObjects, (_, arr) => {
             arr.forEach(obj => {
                 let color = '#FF0000';
+                color = 'white'
                 // [0] = x1, [1] = x2, [2] = y1, [3] = y2
                 this.drawLine(obj.hitbox[0], obj.hitbox[2], 'start', color);
                 this.drawLine(obj.hitbox[1], obj.hitbox[2]);
