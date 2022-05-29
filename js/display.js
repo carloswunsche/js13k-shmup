@@ -3,21 +3,21 @@
 //////////////////////////
 
 class Display {
-    constructor(width, height, scanlines = false, intensity) {
+    constructor(width, height, scanlines = false, intensity, hitboxes) {
         this.width = width;
         this.height = height;
         this.canvas = this.setCanvas();
         this.ctx = this.canvas.getContext('2d');
         this.scanlines = scanlines;
         this.intensity = intensity;
+        this.hitboxes = hitboxes;
         this.fade = {value: 100, mode: 'none', amount: 1};
-
-        // Resize canvas on init
+        // Resize canvas on initialization
         this.scale = this.setScale();  
-        this.resizeCanvas(this.canvas, this.scale);
+        this.resizeCanvas();
         window.addEventListener('resize', () => {
             this.scale = this.setScale();
-            this.resizeCanvas(this.canvas, this.scale);
+            this.resizeCanvas();
         });
     }
 
@@ -29,24 +29,22 @@ class Display {
     }
 
     setScale() {
-        let scale;
-        scale = Math.min(
+        return Math.min(
             Math.trunc(window.innerWidth / this.width),
             Math.trunc(window.innerHeight / this.height));
-        return scale;
     }
 
-    resizeCanvas (canvas, scale) {
-        canvas.width = scale * this.width;
-        canvas.height = scale * this.height;
+    resizeCanvas () {
+        this.canvas.width = this.scale * this.width;
+        this.canvas.height = this.scale * this.height;
     }
 
-    render (gameObjects, stage) {
+    render (bg, gameObjects) {
         // Clear canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Render Background
-        this.renderBackground(stage);
+        this.renderBackground(bg);
 
         // Render Game Objects
         this.renderGameObjects(gameObjects);
@@ -56,35 +54,38 @@ class Display {
 
         // Scanlines
         if (this.scanlines) this.renderScanlines(this.intensity);
+
+        // Hitboxes
+        if (this.hitboxes) this.renderHitboxes(gameObjects);
     }
 
-    renderBackground (stage) {
+    renderBackground (bg) {
         let bgArrIndex = 0;
-        for (let y = 0; y < stage.bg.rows.length; y++) {
-            for (let x = 0; x < this.width; x += stage.bg.tileSize) {
-                let tile = stage.bg.array[bgArrIndex]; // This is just to simplify the code syntax
+        bg.y.forEach((_, y) => {
+            for (let x = 0; x < this.width; x += bg.tileSize) {
+                let tile = bg.pattern[bgArrIndex]; // This is just to simplify the code syntax
                 if (tile > 0) { // Check if tile is not transparent
                     tile--; // Adjust so sourceX and Y are calculated properly
                     this.ctx.drawImage(
-                        stage.bg.sprite,
-                        (tile % stage.bg.spriteCols) * stage.bg.tileSize * stage.bg.pngScale,
-                        Math.floor((tile / stage.bg.spriteCols)) * stage.bg.tileSize * stage.bg.pngScale,
-                        stage.bg.tileSize * stage.bg.pngScale,
-                        stage.bg.tileSize * stage.bg.pngScale,
+                        bg.image,
+                        (tile % bg.imageCols) * bg.tileSize * bg.imageScaled,
+                        Math.floor((tile / bg.imageCols)) * bg.tileSize * bg.imageScaled,
+                        bg.tileSize * bg.imageScaled,
+                        bg.tileSize * bg.imageScaled,
                         x * this.scale,
-                        Math.floor(stage.bg.rows[y] * this.scale),
-                        stage.bg.tileSize * this.scale,
-                        stage.bg.tileSize * this.scale // destination height
+                        Math.floor(bg.y[y] * this.scale),
+                        bg.tileSize * this.scale,
+                        bg.tileSize * this.scale // destination height
                     );
                 };
                 bgArrIndex++;
             };
-        };
+        });
     }
 
     renderGameObjects (gameObjects) {
-        for (const arr of gameObjects.values()) {
-            for (const obj of arr.values()) {
+        loopOver(gameObjects, (_,arr) => {
+            arr.forEach(obj => {
                 // Save canvas' context state
                 this.ctx.save();
 
@@ -92,10 +93,7 @@ class Display {
                 this.ctx.globalAlpha = obj.opacity / 100;
 
                 // Translate canvas to render position
-                this.ctx.translate(
-                    obj.x * this.scale, 
-                    obj.y * this.scale
-                );
+                this.ctx.translate(obj.x * this.scale, obj.y * this.scale);
 
                 // Rotate if obj angle !== 0
                 if (obj.angle) this.ctx.rotate(toRadians(obj.angle));
@@ -103,19 +101,19 @@ class Display {
                 // Draw
                 this.ctx.drawImage(
                     // Img
-                    obj.sprite,
+                    obj.image,
                     // Translate (-50%, -50%) before drawing
-                    -(obj.sprite.width * this.scale) / 2,
-                    -(obj.sprite.height * this.scale) / 2,
+                    -(obj.image.width * this.scale) / 2,
+                    -(obj.image.height * this.scale) / 2,
                     // Draw acording to img size * scaled
-                    obj.sprite.width * this.scale,
-                    obj.sprite.height * this.scale
+                    obj.image.width * this.scale,
+                    obj.image.height * this.scale
                 );
 
                 // Undo opacity, translation and rotation 
                 this.ctx.restore();
-            };
-        };
+            });
+        });
     }
 
     initFade(mode, amount) {
@@ -143,5 +141,30 @@ class Display {
             this.ctx.fillRect(0, y * this.scale, this.canvas.width, 0.5 * this.scale);
         }
         this.ctx.globalAlpha = 1; // Canvas globalAlpha fix
+    }
+
+    renderHitboxes(gameObjects) {
+        loopOver(gameObjects, (_, arr) => {
+            arr.forEach(obj => {
+                let color = '#FF0000';
+                // [0] = x1, [1] = x2, [2] = y1, [3] = y2
+                this.drawLine(obj.hitbox[0], obj.hitbox[2], 'start', color);
+                this.drawLine(obj.hitbox[1], obj.hitbox[2]);
+                this.drawLine(obj.hitbox[1], obj.hitbox[3]);
+                this.drawLine(obj.hitbox[0], obj.hitbox[3]);
+                this.drawLine(obj.hitbox[0], obj.hitbox[2]);
+            });
+        });
+    }
+
+    drawLine(x,y, start, color) {
+        if (start) {
+            this.ctx.strokeStyle = color;
+            this.ctx.beginPath();
+            this.ctx.moveTo(x*this.scale, y*this.scale);
+            return
+        }
+        this.ctx.lineTo(x*this.scale, y*this.scale);
+        this.ctx.stroke();
     }
 };

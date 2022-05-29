@@ -2,29 +2,42 @@
 // ASSETS
 //////////////////////////
 
-class Assets {
-  #dir = 'img/';
-  // PNGs need to be scaled by 32x and optimized with tinypng.com
-  #filenames = {
-    bg1: 'bg.png',
-    player: 'player.png',
-    pBullet: 'pBullet.png',
-    enemy: 'enemy.png',
-  };
+class LoadAssets {
+	constructor(call) {
+		// PNGs need to be scaled by 32x and optimized with tinypng.com
+		this.imageScaled = 32;
+		this.dir = 'img/';
+		this.filenames = {
+			bg1: 'bg.png',
+			player: 'player.png',
+			pBullet: 'pBullet.png',
+			enemy: 'enemy.png',
+		};
 
-  constructor(fns) {
-    let remaining = Object.keys(this.#filenames).length;
+		this.load(this.imageScaled, call);
+	}
 
-    for (const [entity, png] of Object.entries(this.#filenames)) {
-      this[entity] = new Image();
-      this[entity].src = this.#dir+png;
+	load(imageScaled, call) {
+		let remaining = Object.keys(this.filenames).length;
+		for (const [key, file] of Object.entries(this.filenames)) {
+			this[key] = new Image();
+			this[key].src = this.dir + file;
 
-      this[entity].addEventListener('load', () => {
-        this[entity].width  /= 32;
-        this[entity].height /= 32;
-        remaining--;
-        if(remaining === 0) fns.start();
-      });
-    };
-  }
+			// Scale back to intended size once loaded
+			this[key].addEventListener('load', () => {
+				this[key].width  /= imageScaled;
+				this[key].height /= imageScaled;
+				remaining--;
+				// If all images have loaded
+				if(remaining === 0) this.onCompletion(call)
+			});
+		};
+	}
+
+	onCompletion(call) {
+		delete this.dir;
+		delete this.filenames;
+		call.game.setup(1);
+		call.engine.start();
+	}
 }

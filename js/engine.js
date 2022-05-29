@@ -3,7 +3,7 @@
 //////////////////////////
 
 class Engine {
-    constructor(ups, fps, fns) {
+    constructor(ups, fps, call) {
         this.paused = true;
         this.ups = ups; // How many updates performed per second (can be use as "game speed")
         this.fps = fps; // How many frames rendered per second
@@ -34,14 +34,14 @@ class Engine {
             this.lastStamp = newStamp;
 
             while (this.delta > this.min) {
-                fns.update();
+                call.game.update();
                 this.delta -= this.min;
                 this.acc += this.min;
             };
 
             // Render with fps control
             if (this.acc >= 1000 / this.fps) {
-                fns.render();
+                call.display.render();
                 this.acc = 0;
             };
 
@@ -54,8 +54,8 @@ class Engine {
                 return 'Engine Paused';
             }
             if (this.paused) {
-                fns.update();
-                fns.render();
+                call.game.update();
+                call.display.render();
                 return 'Advance one frame';
             }
         };
