@@ -8,8 +8,9 @@
     <body>
         <!-- Load body markup first -->
         <canvas></canvas>
-        <button onClick="engine.pause()">engine.pause()</button>
-        <button onClick="engine.start()">engine.start()</button>
+        <button onClick="engine.pause()">Pause/Advance</button>
+        <button onClick="engine.start()">Resume</button>
+        <button onClick="display.scanlines=true;display.intensity=50">Add scanlines</button>
         <!-- Then load scripts in order -->
         <script type="text/javascript" src="js/assets.js"></script>
         <script type="text/javascript" src="js/stage.js"></script>

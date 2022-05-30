@@ -2,9 +2,9 @@
 // STAGE
 //////////////////////////
 
-// ***************************************************
-/// ALREADY WORKING WITH ACCESS TO PUBLIC OBJECTS!! //
-// ***************************************************
+// ************************************************
+// WORKING WITH ACCESS TO PUBLIC OBJECTS,.... FIX
+// ************************************************
 
 class Stage {
     constructor(assets, stageNum) {
@@ -58,7 +58,7 @@ class Stage {
         this.bg.changePattern = false;
 
         // Can only be changed in intervals of 0.25
-        this.bg.speed = 2;
+        this.bg.speed = 1;
 
         this.music = undefined;
 

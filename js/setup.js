@@ -27,7 +27,9 @@ const functions = {
 
 const input   = new Input();
 const assets  = new LoadAssets(functions);
-const display = new Display(320, 240, 'scanlines', 50);
+// const display = new Display(320, 240, 'scanlines', 50, 'hitbox');
+// const display = new Display(320, 240, 'scanlines', 50);
+const display = new Display(320, 240);
 const game    = new Game(assets, functions);
 const engine  = new Engine(60, 60, functions);
 

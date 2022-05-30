@@ -12,6 +12,10 @@ class Display {
         this.intensity = intensity;
         this.hitboxes = hitboxes;
         this.fade = {value: 100, mode: 'none', amount: 1};
+        // Used for rendering background
+        this.bgPatIndex;
+        this.bgTile;
+        this.scaledTile;
         // Resize canvas on initialization
         this.scale = this.setScale();  
         this.resizeCanvas();
@@ -41,7 +45,8 @@ class Display {
 
     render (bg, gameObjects) {
         // Clear canvas
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // PERFORMANCE NOTE: Not really necessary to run
+        // this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Render Background
         this.renderBackground(bg);
@@ -60,25 +65,38 @@ class Display {
     }
 
     renderBackground (bg) {
-        let bgArrIndex = 0;
+        this.bgPatIndex = 0;
+        this.scaledTile = bg.tileSize * bg.imageScaled;
         bg.rows.forEach((_, y) => {
             for (let x = 0; x < this.width; x += bg.tileSize) {
-                let tile = bg.pattern[bgArrIndex]; // This is just to simplify the code syntax
-                if (tile > 0) { // Check if tile is not transparent
-                    tile--; // Adjust so sourceX and Y are calculated properly
+                // This is just to simplify the code syntax
+                this.bgTile = bg.pattern[this.bgPatIndex]; 
+                // Check if tile is not empty/transparent
+                if (this.bgTile > 0) { 
+                    // Adjust so sourceX and Y are calculated properly
+                    this.bgTile--;
                     this.ctx.drawImage(
+                        // Img
                         bg.image,
-                        (tile % bg.imageCols) * bg.tileSize * bg.imageScaled,
-                        Math.floor((tile / bg.imageCols)) * bg.tileSize * bg.imageScaled,
-                        bg.tileSize * bg.imageScaled,
-                        bg.tileSize * bg.imageScaled,
+                        // Source X
+                        (this.bgTile % bg.imageCols) * this.scaledTile,
+                        // Source Y
+                        Math.floor((this.bgTile / bg.imageCols)) * this.scaledTile,
+                        // Source Width
+                        this.scaledTile,
+                        // Source Height
+                        this.scaledTile,
+                        // Destination X
                         x * this.scale,
-                        Math.floor(bg.rows[y] * this.scale),
+                        // Destination Y
+                        bg.rows[y] * this.scale,
+                        // Destination Width
                         bg.tileSize * this.scale,
-                        bg.tileSize * this.scale // destination height
+                        // Destination height
+                        bg.tileSize * this.scale 
                     );
                 };
-                bgArrIndex++;
+                this.bgPatIndex++;
             };
         });
     }
@@ -130,6 +148,7 @@ class Display {
     }
 
     renderFade () {
+        // PERFORMANCE NOTE: this only runs until this.fade.value is 0 👍
         this.ctx.globalAlpha = this.fade.value / 100; // 1.0 ~ 0.0
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.globalAlpha = 1; // Canvas globalAlpha fix
