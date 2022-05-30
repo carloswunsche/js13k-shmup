@@ -53,22 +53,19 @@ class Stage {
         this.bg.imageCols = this.bg.image.width / this.bg.tileSize;
         this.bg.tileQty = this.getTileQty(this.bg.tileSize, display.width, display.height);
         this.bg.rows = this.setRows(this.bg.tileSize); // Array
-        this.bg.rowDecimal = this.newRowArr(this.bg.tileSize);
         this.bg.numCols = display.width / this.bg.tileSize;
         this.bg.changePattern = false;
 
-        // Can only be changed in intervals of 0.25
-        this.bg.speed = 1;
+        // Speed
+        this.bg.speed = 0.1;
+        this.bg.speedInt = 0;
+        this.bg.speedDecimal = 0;
+        this.bg.speedAcc = 0;
 
         this.music = undefined;
 
         // Returns a function
         this.events = this.getEvents(stageNum);
-    }
-
-    newRowArr(tile) {
-        let positions = (display.height+tile) / tile;
-        return new Array(positions).fill(0)
     }
 
     setRows (tile) {

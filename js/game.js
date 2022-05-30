@@ -26,12 +26,18 @@ class Game {
             // Update Frame Counter
             this.frame++;
 
-            // Scroll background
+            // Scroll background: account for decimals
+            this.stage.bg.speedAcc += getDecimal(this.stage.bg.speed);
+            this.stage.bg.speedInt = Math.floor(this.stage.bg.speed)
+            this.stage.bg.speedDecimal = Math.floor(this.stage.bg.speedAcc);
+            // Reset accumulator once it reaches integer state
+            if (this.stage.bg.speedAcc >= 1)
+            this.stage.bg.speedAcc = getDecimal(this.stage.bg.speedAcc);
 
-            // console.clear()
+            // Scroll background: move each row, wrap around and change pattern
             this.stage.bg.rows.forEach((_,i) => {
-                // Move by applying background speed to current row position
-                this.stage.bg.rows[i] += this.stage.bg.speed;
+                // Add speed
+                this.stage.bg.rows[i] += this.stage.bg.speedInt + this.stage.bg.speedDecimal;
 
                 // If row position is greater than display height
                 if (this.stage.bg.rows[i] >= display.height) { 
@@ -59,6 +65,7 @@ class Game {
                     };
                 };
             });
+
 
             // Entities update function
             loopOver(this.objects, (_, arr) => {
@@ -105,8 +112,6 @@ class Game {
                 };
             });
 
-
-
             // Update fade transparency
             call.display.updateFade();
         };
@@ -152,16 +157,19 @@ class Entity {
             this.y + this.yMargin + this.yOffset,  //y2
         ];
     }
-    roundPos () {
-        this.x += this.xDecimal;
+    roundPos () { // Esto esta TOTALMENTE MAL Xd hay q hacerlo como lo hice en el background
+        if (!this.roundPosX) {
+            this.x += this.xDecimal;
+            this.xDecimal = getDecimal(this.x);
+            this.x = Math.floor(this.x);
+        };
+
         this.y += this.yDecimal;
-        this.xDecimal = getDecimal(this.x);
         this.yDecimal = getDecimal(this.y);
-        this.x = Math.floor(this.x);
         this.y = Math.floor(this.y);
     }
+    updateData() {}
 };
-
 
 class Player extends Entity {
     constructor(image) {
@@ -176,7 +184,11 @@ class Player extends Entity {
         this.shotBufferInit = 4;
         this.shotBuffer = 0;
         this.hp = 1;
+
+        // Hitbox
         this.hitbox = this.setHitbox(4,4,0,3);
+
+        // Functions
 
         this.updatePos = function({axis}) {
             this.x += this.spd * axis[0] * this.amplitude;
@@ -228,13 +240,20 @@ class pBullet extends Entity {
         this.angle = 0;
         this.opacity = 100;
         this.hp = 1;
+
+        // Hitbox
         this.hitbox = this.setHitbox(this.image.width/2, this.image.height/2);
 
+        // Skip flags
+        this.roundPosX = true;
+
+        // Functions
         this.updatePos = function () {
             this.y = this.y - 1 * this.spd;
         };
 
         this.updateData = function () {
+            // Destroy if out of the top
             if (this.y < 0) this.hp = 0;
         };
     }
@@ -249,13 +268,16 @@ class Enemy extends Entity {
         this.spd = 0;
         this.hp = 5;
         this.timers = new Array(10).fill(0);
+
+        // Hitbox
         this.hitbox = this.setHitbox(this.image.width/2-1, this.image.height/2-3);
     }
+
+    // Functions
     updatePos(){
         this.easeInOutSine('y', -this.image.height, display.height-20, 200, 1)
         this.easeInOutSine('x', -this.image.width, display.width-20, 120, 2)
     }
-    updateData(){}
 
     easeOutCubic(xy, startPos, goTo, timeInFrames, timerUsed){
         this[xy] = (goTo-startPos) * (1 - Math.pow(1 - this.timers[timerUsed]/timeInFrames, 3)) + startPos;

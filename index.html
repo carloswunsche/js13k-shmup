@@ -9,11 +9,15 @@
         <!-- Canvas -->
         <canvas></canvas>
         <!-- Debugger -->
-        <button onClick="debug.gameReset()">Reset</button>
-        <button onClick="debug.enginePause()">Pause/Advance</button>
-        <button onClick="debug.engineStart()">Resume</button>
-        <button onClick="debug.toggleScanlines()">Toggle scanlines</button>
-        <button onClick="debug.toggleHitboxes()">Toggle hitboxes</button>
+        <button title="R key" onClick="debug.gameReset()">Reset</button>
+        <button title="K key" onClick="debug.enginePause()">Pause/Advance</button>
+        <button title="P key" onClick="debug.engineStart()">Resume</button>
+        <button title="S key" onClick="debug.toggleScanlines()">Toggle scanlines</button>
+        <button title="H key" onClick="debug.toggleHitboxes()">Toggle hitboxes</button>
+        <button title="+ or = key" onClick="debug.bgSpeedAdd(0.1)">BG Speed up</button>
+        <button title="- key" onClick="debug.bgSpeedSub(0.1)">BG Speed down</button>
+        <button title="E key" onClick="debug.spawnEnemy()">Spawn enemy</button>
+        <span style="color: #999">Press F11 for full screen</span>
         <!-- Finally load scripts in proper ORDER -->
         <script type="text/javascript" src="js/assets.js"></script>
         <script type="text/javascript" src="js/stage.js"></script>
