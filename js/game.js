@@ -38,18 +38,20 @@ class Game {
             this.frame++;
 
             // Scroll background
-            this.stage.bg.y.forEach((_,i) => {
+
+            // console.clear()
+            this.stage.bg.rows.forEach((_,i) => {
                 // Move by applying background speed to current row position
-                this.stage.bg.y[i] += this.stage.bg.speed;
+                this.stage.bg.rows[i] += this.stage.bg.speed;
 
                 // If row position is greater than display height
-                if (this.stage.bg.y[i] >= display.height) { 
+                if (this.stage.bg.rows[i] >= display.height) { 
                     // Move to the top
-                    this.stage.bg.y[i] -= display.height + this.stage.bg.tileSize;
+                    this.stage.bg.rows[i] -= display.height + this.stage.bg.tileSize;
 
                     // If i === last row AND if queue is full, activate changePattern flag
                     // changePattern will remain true until all rows has been replaced in array
-                    if (i === this.stage.bg.y.length-1 && this.stage.bg.queue.length >= this.stage.bg.tileQty) {
+                    if (i === this.stage.bg.rows.length-1 && this.stage.bg.queue.length >= this.stage.bg.tileQty) {
                         this.stage.bg.changePattern = true;
                     }
 
@@ -64,13 +66,12 @@ class Game {
                     if (this.stage.bg.changePattern && i === 0) {
                         this.stage.bg.changePattern = false;
                         // Also delete 1 full pattern from queue
-                        this.stage.bg.queue.splice(0, this.stage.bg.numCols * this.stage.bg.y.length);
+                        this.stage.bg.queue.splice(0, this.stage.bg.numCols * this.stage.bg.rows.length);
                     };
                 };
             });
 
-
-            // Update game objects position
+            // Entities update function
             loopOver(this.objects, (_, arr) => {
                 arr.forEach(obj => {
                     // If player, pass movement data

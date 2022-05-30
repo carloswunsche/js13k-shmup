@@ -39,5 +39,6 @@ class LoadAssets {
 		delete this.filenames;
 		call.game.setup(1);
 		call.engine.start();
+		// call.engine.pause();
 	}
 }
