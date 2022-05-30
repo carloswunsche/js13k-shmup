@@ -1,8 +1,13 @@
 //////////////////////////
 // STAGE
 //////////////////////////
+
+// ***************************************************
+/// ALREADY WORKING WITH ACCESS TO PUBLIC OBJECTS!! //
+// ***************************************************
+
 class Stage {
-    constructor(stageNum, assets, call) {
+    constructor(assets, stageNum) {
 
         this.bg = {};
         this.bg.patterns = {
@@ -53,12 +58,12 @@ class Stage {
         this.bg.changePattern = false;
 
         // Can only be changed in intervals of 0.25
-        this.bg.speed = 1;
+        this.bg.speed = 2;
 
         this.music = undefined;
 
         // Returns a function
-        this.events = this.getEvents(stageNum, call);
+        this.events = this.getEvents(stageNum);
     }
 
     newRowArr(tile) {
@@ -79,12 +84,14 @@ class Stage {
         return (display.width / tileSize) * (heightPlusOneRow / tileSize);
     }
 
-    getEvents(stageNum, call) {
+    getEvents(stageNum) {
         // Return stage 1 function
         if (stageNum === 1) return function(){
-            if (call.game.get('frame') ===     0) call.display.initFade('fromBlack', 1);
-            if (call.game.get('frame') ===   100) this.bg.queue.push(...this.bg.patterns[2]);
-            if (call.game.get('frame') ===   500) this.bg.queue.push(...this.bg.patterns[1], ...this.bg.patterns[1]);
+            if (game.frame === 0)       display.initFade('fromBlack', 1);
+            if (game.frame === 50)      game.objects.enemies.push(new Enemy(assets.enemy));
+            if (game.frame === 150)      game.objects.enemies.push(new Enemy(assets.enemy));
+            if (game.frame === 100)     this.bg.queue.push(...this.bg.patterns[2]);
+            if (game.frame === 500)     this.bg.queue.push(...this.bg.patterns[1], ...this.bg.patterns[1]);
         };
         // Return stage 2 function
         if (stageNum === 2) return function(){

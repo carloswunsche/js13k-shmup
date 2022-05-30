@@ -7,7 +7,7 @@ const functions = {
   game: {
     update: () => game.update(),
     setup: (a) => game.setup(a),
-    get: (property) => game[property],
+    get: (property) => game[property], // stage.js
   },
   input: {
     rawToGame: () => input.rawToGame(),

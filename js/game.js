@@ -6,11 +6,11 @@ class Game {
     constructor(assets, call) {
         this.setup = function (stageNum = 1) {
             this.frame = 0;
-            this.stage = new Stage(stageNum, assets, call);
+            this.stage = new Stage(assets, stageNum, call);
             this.objects = {
                 enemies: [],
                 pBullets: [],
-                player: [new Player(assets, call.input.game)],
+                player: [new Player(assets.player, call.input.game)],
                 eBullets: [],
                 hud: [],
             };
@@ -19,17 +19,6 @@ class Game {
         this.update = function () {
             // Input: Convert raw inputs to game input
             call.input.rawToGame();
-
-            // Delete objects if hp === 0
-            loopOver(this.objects, (_, arr) => {
-                // Don't use forEach in this one
-                for (let i = 0; i < arr.length; i++) {
-                    if (arr[i].hp === 0) {
-                        arr.splice(i, 1);
-                        i--;
-                    };
-                };
-            });
 
             // Current level events
             this.stage.events()
@@ -81,25 +70,42 @@ class Game {
                 });
             });
 
-
-
-            // Collisions early test
-            // if (this.objects.get('enemies').length > 0 && this.objects.get('pBullets').length > 0) { // Si hay pBullets y enemies
-            //     for (const [i, pBullet] of this.objects.get('pBullets').entries()) {
-            //         for (const [i, enemy] of this.objects.get('enemies').entries()) {
-            //             if (pBullet.x1Hitbox < enemy.x2Hitbox &&
-            //                 enemy.x1Hitbox < pBullet.x2Hitbox &&
-            //                 pBullet.y1Hitbox < enemy.y2Hitbox &&
-            //                 enemy.y1Hitbox < pBullet.y2Hitbox) {
-            //                 pBullet.destroy = true;
-            //                 enemy.life--;
-            //             };
-            //         };
-            //     };
-            // };
-
             // Shot
             if (call.input.get('game')[4] > 0) this.objects.player[0].shot(this.objects);
+
+            // Collisions early test. Ejecutar solo si hay enemigos y pBullets en pantalla
+            if (this.objects.enemies.length > 0 && this.objects.pBullets.length > 0) {
+                // Loopear sobre los bullets y luego sobre los enemies
+                this.objects.pBullets.forEach(pBullet => {
+                    this.objects.enemies.forEach(enemy => {
+                        // IF necesario sino un bullet puede atacar a varios enemies que estan overlapping
+                        if (pBullet.hp > 0) { 
+                            // Evaluar colision
+                            if (pBullet.hitbox[0] < enemy.hitbox[1] &&
+                                enemy.hitbox[0] < pBullet.hitbox[1] &&
+                                pBullet.hitbox[2] < enemy.hitbox[3] &&
+                                enemy.hitbox[2] < pBullet.hitbox[3]) {
+                                // pBullet se marca para eliminar y al enemy le baja el hp
+                                pBullet.hp = 0;
+                                enemy.hp--;
+                            };
+                        };
+                    });
+                });
+            };
+
+            // Delete objects if hp === 0
+            loopOver(this.objects, (_, arr) => {
+                // Don't use forEach in this one
+                for (let i = 0; i < arr.length; i++) {
+                    if (arr[i].hp <= 0) {
+                        arr.splice(i, 1);
+                        i--;
+                    };
+                };
+            });
+
+
 
             // Update fade transparency
             call.display.updateFade();
@@ -109,7 +115,10 @@ class Game {
 
 
 class Entity {
-    constructor(){
+    constructor(image){
+        this.image = image;
+        this.width = image.width;
+        this.height = image.height;
         this.xDecimal = 0;
         this.yDecimal = 0;
     }
@@ -117,9 +126,8 @@ class Entity {
         if (this instanceof Player) {
             this.changeInputIfBoundary(options)
             this.setVectorAmplitude(options)
-        }
+        };
 
-        // General objects
         this.updateData();
         this.updatePos(options);
         this.roundPos();
@@ -128,7 +136,7 @@ class Entity {
         if (this instanceof Player) {
             this.fixBoundaries();
             this.hitbox = this.setHitbox();
-        }
+        };
     }
     setHitbox (xMargin = 2, yMargin = 2, xOffset = 0, yOffset = 0) {
         if (!this.hitbox) {
@@ -143,7 +151,7 @@ class Entity {
             this.y - this.yMargin + this.yOffset,  //y1
             this.y + this.yMargin + this.yOffset,  //y2
         ];
-    };
+    }
     roundPos () {
         this.x += this.xDecimal;
         this.y += this.yDecimal;
@@ -152,16 +160,12 @@ class Entity {
         this.x = Math.floor(this.x);
         this.y = Math.floor(this.y);
     }
-    updateData () {} // Empty on purpose
-}
+};
 
 
 class Player extends Entity {
-    constructor(assets, inputGame) {
-        super ()
-        this.image = assets.player;
-        this.width = assets.player.width;
-        this.height = assets.player.height;
+    constructor(image) {
+        super (image)
         this.x = display.width / 2;
         this.y = display.height / 2;
         this.axis = [0, 0];
@@ -207,27 +211,24 @@ class Player extends Entity {
 
         this.shot = function (gameObjects) {
             if (this.shotBuffer === 0) {
-                gameObjects.pBullets.push(new pBullet(this.x, this.y, assets, 9));
-                gameObjects.pBullets.push(new pBullet(this.x, this.y, assets, -8));
+                gameObjects.pBullets.push(new pBullet(assets.pBullet, this.x, this.y, 9));
+                gameObjects.pBullets.push(new pBullet(assets.pBullet, this.x, this.y,-8));
                 this.shotBuffer = this.shotBufferInit;
             };
         };
     }
-}
+};
 
 class pBullet extends Entity {
-    constructor(x, y, assets, side) {
-        super ();
-        this.image = assets.pBullet;
-        this.width = assets.pBullet.width;
-        this.height = assets.pBullet.height;
+    constructor(image, x, y, side) {
+        super (image);
         this.x = x + side;
         this.y = y - 12;
         this.spd = 12;
         this.angle = 0;
         this.opacity = 100;
         this.hp = 1;
-        this.hitbox = this.setHitbox(this.width/2, this.height/2);
+        this.hitbox = this.setHitbox(this.image.width/2, this.image.height/2);
 
         this.updatePos = function () {
             this.y = this.y - 1 * this.spd;
@@ -235,6 +236,36 @@ class pBullet extends Entity {
 
         this.updateData = function () {
             if (this.y < 0) this.hp = 0;
-        }
+        };
     }
-}
+};
+
+class Enemy extends Entity {
+    constructor(image) {
+        super(image)
+        this.x = -99;
+        this.y = -99;
+        this.angle = 180;
+        this.spd = 0;
+        this.hp = 5;
+        this.timers = new Array(10).fill(0);
+        this.hitbox = this.setHitbox(this.image.width/2-1, this.image.height/2-3);
+    }
+    updatePos(){
+        this.easeInOutSine('y', -this.image.height, display.height-20, 200, 1)
+        this.easeInOutSine('x', -this.image.width, display.width-20, 120, 2)
+    }
+    updateData(){}
+
+    easeOutCubic(xy, startPos, goTo, timeInFrames, timerUsed){
+        this[xy] = (goTo-startPos) * (1 - Math.pow(1 - this.timers[timerUsed]/timeInFrames, 3)) + startPos;
+        this.timerCount(timeInFrames, timerUsed);
+    }
+    easeInOutSine(xy, startPos, goTo, timeInFrames, timerUsed){
+        this[xy] = (goTo-startPos) * (-(Math.cos(Math.PI * this.timers[timerUsed]/timeInFrames) - 1) / 2) + startPos;
+        this.timerCount(timeInFrames, timerUsed);
+    }
+    timerCount(timeInFrames, timerUsed) {
+        if(this.timers[timerUsed] < timeInFrames) this.timers[timerUsed] += 1;
+    }
+};
