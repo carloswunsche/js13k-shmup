@@ -6,7 +6,7 @@ class Input {
 	constructor() {
 		this.enabled = true;
 		// btn1,btn2,left,right,up,down,spdDown,spdUp,createEnemy,Run,Halt,Step
-		this.raw = new Array(11).fill(false);
+		this.raw = new Array(6).fill(false);
 			// Btn1, Btn2, left,right,up,down
 		this.game = new Array(6).fill(0);
 
@@ -20,21 +20,14 @@ class Input {
 	}
 
 	updateArray (keyCode, arr, pressed) {
-
-	switch (keyCode) {
-		case 'ArrowUp':   arr[0]  = pressed; return;
-		case 'ArrowRight':arr[1]  = pressed; return;
-		case 'ArrowDown': arr[2]  = pressed; return;
-		case 'ArrowLeft': arr[3]  = pressed; return;
-		case 'KeyZ':      arr[4]  = pressed; return;
-		case 'KeyX':      arr[5]  = pressed; return;
-		case 'Minus':     arr[6]  = pressed; return;
-		case 'Equal':     arr[7]  = pressed; return;
-		case 'KeyC':      arr[8]  = pressed; return;
-		case 'KeyR':      arr[9]  = pressed; return;
-		case 'KeyH':      arr[10] = pressed; return;
-		case 'KeyS':      arr[11] = pressed; return;
-	};
+		switch (keyCode) {
+			case 'ArrowUp':   arr[0]  = pressed; return;
+			case 'ArrowRight':arr[1]  = pressed; return;
+			case 'ArrowDown': arr[2]  = pressed; return;
+			case 'ArrowLeft': arr[3]  = pressed; return;
+			case 'KeyZ':      arr[4]  = pressed; return;
+			case 'KeyX':      arr[5]  = pressed; return;
+		};
 	}
 
 	rawToGame () {

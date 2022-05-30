@@ -64,6 +64,7 @@ class Display {
         if (this.hitboxes) this.renderHitboxes(gameObjects);
     }
 
+    // Optimize harder
     renderBackground (bg) {
         this.bgPatIndex = 0;
         this.scaledTile = bg.tileSize * bg.imageScaled;
@@ -101,6 +102,7 @@ class Display {
         });
     }
 
+    // Optimize
     renderGameObjects (gameObjects) {
         loopOver(gameObjects, (_,arr) => {
             arr.forEach(obj => {

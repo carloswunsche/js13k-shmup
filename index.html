@@ -6,12 +6,15 @@
         <title>Javascript Shmup</title>
     </head>
     <body>
-        <!-- Load body markup first -->
+        <!-- Canvas -->
         <canvas></canvas>
-        <button onClick="engine.pause()">Pause/Advance</button>
-        <button onClick="engine.start()">Resume</button>
-        <button onClick="display.scanlines=true;display.intensity=50">Add scanlines</button>
-        <!-- Then load scripts in order -->
+        <!-- Debugger -->
+        <button onClick="debug.gameReset()">Reset</button>
+        <button onClick="debug.enginePause()">Pause/Advance</button>
+        <button onClick="debug.engineStart()">Resume</button>
+        <button onClick="debug.toggleScanlines()">Toggle scanlines</button>
+        <button onClick="debug.toggleHitboxes()">Toggle hitboxes</button>
+        <!-- Finally load scripts in proper ORDER -->
         <script type="text/javascript" src="js/assets.js"></script>
         <script type="text/javascript" src="js/stage.js"></script>
         <script type="text/javascript" src="js/engine.js"></script>
