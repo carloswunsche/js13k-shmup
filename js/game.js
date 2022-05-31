@@ -128,8 +128,9 @@ class Entity {
         this.yDecimal = 0;
     }
     update (options) {
+        // Player only
         if (this instanceof Player) {
-            this.changeInputIfBoundary(options)
+            this.blockInputIfBoundary(options)
             this.setVectorAmplitude(options)
         };
 
@@ -138,10 +139,12 @@ class Entity {
         this.roundPos();
         this.hitbox = this.setHitbox();
 
-        if (this instanceof Player) {
-            this.fixBoundaries();
+        // Player only
+        if (this.outOfBounds) {
+            this.fixOutOfBounds();
             this.hitbox = this.setHitbox();
-        };
+            this.outOfBounds = false;
+        }
     }
     setHitbox (xMargin = 2, yMargin = 2, xOffset = 0, yOffset = 0) {
         if (!this.hitbox) {
@@ -157,7 +160,7 @@ class Entity {
             this.y + this.yMargin + this.yOffset,  //y2
         ];
     }
-    roundPos () { // Esto esta TOTALMENTE MAL Xd hay q hacerlo como lo hice en el background
+    roundPos () { // Esto esta TOTALMENTE MAL Xd hay q hacerlo como lo hice en el bg
         if (!this.roundPosX) {
             this.x += this.xDecimal;
             this.xDecimal = getDecimal(this.x);
@@ -188,26 +191,33 @@ class Player extends Entity {
         // Hitbox
         this.hitbox = this.setHitbox(4,4,0,3);
 
-        // Functions
+        // Flags
+        this.outOfBounds = false;
 
+        // Functions
         this.updatePos = function({axis}) {
             this.x += this.spd * axis[0] * this.amplitude;
             this.y += this.spd * axis[1] * this.amplitude;
         };
 
-        this.fixBoundaries = function() {
+        this.blockInputIfBoundary = function ({axis, inputGame}) {
+            // Evaluar los axis evita calculos innecesarios cuando la nave esta quieta sobre los bounds
+            if (axis[0] !== 0) {
+                if (this.hitbox[0] <= 0) {inputGame[3] = 0; this.outOfBounds = true;}
+                if (this.hitbox[1] >= display.width) {inputGame[1] = 0; this.outOfBounds = true;}
+            };
+            if (axis[1] !==0) {
+                if (this.hitbox[2] <= 0) {inputGame[0] = 0; this.outOfBounds = true;}
+                if (this.hitbox[3] >= display.height) {inputGame[2] = 0; this.outOfBounds = true;}
+            };
+        }
+
+        this.fixOutOfBounds = function() {
             if (this.hitbox[0] < 0) this.x = this.xMargin - this.xOffset;
             if (this.hitbox[1] > display.width) this.x = display.width - this.xMargin - this.xOffset;
             if (this.hitbox[2] < 0) this.y = this.yMargin - this.yOffset;
             if (this.hitbox[3] > display.height) this.y = display.height - this.yMargin - this.yOffset;
         };
-
-        this.changeInputIfBoundary = function ({axis, inputGame}) {
-            if (this.hitbox[0] <= 0) inputGame[3] = 0;
-            if (this.hitbox[1] >= display.width) inputGame[1] = 0;
-            if (this.hitbox[2] <= 0) inputGame[0] = 0;
-            if (this.hitbox[3] >= display.height) inputGame[2] = 0
-        }
 
         this.setVectorAmplitude = function ({axis, inputGame}) {
             this.amplitude =

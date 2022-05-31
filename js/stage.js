@@ -57,7 +57,7 @@ class Stage {
         this.bg.changePattern = false;
 
         // Speed
-        this.bg.speed = 0.1;
+        this.bg.speed = 0.5;
         this.bg.speedInt = 0;
         this.bg.speedDecimal = 0;
         this.bg.speedAcc = 0;
