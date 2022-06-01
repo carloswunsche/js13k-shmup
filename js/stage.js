@@ -9,6 +9,7 @@
 class Stage {
     constructor(assets, stageNum) {
 
+        // Background object
         this.bg = {};
         this.bg.patterns = {
             1: [6,3,3,2,3,2,3,2,3,2,3,3,3,2,8,2,3,5,3,4,
@@ -56,15 +57,13 @@ class Stage {
         this.bg.numCols = display.width / this.bg.tileSize;
         this.bg.changePattern = false;
 
-        // Speed
+        // Only move in intervals of 0.25px
         this.bg.speed = 0.5;
-        this.bg.speedInt = 0;
-        this.bg.speedDecimal = 0;
-        this.bg.speedAcc = 0;
 
+        // Music
         this.music = undefined;
 
-        // Returns a function
+        // Events (function that game runs on each update)
         this.events = this.getEvents(stageNum);
     }
 
@@ -75,18 +74,15 @@ class Stage {
         // With tileSize of 16px, this will return:
         // [-16, 0, 16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224]
     }
-
     getTileQty(tileSize) {
         let heightPlusOneRow = display.height + tileSize;
         return (display.width / tileSize) * (heightPlusOneRow / tileSize);
     }
-
     getEvents(stageNum) {
         // Return stage 1 function
         if (stageNum === 1) return function(){
-            if (game.frame === 0)       display.initFade('fromBlack', 1);
             if (game.frame === 50)      game.objects.enemies.push(new Enemy(assets.enemy));
-            if (game.frame === 150)      game.objects.enemies.push(new Enemy(assets.enemy));
+            if (game.frame === 150)     game.objects.enemies.push(new Enemy(assets.enemy));
             if (game.frame === 100)     this.bg.queue.push(...this.bg.patterns[2]);
             if (game.frame === 500)     this.bg.queue.push(...this.bg.patterns[1], ...this.bg.patterns[1]);
         };
@@ -95,4 +91,12 @@ class Stage {
             // ...
         };
     }
+    // setNextStep(spd, axis) {
+    //     if(this[axis+'Acc'] === undefined) this[axis+'Acc'] = 0;
+    //     this[axis+'Acc'] += getDecimal(spd);
+    //     let speedDecimal = Math.floor(this[axis+'Acc']);
+    //     let speedInt = Math.floor(spd);
+    //     if (this[axis+'Acc'] >= 1) this[axis+'Acc'] = getDecimal(this[axis+'Acc']);
+    //     return speedInt + speedDecimal;
+    // }
 };

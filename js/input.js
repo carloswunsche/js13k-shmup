@@ -10,6 +10,10 @@ class Input {
 			// Btn1, Btn2, left,right,up,down
 		this.game = new Array(6).fill(0);
 
+		this.history = []
+		this.saved = localStorage.getItem('savedInputs') || [];
+		this.saved = typeof this.saved === 'string' ? JSON.parse(this.saved) : [];
+
 		window.addEventListener('keydown', key => {
 			this.updateArray(key.code, this.raw, true);
 			// console.log(key.code)

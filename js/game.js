@@ -20,45 +20,47 @@ class Game {
             // Input: Convert raw inputs to game input
             call.input.rawToGame();
 
+            // USE THESE ONLY WITH 120 FPS
+            // // Accumulate history of pressed button for saving in LocalStorage
+            // input.history.push(input.game.slice());
+
+            // // Rudimentary load replay
+            // if (this.frame * 2 < input.saved.length) {
+            //     input.game = input.saved[this.frame * 2];
+            // } else input.game = [0,0,0,0,0,0];
+
             // Current level events
-            this.stage.events()
+            if (this.frame === 0) display.initFade('fromBlack', 1);
+            // this.stage.events()
 
             // Update Frame Counter
-            this.frame++;
-
-            // Scroll background: account for decimals
-            this.stage.bg.speedAcc += getDecimal(this.stage.bg.speed);
-            this.stage.bg.speedInt = Math.floor(this.stage.bg.speed)
-            this.stage.bg.speedDecimal = Math.floor(this.stage.bg.speedAcc);
-            // Reset accumulator once it reaches integer state
-            if (this.stage.bg.speedAcc >= 1)
-            this.stage.bg.speedAcc = getDecimal(this.stage.bg.speedAcc);
+            this.frame += 1 * step;
 
             // Scroll background: move each row, wrap around and change pattern
-            this.stage.bg.rows.forEach((_,i) => {
-                // Add speed
-                this.stage.bg.rows[i] += this.stage.bg.speedInt + this.stage.bg.speedDecimal;
+            this.stage.bg.rows.forEach((_,y) => {
+                // Move
+                this.stage.bg.rows[y] += this.stage.bg.speed * step;
 
                 // If row position is greater than display height
-                if (this.stage.bg.rows[i] >= display.height) { 
+                if (this.stage.bg.rows[y] >= display.height) { 
                     // Move to the top
-                    this.stage.bg.rows[i] -= display.height + this.stage.bg.tileSize;
+                    this.stage.bg.rows[y] -= display.height + this.stage.bg.tileSize;
 
                     // If i === last row AND if queue is full, activate changePattern flag
                     // changePattern will remain true until all rows has been replaced in array
-                    if (i === this.stage.bg.rows.length-1 && this.stage.bg.queue.length >= this.stage.bg.tileQty) {
+                    if (y === this.stage.bg.rows.length-1 && this.stage.bg.queue.length >= this.stage.bg.tileQty) {
                         this.stage.bg.changePattern = true;
                     }
 
                     // If changePattern is true, change each next row for next pattern's row
                     if (this.stage.bg.changePattern) {
                         for (let tile = 0; tile < this.stage.bg.numCols; tile++) {
-                            this.stage.bg.pattern[tile + (i * this.stage.bg.numCols)] = this.stage.bg.queue[tile + (i * this.stage.bg.numCols)];
+                            this.stage.bg.pattern[tile + (y * this.stage.bg.numCols)] = this.stage.bg.queue[tile + (y * this.stage.bg.numCols)];
                         };
                     };
 
                     // If changePattern is true but i === 0, deactivate changePattern flag
-                    if (this.stage.bg.changePattern && i === 0) {
+                    if (this.stage.bg.changePattern && y === 0) {
                         this.stage.bg.changePattern = false;
                         // Also delete 1 full pattern from queue
                         this.stage.bg.queue.splice(0, this.stage.bg.numCols * this.stage.bg.rows.length);
@@ -77,8 +79,6 @@ class Game {
                 });
             });
 
-            // Shot
-            if (call.input.get('game')[4] > 0) this.objects.player[0].shot(this.objects);
 
             // Collisions early test. Ejecutar solo si hay enemigos y pBullets en pantalla
             if (this.objects.enemies.length > 0 && this.objects.pBullets.length > 0) {
@@ -112,6 +112,9 @@ class Game {
                 };
             });
 
+            // Shot
+            if (call.input.get('game')[4] > 0) this.objects.player[0].shot(this.objects);
+
             // Update fade transparency
             call.display.updateFade();
         };
@@ -124,19 +127,16 @@ class Entity {
         this.image = image;
         this.width = image.width;
         this.height = image.height;
-        this.xDecimal = 0;
-        this.yDecimal = 0;
     }
     update (options) {
         // Player only
         if (this instanceof Player) {
             this.blockInputIfBoundary(options)
-            this.setVectorAmplitude(options)
+            this.setVectorAmplitude(options) 
         };
 
         this.updateData();
         this.updatePos(options);
-        this.roundPos();
         this.hitbox = this.setHitbox();
 
         // Player only
@@ -144,7 +144,12 @@ class Entity {
             this.fixOutOfBounds();
             this.hitbox = this.setHitbox();
             this.outOfBounds = false;
-        }
+        };
+    }
+    updateData() {} // Dummy
+    updatePos () {
+        this.x += this.x * step || 0;
+        this.y += this.x * step || 0;
     }
     setHitbox (xMargin = 2, yMargin = 2, xOffset = 0, yOffset = 0) {
         if (!this.hitbox) {
@@ -160,18 +165,6 @@ class Entity {
             this.y + this.yMargin + this.yOffset,  //y2
         ];
     }
-    roundPos () { // Esto esta TOTALMENTE MAL Xd hay q hacerlo como lo hice en el bg
-        if (!this.roundPosX) {
-            this.x += this.xDecimal;
-            this.xDecimal = getDecimal(this.x);
-            this.x = Math.floor(this.x);
-        };
-
-        this.y += this.yDecimal;
-        this.yDecimal = getDecimal(this.y);
-        this.y = Math.floor(this.y);
-    }
-    updateData() {}
 };
 
 class Player extends Entity {
@@ -181,7 +174,7 @@ class Player extends Entity {
         this.y = display.height / 2;
         this.axis = [0, 0];
         this.amplitude = 1;
-        this.spd = 2.8;
+        this.speed = 2.5;
         this.angle = 0;
         this.opacity = 100;
         this.shotBufferInit = 4;
@@ -195,9 +188,13 @@ class Player extends Entity {
         this.outOfBounds = false;
 
         // Functions
+        this.updateData = function() {
+            if (this.shotBuffer > 0) this.shotBuffer -= 1 * step;
+        };
+        
         this.updatePos = function({axis}) {
-            this.x += this.spd * axis[0] * this.amplitude;
-            this.y += this.spd * axis[1] * this.amplitude;
+            this.x += this.speed * this.amplitude * axis[0] * step;
+            this.y += this.speed * this.amplitude * axis[1] * step;
         };
 
         this.blockInputIfBoundary = function ({axis, inputGame}) {
@@ -227,10 +224,6 @@ class Player extends Entity {
                     inputGame[3] && inputGame[0] ? 0.707 : 1;
         };
 
-        this.updateData = function() {
-            if (this.shotBuffer > 0) this.shotBuffer--;
-        };
-
         this.shot = function (gameObjects) {
             if (this.shotBuffer === 0) {
                 gameObjects.pBullets.push(new pBullet(assets.pBullet, this.x, this.y, 9));
@@ -246,7 +239,7 @@ class pBullet extends Entity {
         super (image);
         this.x = x + side;
         this.y = y - 12;
-        this.spd = 12;
+        this.speed = 12;
         this.angle = 0;
         this.opacity = 100;
         this.hp = 1;
@@ -254,12 +247,11 @@ class pBullet extends Entity {
         // Hitbox
         this.hitbox = this.setHitbox(this.image.width/2, this.image.height/2);
 
-        // Skip flags
-        this.roundPosX = true;
+        // Flags
 
         // Functions
         this.updatePos = function () {
-            this.y = this.y - 1 * this.spd;
+            this.y -= this.speed * step;
         };
 
         this.updateData = function () {
@@ -269,13 +261,14 @@ class pBullet extends Entity {
     }
 };
 
+
 class Enemy extends Entity {
     constructor(image) {
         super(image)
         this.x = -99;
         this.y = -99;
         this.angle = 180;
-        this.spd = 0;
+        this.speed = 2;
         this.hp = 5;
         this.timers = new Array(10).fill(0);
 
@@ -285,8 +278,8 @@ class Enemy extends Entity {
 
     // Functions
     updatePos(){
-        this.easeInOutSine('y', -this.image.height, display.height-20, 200, 1)
-        this.easeInOutSine('x', -this.image.width, display.width-20, 120, 2)
+        this.easeInOutSine('y', -this.image.height, display.height-20, 200, 1);
+        this.easeInOutSine('x', -this.image.width, display.width-20, 120, 2);
     }
 
     easeOutCubic(xy, startPos, goTo, timeInFrames, timerUsed){
@@ -298,6 +291,6 @@ class Enemy extends Entity {
         this.timerCount(timeInFrames, timerUsed);
     }
     timerCount(timeInFrames, timerUsed) {
-        if(this.timers[timerUsed] < timeInFrames) this.timers[timerUsed] += 1;
+        if(this.timers[timerUsed] < timeInFrames) this.timers[timerUsed] += 1*step;
     }
 };

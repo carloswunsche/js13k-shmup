@@ -5,7 +5,7 @@
 
 const callFns = {
 	game: {
-		update: () => game.update(),
+		update: (step) => game.update(step),
 		setup: (a) => game.setup(a),
 		get: (property) => game[property], // stage.js
 	},
@@ -28,7 +28,7 @@ const callFns = {
 const input   = new Input();
 const assets  = new LoadAssets(callFns);
 const display = new Display(320, 240);
-const engine  = new Engine(60, 60, callFns);
+const engine  = new Engine(60, 60, callFns, 0.5);
 let game   	  = new Game(assets, callFns);
 
 function assetsReady () {game.setup(); engine.start();}
@@ -36,9 +36,9 @@ function assetsReady () {game.setup(); engine.start();}
 
 // Helper Functions
 function toRadians(degrees){return degrees * Math.PI/180};
-function getDecimal(num){
-	if (Number.isInteger(num)) return 0;
-	return Number('0.'+ num.toString().split('.')[1].slice(0,1));
+function getDecimal(n){
+	if (Number.isInteger(n)) return 0;
+	return Number('0.'+ n.toString().split('.')[1].slice(0,1));
 };
 function loopOver(obj, callback){
 	for (const [key, val] of Object.entries(obj)) {
@@ -55,8 +55,12 @@ window.addEventListener('keydown', key => {
 	if (key.code === 'KeyH') debug.toggleHitboxes();
 	if (key.code === 'Minus')debug.bgSpeedSub(0.1);
 	if (key.code === 'Equal')debug.bgSpeedAdd(0.1);
-	if (key.code === 'Plus')debug.bgSpeedAdd(0.1);
+	if (key.code === 'Plus') debug.bgSpeedAdd(0.1);
 	if (key.code === 'KeyE') debug.spawnEnemy();
+	if (key.code === 'Digit1') {
+		localStorage.clear();
+		localStorage.setItem('savedInputs', JSON.stringify(input.history));
+	}
 });
 
 const debug = {
