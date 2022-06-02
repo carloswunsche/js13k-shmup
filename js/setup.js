@@ -28,7 +28,7 @@ const callFns = {
 const input   = new Input();
 const assets  = new LoadAssets(callFns);
 const display = new Display(320, 240);
-const engine  = new Engine(60, 60, callFns, 0.5);
+let engine    = new Engine(60, 60, callFns);
 let game   	  = new Game(assets, callFns);
 
 function assetsReady () {game.setup(); engine.start();}
@@ -48,7 +48,7 @@ function loopOver(obj, callback){
 
 // Debugger
 window.addEventListener('keydown', key => {
-	if (key.code === 'KeyR') debug.gameReset();
+	if (key.code === 'KeyR') debug.gameReset(60);
 	if (key.code === 'KeyK') debug.enginePause();
 	if (key.code === 'KeyP') debug.engineStart();
 	if (key.code === 'KeyS') debug.toggleScanlines();
@@ -64,10 +64,13 @@ window.addEventListener('keydown', key => {
 });
 
 const debug = {
-	gameReset() {
+	gameReset(ups, fps) {
 		console.clear();
 		game = new Game(assets, callFns); 
-		game.setup(); 
+		game.setup();
+		engine.ups = ups;
+		engine.fps = fps;
+		engine.setup()
 		engine.start();
 	},
 	toggleScanlines(){
