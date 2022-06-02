@@ -10,17 +10,18 @@ class Game {
             this.objects = {
                 enemies: [],
                 pBullets: [],
-                player: [new Player(assets.player, call.input.game)],
+                player: [new Player(assets.player)],
                 eBullets: [],
                 hud: [],
             };
         };
+
         
         this.update = function () {
             // Input: Convert raw inputs to game input
             call.input.rawToGame();
 
-            // USE THESE ONLY WITH 120 FPS
+            // // USE THESE ONLY WITH 120 FPS
             // // Accumulate history of pressed button for saving in LocalStorage
             // input.history.push(input.game.slice());
 
@@ -31,7 +32,7 @@ class Game {
 
             // Current level events
             if (this.frame === 0) display.initFade('fromBlack', 1);
-            // this.stage.events()
+            // this.stage.events();
 
             // Update Frame Counter
             this.frame += 1 * step;
@@ -128,15 +129,9 @@ class Entity {
         this.width = image.width;
         this.height = image.height;
     }
-    update (options) {
-        // Player only
-        if (this instanceof Player) {
-            this.blockInputIfBoundary(options)
-            this.setVectorAmplitude(options) 
-        };
-
-        this.updateData();
-        this.updatePos(options);
+    update (playerInputData) {
+        this.updateData(playerInputData);
+        this.updatePos(playerInputData);
         this.hitbox = this.setHitbox();
 
         // Player only
@@ -152,6 +147,7 @@ class Entity {
         this.y += this.x * step || 0;
     }
     setHitbox (xMargin = 2, yMargin = 2, xOffset = 0, yOffset = 0) {
+        // Necessary for first time execution
         if (!this.hitbox) {
             this.xMargin = xMargin;
             this.yMargin = yMargin;
@@ -186,50 +182,51 @@ class Player extends Entity {
 
         // Flags
         this.outOfBounds = false;
+    }
+    // Functions
+    updateData (playerInputData) {
+        this.blockInputIfBoundary(playerInputData);
+        this.setVectorAmplitude(playerInputData);
+        if (this.shotBuffer > 0) this.shotBuffer -= 1 * step;
+    }
+    
+    updatePos ({axis}) {
+        this.x += this.speed * this.amplitude * axis[0] * step;
+        this.y += this.speed * this.amplitude * axis[1] * step;
+    }
 
-        // Functions
-        this.updateData = function() {
-            if (this.shotBuffer > 0) this.shotBuffer -= 1 * step;
+    blockInputIfBoundary ({axis, inputGame}) {
+        // Evaluar los axis evita calculos innecesarios cuando la nave esta quieta sobre los bounds
+        if (axis[0] !== 0) {
+            if (this.hitbox[0] <= 0) {inputGame[3] = 0; this.outOfBounds = true;}
+            if (this.hitbox[1] >= display.width) {inputGame[1] = 0; this.outOfBounds = true;}
         };
-        
-        this.updatePos = function({axis}) {
-            this.x += this.speed * this.amplitude * axis[0] * step;
-            this.y += this.speed * this.amplitude * axis[1] * step;
+        if (axis[1] !==0) {
+            if (this.hitbox[2] <= 0) {inputGame[0] = 0; this.outOfBounds = true;}
+            if (this.hitbox[3] >= display.height) {inputGame[2] = 0; this.outOfBounds = true;}
         };
+    }
 
-        this.blockInputIfBoundary = function ({axis, inputGame}) {
-            // Evaluar los axis evita calculos innecesarios cuando la nave esta quieta sobre los bounds
-            if (axis[0] !== 0) {
-                if (this.hitbox[0] <= 0) {inputGame[3] = 0; this.outOfBounds = true;}
-                if (this.hitbox[1] >= display.width) {inputGame[1] = 0; this.outOfBounds = true;}
-            };
-            if (axis[1] !==0) {
-                if (this.hitbox[2] <= 0) {inputGame[0] = 0; this.outOfBounds = true;}
-                if (this.hitbox[3] >= display.height) {inputGame[2] = 0; this.outOfBounds = true;}
-            };
-        }
+    fixOutOfBounds () {
+        if (this.hitbox[0] < 0) this.x = this.xMargin - this.xOffset;
+        if (this.hitbox[1] > display.width) this.x = display.width - this.xMargin - this.xOffset;
+        if (this.hitbox[2] < 0) this.y = this.yMargin - this.yOffset;
+        if (this.hitbox[3] > display.height) this.y = display.height - this.yMargin - this.yOffset;
+    }
 
-        this.fixOutOfBounds = function() {
-            if (this.hitbox[0] < 0) this.x = this.xMargin - this.xOffset;
-            if (this.hitbox[1] > display.width) this.x = display.width - this.xMargin - this.xOffset;
-            if (this.hitbox[2] < 0) this.y = this.yMargin - this.yOffset;
-            if (this.hitbox[3] > display.height) this.y = display.height - this.yMargin - this.yOffset;
-        };
+    setVectorAmplitude ({inputGame}) {
+        this.amplitude =
+                    inputGame[0] && inputGame[1] || 
+                inputGame[1] && inputGame[2] ||
+                inputGame[2] && inputGame[3] || 
+                inputGame[3] && inputGame[0] ? 0.707 : 1;
+    }
 
-        this.setVectorAmplitude = function ({axis, inputGame}) {
-            this.amplitude =
-                     inputGame[0] && inputGame[1] || 
-                    inputGame[1] && inputGame[2] ||
-                    inputGame[2] && inputGame[3] || 
-                    inputGame[3] && inputGame[0] ? 0.707 : 1;
-        };
-
-        this.shot = function (gameObjects) {
-            if (this.shotBuffer === 0) {
-                gameObjects.pBullets.push(new pBullet(assets.pBullet, this.x, this.y, 9));
-                gameObjects.pBullets.push(new pBullet(assets.pBullet, this.x, this.y,-8));
-                this.shotBuffer = this.shotBufferInit;
-            };
+    shot (gameObjects) {
+        if (this.shotBuffer === 0) {
+            gameObjects.pBullets.push(new pBullet(assets.pBullet, this.x, this.y, 9));
+            gameObjects.pBullets.push(new pBullet(assets.pBullet, this.x, this.y,-8));
+            this.shotBuffer = this.shotBufferInit;
         };
     }
 };
@@ -246,21 +243,17 @@ class pBullet extends Entity {
 
         // Hitbox
         this.hitbox = this.setHitbox(this.image.width/2, this.image.height/2);
-
-        // Flags
-
-        // Functions
-        this.updatePos = function () {
-            this.y -= this.speed * step;
-        };
-
-        this.updateData = function () {
-            // Destroy if out of the top
-            if (this.y < 0) this.hp = 0;
-        };
     }
-};
+    // Functions
+    updateData () {
+        // Destroy if out of the top
+        if (this.y < 0) this.hp = 0;
+    }
 
+    updatePos () {
+        this.y -= this.speed * step;
+    };
+};
 
 class Enemy extends Entity {
     constructor(image) {

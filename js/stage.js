@@ -45,7 +45,7 @@ class Stage {
                 6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
                 6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
                 8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8],
-        }
+        };
         this.bg.queue = [];
         this.bg.pattern = [...this.bg.patterns[1]]; // Necesario usar spread operator
         this.bg.tileSize = 16;
@@ -53,12 +53,10 @@ class Stage {
         this.bg.imageScaled = assets.imageScaled;
         this.bg.imageCols = this.bg.image.width / this.bg.tileSize;
         this.bg.tileQty = this.getTileQty(this.bg.tileSize, display.width, display.height);
-        this.bg.rows = this.setRows(this.bg.tileSize); // Array
+        this.bg.rows = this.setRowsArr(this.bg.tileSize);
         this.bg.numCols = display.width / this.bg.tileSize;
         this.bg.changePattern = false;
-
-        // Only move in intervals of 0.25px
-        this.bg.speed = 0.5;
+        this.bg.speed = 1;
 
         // Music
         this.music = undefined;
@@ -67,7 +65,7 @@ class Stage {
         this.events = this.getEvents(stageNum);
     }
 
-    setRows (tile) {
+    setRowsArr (tile) {
         let arr =  [];
         for (let n = -tile; n < display.height; n += tile) arr.push(n);
         return arr;
@@ -91,12 +89,4 @@ class Stage {
             // ...
         };
     }
-    // setNextStep(spd, axis) {
-    //     if(this[axis+'Acc'] === undefined) this[axis+'Acc'] = 0;
-    //     this[axis+'Acc'] += getDecimal(spd);
-    //     let speedDecimal = Math.floor(this[axis+'Acc']);
-    //     let speedInt = Math.floor(spd);
-    //     if (this[axis+'Acc'] >= 1) this[axis+'Acc'] = getDecimal(this[axis+'Acc']);
-    //     return speedInt + speedDecimal;
-    // }
 };
