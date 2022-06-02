@@ -11,15 +11,14 @@ class Engine {
         
         this.setup = function() {
             this.slice = 1000 / this.ups; // Minimum time required for each update in ms
-            this.timeAcc; // Time accumulator
-            this.delta; // Difference between this.lastStamp and newStamp
+            this.timeAcc = 0; // Time accumulator
+            this.delta = 0; // Difference between this.lastStamp and newStamp
             this.step = (-1/120) * this.ups + 1.5; // Multiplier passed to update function. This will give 1 for 60 ups and 0.5 for 120 ups
             step = (-1/120) * this.ups + 1.5;
-            
             this.renderAcc = 0; // Necessary to render at the proper moment
             this.oneFrameInMs = 1000 / this.fps; // One frame in ms
             this.lastStamp; // The most recent timestamp of loop execution
-            this.iterations = [0,0];
+// this.iterations = [0,0];
         };
 
         this.setup();
@@ -33,8 +32,7 @@ class Engine {
         };
 
         this.loop = function (newStamp) {
-// this.did = []
-// if (this.iterations[0] === 50) this.paused = true;
+// if (this.iterations[0] >= 100 * (this.step === 1 ? 1 : 2))  {this.paused = true;console.log(this.iterations);}
             if (this.paused) return;
 
             // A delta se le suma la diferencia entre newStamp y lastStamp
@@ -48,18 +46,14 @@ class Engine {
                 call.game.update(this.step);
                 this.timeAcc -= this.slice;
                 this.renderAcc += this.slice;
-                this.iterations[0]++
-// this.did.push('update')
+// this.iterations[0]++
             };
 
             if (this.renderAcc >= this.oneFrameInMs) {
                 call.display.render();
                 this.renderAcc = 0;
-                this.iterations[1]++
-// this.did.push('render')
+// this.iterations[1]++
             };
-
-// console.log(this.did);
             return window.requestAnimationFrame((newStamp) => this.loop(newStamp));
         };
 

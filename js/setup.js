@@ -65,13 +65,17 @@ window.addEventListener('keydown', key => {
 
 const debug = {
 	gameReset(ups, fps) {
-		console.clear();
 		game = new Game(assets, callFns); 
 		game.setup();
 		engine.ups = ups;
 		engine.fps = fps;
+		
+		console.clear();
+		console.log(`Game reset: now rendering ${fps} frames per second`);
+
 		engine.setup()
 		engine.start();
+
 	},
 	toggleScanlines(){
 		display.scanlines = display.scanlines ? undefined : 'scanlines';
