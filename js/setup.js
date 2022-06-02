@@ -51,7 +51,7 @@ window.addEventListener('keydown', key => {
 	if (key.code === 'KeyR') debug.gameReset(60);
 	if (key.code === 'KeyK') debug.enginePause();
 	if (key.code === 'KeyP') debug.engineStart();
-	if (key.code === 'KeyS') debug.toggleScanlines();
+	// if (key.code === 'KeyS') debug.toggleScanlines();
 	if (key.code === 'KeyH') debug.toggleHitboxes();
 	if (key.code === 'Minus')debug.bgSpeedSub(0.1);
 	if (key.code === 'Equal')debug.bgSpeedAdd(0.1);
