@@ -110,12 +110,12 @@ class Display {
                 this.ctx.save();
 
                 // Set object's opacity
-                this.ctx.globalAlpha = obj.opacity / 100;
+                if (obj.opacity < 100) this.ctx.globalAlpha = obj.opacity / 100;
 
                 // Translate canvas to render position
                 this.ctx.translate(obj.x * this.scale, obj.y * this.scale);
 
-                // Rotate if obj angle !== 0
+                // Rotate
                 if (obj.angle) this.ctx.rotate(toRadians(obj.angle));
 
                 // Draw

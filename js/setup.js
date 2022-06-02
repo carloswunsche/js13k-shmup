@@ -36,14 +36,15 @@ function assetsReady () {game.setup(); engine.start();}
 
 // Helper Functions
 function toRadians(degrees){return degrees * Math.PI/180};
-function getDecimal(n){
-	if (Number.isInteger(n)) return 0;
-	return Number('0.'+ n.toString().split('.')[1].slice(0,1));
-};
 function loopOver(obj, callback){
 	for (const [key, val] of Object.entries(obj)) {
 		callback(key, val);
 	};
+};
+// Not used
+function getDecimal(n){
+	if (Number.isInteger(n)) return 0;
+	return Number('0.'+ n.toString().split('.')[1].slice(0,1));
 };
 
 // Debugger
@@ -75,7 +76,6 @@ const debug = {
 
 		engine.setup()
 		engine.start();
-
 	},
 	toggleScanlines(){
 		display.scanlines = display.scanlines ? undefined : 'scanlines';
