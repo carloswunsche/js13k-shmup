@@ -4,20 +4,38 @@
 
 class Game {
     constructor(assets, call) {
-        this.setup = function (stageNum = 1) {
-            this.frame = 0;
-            this.stage = new Stage(assets, stageNum, call);
+        this.setStage = function (stageNum = 1) {
+            this.iteration = 0;
+            this.stage = new Stage(assets['bg'+stageNum], assets.imageScaled, stageNum);
             this.objects = {
-                enemies: [],
-                pBullets: [],
-                player: [new Player(assets.player)],
-                eBullets: [],
-                hud: [],
+                enemies:    [],
+                pBullets:   [],
+                player:     [new Player(assets.player)],
+                eBullets:   [],
+                hud:        [],
             };
         };
 
         
         this.update = function () {
+            // // Gamepad
+            // if (navigator?.getGamepads()[0]?.buttons[12]?.pressed) call.input.get('raw')[0] = true;
+            // if (!navigator?.getGamepads()[0]?.buttons[12]?.pressed) call.input.get('raw')[0] = false;
+            // if (navigator?.getGamepads()[0]?.buttons[13]?.pressed) call.input.get('raw')[2] = true;
+            // if (!navigator?.getGamepads()[0]?.buttons[13]?.pressed) call.input.get('raw')[2] = false;
+            // if (navigator?.getGamepads()[0]?.buttons[14]?.pressed) call.input.get('raw')[3] = true;
+            // if (!navigator?.getGamepads()[0]?.buttons[14]?.pressed) call.input.get('raw')[3] = false;
+            // if (navigator?.getGamepads()[0]?.buttons[15]?.pressed) call.input.get('raw')[1] = true;
+            // if (!navigator?.getGamepads()[0]?.buttons[15]?.pressed) call.input.get('raw')[1] = false;
+            // if (navigator?.getGamepads()[0]?.buttons[0]?.pressed) call.input.get('raw')[4] = true;
+            // if (!navigator?.getGamepads()[0]?.buttons[0]?.pressed) call.input.get('raw')[4] = false;
+
+            // let deadzone=0.5;
+            // if (navigator?.getGamepads()[0]?.axes[0] < -deadzone) call.input.get('raw')[3] = true;
+            // if (navigator?.getGamepads()[0]?.axes[0] > deadzone) call.input.get('raw')[1] = true;
+            // if (navigator?.getGamepads()[0]?.axes[1] < -deadzone) call.input.get('raw')[0] = true;
+            // if (navigator?.getGamepads()[0]?.axes[1] > deadzone) call.input.get('raw')[2] = true;
+
             // Input: Convert raw inputs to game input
             call.input.rawToGame();
 
@@ -26,16 +44,16 @@ class Game {
             // input.history.push(input.game.slice());
 
             // // Rudimentary load replay
-            // if (this.frame * 2 < input.saved.length) {
-            //     input.game = input.saved[this.frame * 2];
+            // if (this.iteration * 2 < input.saved.length) {
+            //     input.game = input.saved[this.iteration * 2];
             // } else input.game = [0,0,0,0,0,0];
 
             // Current level events
-            if (this.frame === 0) display.initFade('fromBlack', 1);
-            // this.stage.events();
+            if (this.iteration === 0) call.display.initFade('fromBlack', 1);
+            this.stage.events();
 
             // Update Frame Counter
-            this.frame += 1 * step;
+            this.iteration += 1 * step;
 
             // Scroll background: move each row, wrap around and change pattern
             this.stage.bg.rows.forEach((_,y) => {
@@ -102,12 +120,12 @@ class Game {
                 });
             };
 
-            // Delete objects if hp === 0
+            // Release objects (hp === 0)
             loopOver(this.objects, (_, arr) => {
                 // Don't use forEach in this one
                 for (let i = 0; i < arr.length; i++) {
                     if (arr[i].hp <= 0) {
-                        arr.splice(i, 1);
+                        pool.free(...arr.splice(i,1))
                         i--;
                     };
                 };
@@ -222,26 +240,36 @@ class Player extends Entity {
                 inputGame[3] && inputGame[0] ? 0.707 : 1;
     }
 
+    // Ojo aca use publicamente assets
     shot (gameObjects) {
         if (this.shotBuffer === 0) {
-            gameObjects.pBullets.push(new pBullet(assets.pBullet, this.x, this.y, 9));
-            gameObjects.pBullets.push(new pBullet(assets.pBullet, this.x, this.y,-8));
+            // gameObjects.pBullets.push(new PlayerBullet(assets.pBullet, this.x, this.y, 9));
+            // gameObjects.pBullets.push(new PlayerBullet(assets.pBullet, this.x, this.y,-8));
+            pool.getFreeObject(gameObjects.pBullets, this.x, this.y, 9)
+            pool.getFreeObject(gameObjects.pBullets, this.x, this.y, -8)
             this.shotBuffer = this.shotBufferInit;
         };
     }
 };
 
-class pBullet extends Entity {
-    constructor(image, x, y, side) {
+class PlayerBullet extends Entity {
+    constructor(image) {
         super (image);
-        this.x = x + side;
-        this.y = y - 12;
+        // this.x = x + side;
+        // this.y = y - 12;
+        // this.x = 50;
+        // this.y = 50;
         this.speed = 12;
-        this.angle = 0;
         this.opacity = 100;
-        this.hp = 1;
+        // this.hp = 1;
 
         // Hitbox
+        // this.hitbox = this.setHitbox(this.image.width/2, this.image.height/2);
+    }
+    reset(x, y, side = 9){
+        this.x = x + side;
+        this.y = y - 12;
+        this.hp = 1;
         this.hitbox = this.setHitbox(this.image.width/2, this.image.height/2);
     }
     // Functions

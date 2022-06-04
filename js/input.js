@@ -21,6 +21,14 @@ class Input {
 		window.addEventListener('keyup', key => {
 			this.updateArray(key.code, this.raw, false);
 		});
+		window.addEventListener('visibilitychange', e => {
+			if (e.target.visibilityState === undefined) 
+				console.error('Event listener not working');
+			if (e.target.visibilityState === 'hidden') {
+				this.raw.fill(false);
+				this.game.fill(0);
+			};
+		});
 	}
 
 	updateArray (keyCode, arr, pressed) {

@@ -7,9 +7,8 @@
 // ************************************************
 
 class Stage {
-    constructor(assets, stageNum) {
-
-        // Background object
+    constructor(image, imageScaled, stageNum) {
+        // Background
         this.bg = {};
         this.bg.patterns = {
             1: [6,3,3,2,3,2,3,2,3,2,3,3,3,2,8,2,3,5,3,4,
@@ -47,10 +46,10 @@ class Stage {
                 8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8],
         };
         this.bg.queue = [];
-        this.bg.pattern = [...this.bg.patterns[1]]; // Necesario usar spread operator
+        this.bg.pattern = this.bg.patterns[1];
+        this.bg.image = image;
         this.bg.tileSize = 16;
-        this.bg.image = assets['bg' + stageNum];
-        this.bg.imageScaled = assets.imageScaled;
+        this.bg.tileScaled = this.bg.tileSize * imageScaled;
         this.bg.imageCols = this.bg.image.width / this.bg.tileSize;
         this.bg.tileQty = this.getTileQty(this.bg.tileSize, display.width, display.height);
         this.bg.rows = this.setRowsArr(this.bg.tileSize);
@@ -61,7 +60,7 @@ class Stage {
         // Music
         this.music = undefined;
 
-        // Events (function that game runs on each update)
+        // Events (function that Game calls on each update)
         this.events = this.getEvents(stageNum);
     }
 
@@ -79,14 +78,16 @@ class Stage {
     getEvents(stageNum) {
         // Return stage 1 function
         if (stageNum === 1) return function(){
-            if (game.frame === 50)      game.objects.enemies.push(new Enemy(assets.enemy));
-            if (game.frame === 150)     game.objects.enemies.push(new Enemy(assets.enemy));
-            if (game.frame === 100)     this.bg.queue.push(...this.bg.patterns[2]);
-            if (game.frame === 500)     this.bg.queue.push(...this.bg.patterns[1], ...this.bg.patterns[1]);
+            if (game.iteration === 50)    game.objects.enemies.push(new Enemy(assets.enemy));
+            if (game.iteration === 100)   this.bg.queue.push(...this.bg.patterns[2]);
+            if (game.iteration === 150)   game.objects.enemies.push(new Enemy(assets.enemy));
+            if (game.iteration === 500)   this.bg.queue.push(...this.bg.patterns[1], ...this.bg.patterns[1]);
         };
         // Return stage 2 function
         if (stageNum === 2) return function(){
-            // ...
+            // ...................
+            // ...................
+            // ...................
         };
     }
 };

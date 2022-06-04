@@ -3,7 +3,7 @@
 //////////////////////////
 
 class Display {
-    constructor(width, height, scanlines = false, intensity, hitboxes) {
+    constructor(width, height, imageScaled, scanlines, intensity, hitboxes) {
         this.width = width;
         this.height = height;
         this.canvas = this.setCanvas();
@@ -13,9 +13,7 @@ class Display {
         this.hitboxes = hitboxes;
         this.fade = {value: 100, mode: 'none', amount: 1};
         // Used for rendering background
-        this.bgPatIndex;
-        this.bgTile;
-        this.scaledTile;
+        this.imageScaled = imageScaled;
         // Resize canvas on initialization
         this.scale = this.setScale();  
         this.resizeCanvas();
@@ -44,8 +42,7 @@ class Display {
     }
 
     render (bg, gameObjects) {
-        // Clear canvas
-        // PERFORMANCE NOTE: Not really necessary to run
+        // Clear canvas (not needed)
         // this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Render Background
@@ -67,7 +64,6 @@ class Display {
     // Optimize harder
     renderBackground (bg) {
         this.bgPatIndex = 0;
-        this.scaledTile = bg.tileSize * bg.imageScaled;
         bg.rows.forEach((_, y) => {
             for (let x = 0; x < this.width; x += bg.tileSize) {
                 // This is just to simplify the code syntax
@@ -81,13 +77,13 @@ class Display {
                         bg.image,
                         // Source note: improve perfomance by having a 1-row-only source image
                         // Source X
-                        (this.bgTile % bg.imageCols) * this.scaledTile,
+                        (this.bgTile % bg.imageCols) * bg.tileScaled,
                         // Source Y
-                        Math.floor((this.bgTile / bg.imageCols)) * this.scaledTile,
+                        Math.floor((this.bgTile / bg.imageCols)) * bg.tileScaled,
                         // Source Width
-                        this.scaledTile,
+                        bg.tileScaled,
                         // Source Height
-                        this.scaledTile,
+                        bg.tileScaled,
                         // Destination X
                         x * this.scale,
                         // Destination Y
@@ -103,7 +99,6 @@ class Display {
         });
     }
 
-    // Optimize
     renderGameObjects (gameObjects) {
         loopOver(gameObjects, (_,arr) => {
             arr.forEach(obj => {
@@ -168,8 +163,7 @@ class Display {
     renderHitboxes(gameObjects) {
         loopOver(gameObjects, (_, arr) => {
             arr.forEach(obj => {
-                let color = '#FF0000';
-                color = 'white'
+                let color = 'white'
                 // [0] = x1, [1] = x2, [2] = y1, [3] = y2
                 this.drawLine(obj.hitbox[0], obj.hitbox[2], 'start', color);
                 this.drawLine(obj.hitbox[1], obj.hitbox[2]);

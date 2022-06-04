@@ -8,22 +8,10 @@ class Engine {
     constructor(ups, fps, call) {
         this.ups = ups; // Desired amount of updates per second
         this.fps = fps > ups ? ups : fps; // Desired amount of frames rendered per second (cannot be more than ups)
-        
-        this.setup = function() {
-            this.slice = 1000 / this.ups; // Minimum time required for each update in ms
-            this.timeAcc = 0; // Time accumulator
-            this.delta = 0; // Difference between this.lastStamp and newStamp
-            this.step = (-1/120) * this.ups + 1.5; // Multiplier passed to update function. This will give 1 for 60 ups and 0.5 for 120 ups
-            step = (-1/120) * this.ups + 1.5;
-            this.renderAcc = 0; // Necessary to render at the proper moment
-            this.oneFrameInMs = 1000 / this.fps; // One frame in ms
-            this.lastStamp; // The most recent timestamp of loop execution
-// this.iterations = [0,0];
-        };
-
         this.setup();
 
         this.start = function () {
+// this.iterations = [0,0];
             this.paused = false;
             this.timeAcc = 0;
             this.lastStamp = performance?.now ? performance.now() : new Date().getTime();
@@ -68,5 +56,15 @@ class Engine {
                 return 'Advance one frame';
             }
         };
+    }
+    setup() {
+        this.slice = 1000 / this.ups; // Minimum time required for each update in ms
+        this.timeAcc = 0; // Time accumulator
+        this.delta = 0; // Difference between this.lastStamp and newStamp
+        this.step = (-1/120) * this.ups + 1.5; // Multiplier passed to update function. This will give 1 for 60 ups and 0.5 for 120 ups
+        step = (-1/120) * this.ups + 1.5;
+        this.renderAcc = 0; // Necessary to render at the proper moment
+        this.oneFrameInMs = 1000 / this.fps; // One frame in ms
+        this.lastStamp; // The most recent timestamp of loop execution
     }
 }

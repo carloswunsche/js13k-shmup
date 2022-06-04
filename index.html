@@ -20,13 +20,14 @@
         <button title="- key" onClick="debug.bgSpeedSub(0.1)">BG Speed down</button>
         <button title="E key" onClick="debug.spawnEnemy()">Spawn enemy</button>
         <span style="color: #999">Press F11 for full screen</span>
-        <!-- Finally load scripts in proper ORDER -->
+        <!-- Finally load scripts, and always leave setup.js at the end -->
         <script type="text/javascript" src="js/assets.js"></script>
         <script type="text/javascript" src="js/stage.js"></script>
         <script type="text/javascript" src="js/engine.js"></script>
         <script type="text/javascript" src="js/input.js"></script>
         <script type="text/javascript" src="js/game.js"></script>
         <script type="text/javascript" src="js/display.js"></script>
+        <script type="text/javascript" src="js/pool.js"></script>
         <script type="text/javascript" src="js/setup.js"></script>
     </body>
 </html>
