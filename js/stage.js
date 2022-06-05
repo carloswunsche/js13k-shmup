@@ -28,7 +28,7 @@ class Stage {
                 1,2,3,2,3,2,3,2,3,2,3,2,3,2,3,2,3,5,6,2,
                 2,3,3,3,7,3,2,3,2,3,2,8,2,3,2,3,2,6,3,4],
             
-            2: [3,3,3,5,5,5,5,5,3,2,3,3,8,2,3,2,3,3,3,4,
+            2: [7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
                 2,3,2,6,5,5,5,5,5,5,2,3,2,3,2,7,2,3,2,3,
                 1,2,3,2,5,5,5,5,5,5,5,5,3,2,3,2,3,2,3,4,
                 5,3,2,3,3,5,5,5,5,5,5,5,5,5,2,3,2,3,2,3,
@@ -43,10 +43,27 @@ class Stage {
                 3,2,3,2,3,2,3,2,3,5,5,5,5,5,5,5,3,2,2,3,
                 3,3,2,3,2,3,3,3,5,5,5,5,5,5,5,3,2,3,2,7,
                 1,2,3,2,3,3,3,5,5,5,5,5,5,5,3,2,3,3,3,2,
-                2,3,2,3,2,5,5,5,5,5,5,5,2,3,2,3,2,6,3,4],
+                8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8],
+
+            3: [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+                2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+                3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+                3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+                2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+                2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+                3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+                3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+                2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+                2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+                2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+                2,2,2,2,5,5,5,5,5,5,5,5,5,5,5,5,2,2,2,2,
+                2,2,2,6,6,6,6,6,6,6,6,6,6,6,6,6,6,2,2,2,
+                2,2,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,2,2,
+                2,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,2,
+                1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
         };
         this.bg.queue = [];
-        this.bg.pattern = this.bg.patterns[1];
+        this.bg.pattern = [...this.bg.patterns[1]]; // Basta de cambiar esto, tiene que quedar asi XD
         this.bg.image = image;
         this.bg.tileSize = 16;
         this.bg.tileScaled = this.bg.tileSize * imageScaled;
@@ -82,11 +99,11 @@ class Stage {
         // Return stage 1 function
         if (stageNum === 1) return function(){
             if (game.iteration === 50)    pool.getFreeObject('enemy');
-            if (game.iteration === 100)   this.bg.queue.push(...this.bg.patterns[2]);
+            if (game.iteration === 100)   this.bg.queue.push(...this.bg.patterns[2],...this.bg.patterns[3]);
             if (game.iteration === 150)   pool.getFreeObject('enemy');
             if (game.iteration === 180)   pool.getFreeObject('enemy');
             if (game.iteration === 200)   pool.getFreeObject('enemy');
-            if (game.iteration === 500)   this.bg.queue.push(...this.bg.patterns[1], ...this.bg.patterns[1]);
+            // if (game.iteration === 800)   this.bg.queue.push(...this.bg.patterns[1],...this.bg.patterns[3]);
         };
         // Return stage 2 function
         if (stageNum === 2) return function(){

@@ -5,6 +5,9 @@
 class Game {
     constructor(assets, call) {
         this.setStage = function (stageNum = 1) {
+            // On first frame init fade from black to transparent
+            call.display.initFade('fromBlack', 1);
+            // Stage essentials
             this.objects = {
                 player:       [new Player(assets.player)],
                 enemy:        [],
@@ -14,7 +17,8 @@ class Game {
             };
             this.pool = new Pool(assets, this.objects)
             this.stage = new Stage(assets['bg'+stageNum], assets.imageScaled, stageNum, this.pool);
-            this.iteration = 0;
+            this.iteration = 100;
+
         };
 
         
@@ -49,10 +53,6 @@ class Game {
             //     input.game = input.saved[this.iteration * 2];
             // } else input.game = [0,0,0,0,0,0];
 
-            // On first frame, init fade from black to transparent
-            if (this.iteration === 0) call.display.initFade('fromBlack', 1);
-            // Update fade transparency
-            call.display.updateFade();
             // Current level events
             this.stage.events();
 
@@ -137,6 +137,8 @@ class Game {
             // Shot
             if (call.input.get('game')[4] > 0) this.objects.player[0].shot(this.pool);
 
+            // Update fade transparency
+            call.display.updateFade();
         };
     }
 }

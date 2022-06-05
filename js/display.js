@@ -69,19 +69,19 @@ class Display {
                 // Para no renderizar al pedo el row que queda out of bounds (arriba)
                 if (bg.rows[y] <= -bg.tileSize) {this.bgPatIndex++; continue;}
                 // This is just to simplify the code syntax
-                this.bgTile = bg.pattern[this.bgPatIndex]; 
+                this.tileCode = bg.pattern[this.bgPatIndex]; 
                 // Check if tile is not empty/transparent
-                if (this.bgTile > 0) { 
+                if (this.tileCode > 0) { 
                     // Adjust so sourceX and Y are calculated properly
-                    this.bgTile--;
+                    this.tileCode--;
                     this.ctx.drawImage(
                         // Img
                         bg.image,
                         // Source note: improve perfomance by having a 1-row-only source image
                         // Source X
-                        (this.bgTile % bg.imageCols) * bg.tileScaled,
+                        (this.tileCode % bg.imageCols) * bg.tileScaled,
                         // Source Y
-                        Math.floor((this.bgTile / bg.imageCols)) * bg.tileScaled,
+                        Math.floor((this.tileCode / bg.imageCols)) * bg.tileScaled,
                         // Source Width
                         bg.tileScaled,
                         // Source Height
