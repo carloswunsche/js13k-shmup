@@ -66,6 +66,8 @@ class Display {
         this.bgPatIndex = 0;
         bg.rows.forEach((_, y) => {
             for (let x = 0; x < this.width; x += bg.tileSize) {
+                // Para no renderizar al pedo el row que queda out of bounds (arriba)
+                if (bg.rows[y] <= -bg.tileSize) {this.bgPatIndex++; continue;}
                 // This is just to simplify the code syntax
                 this.bgTile = bg.pattern[this.bgPatIndex]; 
                 // Check if tile is not empty/transparent
@@ -142,7 +144,7 @@ class Display {
     updateFade() {
         if (this.fade.mode === 'fromBlack') this.fade.value -= this.fade.amount;
         if (this.fade.mode === 'toBlack')   this.fade.value += this.fade.amount;
-        if (this.fade.value === 0 || this.fade.value === 100) this.initFade('none', 1)
+        if (this.fade.value === 0 || this.fade.value === 100) this.initFade('none')
     }
 
     renderFade () {

@@ -24,7 +24,6 @@ const assets  = new Assets('img/', 32);
 const display = new Display(320, 240, assets.imageScaled);
 const engine  = new Engine(60, 60, callFns);
 const input   = new Input();
-let pool	  = new Pool(10, assets);
 let game   	  = new Game(assets, callFns);
 function assetsReady() {game.setStage(1); engine.start();}
 
@@ -49,15 +48,13 @@ function loopOver(obj, callback){
 //////////////////////////
 const debug = {
 	gameReset(ups, fps) {
-		pool = new Pool(10, assets);
-		
 		game = new Game(assets, callFns); 
 		game.setStage();
 		engine.ups = ups;
 		engine.fps = fps;
 
-		console.clear();
-		console.log(`Game reset: now rendering ${fps} frames per second`);
+		console.log('---------------------');
+		console.log(`GAME RESET: now rendering at ${fps}fps`);
 
 		engine.setup();
 		engine.start();
@@ -86,7 +83,7 @@ const debug = {
 		console.log('BG speed is ' + game.stage.bg.speed);
 	},
 	spawnEnemy(){
-		game.objects.enemies.push(new Enemy(assets.enemy));
+		game.pool.getFreeObject('enemy');
 	},
 }
 window.addEventListener('keydown', key => {
@@ -95,9 +92,9 @@ window.addEventListener('keydown', key => {
 	if (key.code === 'KeyP') debug.engineStart();
 	// if (key.code === 'KeyS') debug.toggleScanlines();
 	if (key.code === 'KeyH') debug.toggleHitboxes();
-	if (key.code === 'Minus')debug.bgSpeedSub(0.1);
-	if (key.code === 'Equal')debug.bgSpeedAdd(0.1);
-	if (key.code === 'Plus') debug.bgSpeedAdd(0.1);
+	if (key.code === 'Minus')debug.bgSpeedSub(0.25);
+	if (key.code === 'Equal')debug.bgSpeedAdd(0.25);
+	if (key.code === 'Plus') debug.bgSpeedAdd(0.25);
 	if (key.code === 'KeyE') debug.spawnEnemy();
 	if (key.code === 'Digit1') {
 		localStorage.clear();

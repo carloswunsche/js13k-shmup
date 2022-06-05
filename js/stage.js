@@ -7,7 +7,7 @@
 // ************************************************
 
 class Stage {
-    constructor(image, imageScaled, stageNum) {
+    constructor(image, imageScaled, stageNum, pool) {
         // Background
         this.bg = {};
         this.bg.patterns = {
@@ -55,13 +55,16 @@ class Stage {
         this.bg.rows = this.setRowsArr(this.bg.tileSize);
         this.bg.numCols = display.width / this.bg.tileSize;
         this.bg.changePattern = false;
+
+        // Se recomienda moverse en intervalos de 0.25, 0.5 o 1 para mejor rendimiento. 
+        // El minimo es 0.1
         this.bg.speed = 1;
 
         // Music
         this.music = undefined;
 
         // Events (function that Game calls on each update)
-        this.events = this.getEvents(stageNum);
+        this.events = this.getEvents(stageNum, pool);
     }
 
     setRowsArr (tile) {
@@ -75,12 +78,14 @@ class Stage {
         let heightPlusOneRow = display.height + tileSize;
         return (display.width / tileSize) * (heightPlusOneRow / tileSize);
     }
-    getEvents(stageNum) {
+    getEvents(stageNum, pool) {
         // Return stage 1 function
         if (stageNum === 1) return function(){
-            if (game.iteration === 50)    game.objects.enemies.push(new Enemy(assets.enemy));
+            if (game.iteration === 50)    pool.getFreeObject('enemy');
             if (game.iteration === 100)   this.bg.queue.push(...this.bg.patterns[2]);
-            if (game.iteration === 150)   game.objects.enemies.push(new Enemy(assets.enemy));
+            if (game.iteration === 150)   pool.getFreeObject('enemy');
+            if (game.iteration === 180)   pool.getFreeObject('enemy');
+            if (game.iteration === 200)   pool.getFreeObject('enemy');
             if (game.iteration === 500)   this.bg.queue.push(...this.bg.patterns[1], ...this.bg.patterns[1]);
         };
         // Return stage 2 function

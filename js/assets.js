@@ -10,7 +10,7 @@ class Assets {
 		this.filenames = {
 			bg1: 'bg.png',
 			player: 'player.png',
-			pBullet: 'pBullet.png',
+			playerBullet: 'pBullet.png',
 			enemy: 'enemy.png',
 		};
 
