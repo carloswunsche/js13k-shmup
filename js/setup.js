@@ -20,7 +20,7 @@ const callFns = {
 	},
 };
 
-const assets  = new Assets('img/', 32);
+const assets  = new Assets('img/', 9);
 const display = new Display(320, 240, assets.imageScaled);
 const engine  = new Engine(60, 60, callFns);
 const input   = new Input();
