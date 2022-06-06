@@ -77,11 +77,12 @@ class Display {
                     this.ctx.drawImage(
                         // Img
                         bg.image,
-                        // Source note: improve perfomance by having a 1-row-only source image
                         // Source X
-                        (this.tileCode % bg.imageCols) * bg.tileScaled,
+                        // (this.tileCode % bg.imageCols) * bg.tileScaled,
+                        this.tileCode * bg.tileScaled,
                         // Source Y
-                        Math.floor((this.tileCode / bg.imageCols)) * bg.tileScaled,
+                        // Math.floor((this.tileCode / bg.imageCols)) * bg.tileScaled,
+                        0,
                         // Source Width
                         bg.tileScaled,
                         // Source Height

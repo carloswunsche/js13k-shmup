@@ -4,11 +4,11 @@
 
 class Assets {
 	constructor(dir, imageScaled) {
-		// PNGs need to be scaled by 32x and optimized with tinypng.com
+		// PNGs need to be scaled by 9x and optimized with tinypng.com
 		this.imageScaled = imageScaled;
 		this.dir = dir;
 		this.filenames = {
-			bg1: 'bg.png',
+			bg1: 'download.png',
 			player: 'player.png',
 			playerBullet: 'pBullet.png',
 			enemy: 'enemy.png',
