@@ -16,7 +16,6 @@ class Stage {
             2: this.allPatterns.slice(this.allPatterns.length-320*2,this.allPatterns.length-320*1),
             3: this.allPatterns.slice(this.allPatterns.length-320*3 ,this.allPatterns.length-320*2),
         }
-        console.log(this.allPatterns.length-320*3);
 
         this.bg.queue = [];
         this.bg.pattern = [...this.bg.patterns[1]]; // Basta de cambiar esto, tiene que quedar asi XD
@@ -30,8 +29,9 @@ class Stage {
         this.bg.changePattern = false;
 
         // Se recomienda moverse en intervalos de 0.25, 0.5 o 1 para mejor rendimiento. 
-        // El minimo es 0.1
-        this.bg.speed = 1;
+        // El minimo intervalo es de 0.1
+        this.bg.speed = 5;
+        // console.log(this.bg.speed);
 
         // Music
         this.music = undefined;
@@ -52,17 +52,27 @@ class Stage {
         return (display.width / tileSize) * (heightPlusOneRow / tileSize);
     }
     getEvents(stageNum, pool) {
-        // Return stage 1 function
+        // Return stage 1 events
         if (stageNum === 1) return function(){
             if (game.iteration === 50)    pool.getFreeObject('enemy');
             if (game.iteration === 150)   pool.getFreeObject('enemy');
             if (game.iteration === 180)   pool.getFreeObject('enemy');
             if (game.iteration === 200)   pool.getFreeObject('enemy');
-            if (game.iteration === 250)   this.bg.queue.push(...this.bg.patterns[2]);
-            if (game.iteration === 550)   this.bg.queue.push(...this.bg.patterns[3]);
-            // if (game.iteration === 800)   this.bg.queue.push(...this.bg.patterns[1],...this.bg.patterns[3]);
+            
+            
+            if (game.iteration === 200)   this.bg.speed -= 0.5;
+            if (game.iteration === 225)   this.bg.speed -= 0.5;
+            if (game.iteration === 250)   this.bg.speed -= 0.5;
+            if (game.iteration === 275)   this.bg.speed -= 0.5;
+            if (game.iteration === 300)   this.bg.speed -= 0.5;
+            if (game.iteration === 325)   this.bg.speed -= 0.5;
+            if (game.iteration === 350)   this.bg.speed -= 0.5;
+            if (game.iteration === 375)   this.bg.speed -= 0.5;
+
+            if (game.iteration === 300)   this.bg.queue.push(...this.bg.patterns[2]);
+            if (game.iteration === 600)   this.bg.queue.push(...this.bg.patterns[3]);
         };
-        // Return stage 2 function
+        // Return stage 2 events
         if (stageNum === 2) return function(){
             // ...................
             // ...................

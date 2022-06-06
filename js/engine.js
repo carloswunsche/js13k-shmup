@@ -34,6 +34,7 @@ class Engine {
                 call.game.update(this.step);
                 this.timeAcc -= this.slice;
                 this.renderAcc += this.slice;
+
 // this.iterations[0]++
             };
 

@@ -17,7 +17,7 @@ class Game {
             };
             this.pool = new Pool(assets, this.objects)
             this.stage = new Stage(assets['bg'+stageNum], assets.imageScaled, stageNum, this.pool);
-            this.iteration = 100;
+            this.iteration = 0;
 
         };
 
