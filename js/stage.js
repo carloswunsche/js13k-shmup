@@ -31,7 +31,6 @@ class Stage {
         // Se recomienda moverse en intervalos de 0.25, 0.5 o 1 para mejor rendimiento. 
         // El minimo intervalo es de 0.1
         this.bg.speed = 5;
-        // console.log(this.bg.speed);
 
         // Music
         this.music = undefined;
@@ -40,11 +39,11 @@ class Stage {
         this.events = this.getEvents(stageNum, pool);
     }
 
-    setRowsArr (tile) {
+    setRowsArr (tileSize) {
         let arr =  [];
-        for (let n = -tile; n < display.height; n += tile) arr.push(n);
+        for (let n = -tileSize; n < display.height; n += tileSize) arr.push(n);
         return arr;
-        // With tileSize of 16px, this will return:
+        // With a tileSize of 16px, this function will return:
         // [-16, 0, 16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224]
     }
     getTileQty(tileSize) {

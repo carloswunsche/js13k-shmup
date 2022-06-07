@@ -6,7 +6,7 @@ class Display {
     constructor(width, height, imageScaled, scanlines, intensity, hitboxes) {
         this.width = width;
         this.height = height;
-        this.canvas = this.setCanvas();
+        this.canvas = this.setCanvas('canvas');
         this.ctx = this.canvas.getContext('2d');
         this.scanlines = scanlines;
         this.intensity = intensity;
@@ -23,8 +23,8 @@ class Display {
         });
     }
 
-    setCanvas() {
-        let canvas = document.querySelector('canvas');
+    setCanvas(string) {
+        let canvas = document.querySelector(string);
         canvas.width  = this.width;
         canvas.height = this.height;
         return canvas;
@@ -61,7 +61,6 @@ class Display {
         if (this.hitboxes) this.renderHitboxes(gameObjects);
     }
 
-    // Optimize harder
     renderBackground (bg) {
         this.bgPatIndex = 0;
         bg.rows.forEach((_, y) => {
