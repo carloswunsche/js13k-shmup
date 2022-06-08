@@ -3,42 +3,29 @@
 //////////////////////////
 
 class Display {
-    constructor(width, height, imageScaled, scanlines, intensity, hitboxes) {
+    constructor(width, height, imageScaled, scanlines, hitboxes) {
         this.width = width;
         this.height = height;
-        this.canvas = this.setCanvas('canvas');
+        this.canvas = document.querySelector('canvas');
         this.ctx = this.canvas.getContext('2d');
         this.scanlines = scanlines;
-        this.intensity = intensity;
         this.hitboxes = hitboxes;
         this.fade = {value: 100, mode: 'none', amount: 1};
+        this.setScaleAndResize();
+        window.addEventListener('resize', ()=>{this.setScaleAndResize()});
         // Used for rendering background
         this.imageScaled = imageScaled;
-        // Resize canvas on initialization
-        this.scale = this.setScale();  
-        this.resizeCanvas();
-        window.addEventListener('resize', () => {
-            this.scale = this.setScale();
-            this.resizeCanvas();
-        });
     }
 
-    setCanvas(string) {
-        let canvas = document.querySelector(string);
-        canvas.width  = this.width;
-        canvas.height = this.height;
-        return canvas;
-    }
-
-    setScale() {
-        return Math.min(
+    setScaleAndResize(forced) {
+        // Set scale
+        this.scale = Math.min(
             Math.trunc(window.innerWidth / this.width),
             Math.trunc(window.innerHeight / this.height));
-    }
-
-    resizeCanvas () {
+        if (forced) this.scale = forced;
+        // Resize
         this.canvas.width = this.scale * this.width;
-        this.canvas.height = this.scale * this.height;
+        this.canvas.height = this.scale * this.height;    
     }
 
     render (bg, gameObjects) {
@@ -55,30 +42,34 @@ class Display {
         if (this.fade.value > 0) this.renderFade();
 
         // Scanlines
-        if (this.scanlines) this.renderScanlines(this.intensity);
+        if (this.scanlines) this.renderScanlines(50);
 
         // Hitboxes
         if (this.hitboxes) this.renderHitboxes(gameObjects);
     }
 
     renderBackground (bg) {
+        //////////////
+        // Performance
+        this.scaledTile = bg.tileSize * this.scale;
+        //////////////
         this.bgPatIndex = 0;
         bg.rows.forEach((_, y) => {
+            //////////////
+            // Performance
+            this.destinationY = bg.rows[y] * this.scale;
+            //////////////
             for (let x = 0; x < this.width; x += bg.tileSize) {
                 // Para no renderizar al pedo el row que queda out of bounds (arriba)
                 if (bg.rows[y] <= -bg.tileSize) {this.bgPatIndex++; continue;}
-                // This is just to simplify the code syntax
-                this.tileCode = bg.pattern[this.bgPatIndex]; 
                 // Check if tile is not empty/transparent
-                if (this.tileCode > 0) { 
-                    // Adjust so sourceX and Y are calculated properly
-                    this.tileCode--;
+                if (bg.pattern[this.bgPatIndex] !== 0) { 
                     this.ctx.drawImage(
                         // Img
                         bg.image,
                         // Source X
                         // (this.tileCode % bg.imageCols) * bg.tileScaled,
-                        this.tileCode * bg.tileScaled,
+                        (bg.pattern[this.bgPatIndex]-1) * bg.tileScaled,
                         // Source Y
                         // Math.floor((this.tileCode / bg.imageCols)) * bg.tileScaled,
                         0,
@@ -89,11 +80,11 @@ class Display {
                         // Destination X
                         x * this.scale,
                         // Destination Y
-                        bg.rows[y] * this.scale,
+                        this.destinationY,
                         // Destination Width
-                        bg.tileSize * this.scale,
+                        this.scaledTile,
                         // Destination height
-                        bg.tileSize * this.scale 
+                        this.scaledTile 
                     );
                 };
                 this.bgPatIndex++;
@@ -181,9 +172,26 @@ class Display {
             this.ctx.strokeStyle = color;
             this.ctx.beginPath();
             this.ctx.moveTo(x*this.scale, y*this.scale);
-            return
+            return;
         }
         this.ctx.lineTo(x*this.scale, y*this.scale);
         this.ctx.stroke();
+    }
+
+    pixelatedLook() {
+        // Not used because artifacts due to floats
+        this.canvas.style.cssText = 
+        'image-rendering: optimizeSpeed;' +             // FireFox < 6.0
+        'image-rendering: -moz-crisp-edges;' +          // FireFox
+        'image-rendering: -o-crisp-edges;' +            // Opera
+        'image-rendering: -webkit-crisp-edges;' +       // Chrome
+        'image-rendering: crisp-edges;' +               // Chrome
+        'image-rendering: -webkit-optimize-contrast;' + // Safari
+        'image-rendering: pixelated; ' +                // Future browsers
+        '-ms-interpolation-mode: nearest-neighbor;';    // IE
+        this.ctx.mozImageSmoothingEnabled = false;
+        this.ctx.webkitImageSmoothingEnabled = false;
+        this.ctx.msImageSmoothingEnabled = false;
+        this.ctx.imageSmoothingEnabled = false;
     }
 };

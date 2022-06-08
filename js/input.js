@@ -10,7 +10,7 @@ class Input {
 			// Btn1, Btn2, left,right,up,down
 		this.game = new Array(6).fill(0);
 
-		this.history = []
+		this.history = [];
 		this.saved = localStorage.getItem('savedInputs') || [];
 		this.saved = typeof this.saved === 'string' ? JSON.parse(this.saved) : [];
 
@@ -51,6 +51,8 @@ class Input {
 		};
 	}
 
+	// Fix this. This axis is only used for easily moving the player but nothing else
+	// Player should be provided with input.game to calculate this tool for itself
 	playerInputData() {
 		return {
 			axis: this.getAxis(),
@@ -70,5 +72,4 @@ class Input {
 		if (this.game[0] && arr[2]) arr[1] = 0;
 		return arr;
 	}
-
 };

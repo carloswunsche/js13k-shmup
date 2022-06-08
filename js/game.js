@@ -5,8 +5,7 @@
 class Game {
     constructor(assets, call) {
         this.setStage = function (stageNum = 1) {
-            // On first frame init fade from black to transparent
-            call.display.initFade('fromBlack', 1);
+
             // Stage essentials
             this.objects = {
                 player:       [new Player(assets.player)],
@@ -15,10 +14,11 @@ class Game {
                 enemyBullet:  [],
                 hud:          [],
             };
-            this.pool = new Pool(assets, this.objects)
+            this.pool = new Pool(assets, this.objects, stageNum)
             this.stage = new Stage(assets['bg'+stageNum], assets.imageScaled, stageNum, this.pool);
             this.iteration = 0;
-
+            // On first frame init fade from black to transparent
+            call.display.initFade('fromBlack', 1);
         };
 
         
@@ -96,6 +96,7 @@ class Game {
                 arr.forEach(obj => {
                     // If player, pass movement data
                     if (obj instanceof Player) {
+                        // Fix this. Check input.js for more info
                         obj.update(call.input.playerInputData());
                     } else obj.update();
                 });
@@ -135,7 +136,7 @@ class Game {
             
 
             // Shot
-            if (call.input.get('game')[4] > 0) this.objects.player[0].shot(this.pool);
+            if (call.input.game[4] > 0) this.objects.player[0].shot(this.pool);
 
             // Update fade transparency
             call.display.updateFade();
@@ -165,11 +166,8 @@ class Entity {
             this.outOfBounds = false;
         };
     }
-    updateData() {} // Dummy
-    updatePos () {
-        this.x += this.x * step || 0;
-        this.y += this.x * step || 0;
-    }
+    updateData() {}
+    updatePos () {}
     setHitbox (xMargin = 2, yMargin = 2, xOffset = 0, yOffset = 0) {
         // Necessary for first time execution
         if (!this.hitbox) {
@@ -192,26 +190,22 @@ class Player extends Entity {
         super (image)
         this.x = display.width / 2;
         this.y = display.height / 2;
+        this.outOfBounds = false;
         this.speed = 2.5;
         this.shotBufferInit = 4;
         this.shotBuffer = 0;
         this.hp = 1;
         this.hitbox = this.setHitbox(4,4,0,3);
-        // Flags
-        this.outOfBounds = false;
     }
-    // Functions
     updateData (playerInputData) {
         this.blockInputIfBoundary(playerInputData);
         this.setVectorAmplitude(playerInputData);
         if (this.shotBuffer > 0) this.shotBuffer -= 1 * step;
     }
-    
     updatePos ({axis}) {
         this.x += this.speed * this.amplitude * axis[0] * step;
         this.y += this.speed * this.amplitude * axis[1] * step;
     }
-
     blockInputIfBoundary ({axis, inputGame}) {
         // Evaluar los axis evita calculos innecesarios cuando la nave esta quieta sobre los bounds
         if (axis[0] !== 0) {
@@ -223,14 +217,12 @@ class Player extends Entity {
             if (this.hitbox[3] >= display.height) {inputGame[2] = 0; this.outOfBounds = true;}
         };
     }
-
     fixOutOfBounds () {
         if (this.hitbox[0] < 0) this.x = this.xMargin - this.xOffset;
         if (this.hitbox[1] > display.width) this.x = display.width - this.xMargin - this.xOffset;
         if (this.hitbox[2] < 0) this.y = this.yMargin - this.yOffset;
         if (this.hitbox[3] > display.height) this.y = display.height - this.yMargin - this.yOffset;
     }
-
     setVectorAmplitude ({inputGame}) {
         this.amplitude =
                 inputGame[0] && inputGame[1] || 
@@ -238,7 +230,6 @@ class Player extends Entity {
                 inputGame[2] && inputGame[3] || 
                 inputGame[3] && inputGame[0] ? 0.707 : 1;
     }
-
     shot(pool) {
         if (this.shotBuffer === 0) {
             pool.getFreeObject('playerBullet', this.x, this.y, 9);

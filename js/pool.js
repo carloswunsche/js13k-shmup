@@ -27,8 +27,8 @@ class Pool {
 				return;
 			};
 		};
-		// debug
-		console.error(`No more free of "${name}" (Game iteration #${game.iteration})`);
+		// Debug
+		console.error(`Pool: No more free "${name}"s (Game iteration #${game.iteration})`);
 	}
 	releaseObject(obj){obj.free = true;}
 };

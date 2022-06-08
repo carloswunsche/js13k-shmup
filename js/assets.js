@@ -3,8 +3,8 @@
 //////////////////////////
 
 class Assets {
-	constructor(dir, imageScaled) {
-		// PNGs need to be scaled by 9x and optimized with tinypng.com
+	constructor(dir, imageScaled, onLoadFn) {
+		// PNGs need to be scaled by 9x minimum and optimized with tinypng.com
 		this.imageScaled = imageScaled;
 		this.dir = dir;
 		this.filenames = {
@@ -14,10 +14,10 @@ class Assets {
 			enemy: 'enemy.png',
 		};
 
-		this.load();
+		this.load(onLoadFn);
 	}
 
-	load() {
+	load(onLoadFn) {
 		// Get number of remaining images to be loaded
 		let remaining = Object.keys(this.filenames).length;
 
@@ -26,20 +26,14 @@ class Assets {
 			this[key] = new Image();
 			this[key].src = this.dir + file;
 
-			// Scale down to intended size once loaded
 			this[key].addEventListener('load', () => {
+				// Scale down to intended size once loaded
 				this[key].width  /= this.imageScaled;
 				this[key].height /= this.imageScaled;
 				remaining--;
-				// If all images have loaded
-				if(remaining === 0) this.onCompletion()
+				// If all images have loaded...
+				if(remaining === 0) onLoadFn();
 			});
 		});
-	}
-
-	onCompletion() {
-		delete this.dir;
-		delete this.filenames;
-		assetsReady();
 	}
 };

@@ -3,29 +3,45 @@
 //////////////////////////
 'use strict';
 
+
+// Load assets
+const sourceImgScaleFactor = 9;
+function onLoad() {game.setStage(1); engine.start()};
+const assets = new Assets('img/', sourceImgScaleFactor, onLoad);
+
+
+// Display
+const display = new Display(320, 240, sourceImgScaleFactor);
+
+
+// Engine
+function update() {game.update(step)};
+function render() {display.render(game.stage.bg, game.objects)};
+const engine = new Engine(60, 60, update, render);
+
+
+// Player Input
+const input = new Input();
+
+
+// Game logic
 const callFns = {
-	game: {
-		update: (step) => game.update(step), //engine.js
-		setup:  (a) => game.setup(a),		 //engine.js 
-	},
 	input: {
-		rawToGame: () => input.rawToGame(), 			//game.js
-		playerInputData: () => input.playerInputData(), //game.js
-		get: (property) => input[property], 			//game.js
+		rawToGame: () => input.rawToGame(),
+		playerInputData: () => input.playerInputData(),
+		raw: input.raw,
+		game: input.game,
+		// For developing purposes:
+		get: (property) => input[property],
 	},
 	display: {
-		render: () => display.render(game.stage.bg, game.objects),	//engine.js
-		initFade: (a,b) => display.initFade(a, b), 				   	//game.js
-		updateFade: () => display.updateFade(),						//game.js
+		initFade: (a,b) => display.initFade(a, b),
+		updateFade: () => display.updateFade(),
 	},
 };
+let game = new Game(assets, callFns);
 
-const assets  = new Assets('img/', 9);
-const display = new Display(320, 240, assets.imageScaled);
-const engine  = new Engine(60, 60, callFns);
-const input   = new Input();
-let game   	  = new Game(assets, callFns);
-function assetsReady() {game.setStage(1); engine.start();}
+
 
 
 //////////////////////////
@@ -35,12 +51,12 @@ function toRadians(degrees){return degrees * Math.PI/180};
 function loopOver(obj, callback){
 	for (const key in obj) callback(key, obj[key])
 };
-
-// // Not used
 // function getDecimal(n){
 // 	if (Number.isInteger(n)) return 0;
 // 	return Number('0.'+ n.toString().split('.')[1].slice(0,1));
 // };
+
+
 
 
 //////////////////////////
