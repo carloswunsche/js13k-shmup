@@ -4,25 +4,18 @@
 'use strict';
 
 
-// Load assets
 const sourceImgScaleFactor = 9;
-function onLoad() {game.setStage(1); engine.start()};
-const assets = new Assets('img/', sourceImgScaleFactor, onLoad);
 
+// Player Input
+const input = new Input();
 
 // Display
 const display = new Display(320, 240, sourceImgScaleFactor);
-
 
 // Engine
 function update() {game.update(step)};
 function render() {display.render(game.stage.bg, game.objects)};
 const engine = new Engine(60, 60, update, render);
-
-
-// Player Input
-const input = new Input();
-
 
 // Game logic
 const callFns = {
@@ -36,11 +29,21 @@ const callFns = {
 	},
 	display: {
 		initFade: (a,b) => display.initFade(a, b),
-		updateFade: () => display.updateFade(),
+		updateFade: (step) => display.updateFade(step),
 	},
 };
-let game = new Game(assets, callFns);
+let game = new Game(callFns);
 
+// Memory: Pool of objects
+const pool = new Pool()
+
+// Memory: Assets
+const assets = new Assets('img/', sourceImgScaleFactor, onLoad);
+function onLoad() {
+	game.setStage(1, assets); 
+	// pool.init(assets, game.objects);
+	engine.start()
+};
 
 
 
@@ -64,8 +67,8 @@ function loopOver(obj, callback){
 //////////////////////////
 const debug = {
 	gameReset(ups, fps) {
-		game = new Game(assets, callFns); 
-		game.setStage();
+		game = new Game(callFns); 
+		game.setStage(1, assets);
 		engine.ups = ups;
 		engine.fps = fps;
 

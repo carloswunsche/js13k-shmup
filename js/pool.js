@@ -3,19 +3,19 @@
 //////////////////////////
 
 class Pool {
-	constructor(assets, gameObjects) {
+	init(assets, gameObjects){
 		this.gameObjects = gameObjects;
-		this.createPool(10, 'playerBullet', assets)
-		this.createPool(5, 'enemy', assets)
-		// this.createPool(2, 'enemyBullet', assets)
+		this.assets = assets;
+		this.create(10, 'playerBullet')
+		this.create(5, 'enemy')
 	}
-	createPool(size, name, assets){
-		this[name] = new Array(size).fill(0).map(() => this.createObject(name, assets));
+	create(size, name){
+		this[name] = new Array(size).fill(0).map(() => this.createObject(name));
 	}
-	createObject(name, assets){
-		if (name === 'playerBullet') return new PlayerBullet(assets[name]);
-		if (name === 'enemy') return new Enemy(assets[name]);
-		if (name === 'enemyBullet') return new EnemyBullet(assets[name]);
+	createObject(name){
+		if (name === 'playerBullet') return new PlayerBullet(this.assets[name]);
+		if (name === 'enemy') return new Enemy(this.assets[name]);
+		if (name === 'enemyBullet') return new EnemyBullet(this.assets[name]);
 	}
 	getFreeObject(name,a,b,c,d,e) {
 		let arrSize = this[name].length;

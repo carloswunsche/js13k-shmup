@@ -132,9 +132,9 @@ class Display {
         if (mode === 'toBlack') this.fade.value = 0;
     }
 
-    updateFade() {
-        if (this.fade.mode === 'fromBlack') this.fade.value -= this.fade.amount;
-        if (this.fade.mode === 'toBlack')   this.fade.value += this.fade.amount;
+    updateFade(step) {
+        if (this.fade.mode === 'fromBlack') this.fade.value -= this.fade.amount * step;
+        if (this.fade.mode === 'toBlack')   this.fade.value += this.fade.amount * step;
         if (this.fade.value === 0 || this.fade.value === 100) this.initFade('none')
     }
 
