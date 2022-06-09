@@ -40,8 +40,8 @@ const pool = new Pool()
 // Memory: Assets
 const assets = new Assets('img/', sourceImgScaleFactor, onLoad);
 function onLoad() {
-	game.setStage(1, assets); 
-	// pool.init(assets, game.objects);
+	game.init(assets, pool, '1st-stage');
+	pool.init(assets, game.objects);
 	engine.start()
 };
 
@@ -67,16 +67,11 @@ function loopOver(obj, callback){
 //////////////////////////
 const debug = {
 	gameReset(ups, fps) {
-		game = new Game(callFns); 
-		game.setStage(1, assets);
 		engine.ups = ups;
 		engine.fps = fps;
-
-		console.log('---------------------');
-		console.log(`GAME RESET: now rendering at ${fps}fps`);
-
 		engine.setup();
-		engine.start();
+		onLoad();
+		console.log(`GAME RESET: now rendering at ${fps}fps`);
 	},
 	toggleScanlines(){
 		display.scanlines = display.scanlines ? undefined : 'scanlines';

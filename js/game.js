@@ -4,17 +4,17 @@
 
 class Game {
     constructor(call) {
-        this.setStage = function (stageNum, assets) {
+        this.init = function (assets, pool, stageNum) {
+            this.pool = pool;
+            this.stageNum = parseInt(stageNum);
             this.objects = {
-                player:       [new Player(assets.player)],
+                player:       [new Player(assets.player, this.pool)],
                 enemy:        [],
                 playerBullet: [],
                 enemyBullet:  [],
                 hud:          [],
             };
-            this.pool = new Pool(assets, this.objects)
-            this.pool.init(assets, this.objects);
-            this.stage = new Stage(assets['bg'+stageNum], assets.imageScaled, stageNum, this.pool);
+            this.stage = new Stage(assets, this.stageNum, this.pool);
             this.iteration = 0;
             // On first frame init fade from black to transparent
             call.display.initFade('fromBlack', 1);
@@ -135,7 +135,7 @@ class Game {
             
 
             // Shot
-            if (call.input.game[4] > 0) this.objects.player[0].shot(this.pool);
+            if (call.input.game[4] > 0) this.objects.player[0].shot();
 
             // Update fade transparency
             call.display.updateFade(step);
@@ -185,8 +185,9 @@ class Entity {
 };
 
 class Player extends Entity {
-    constructor(image) {
+    constructor(image, pool) {
         super (image)
+        this.pool = pool;
         this.x = display.width / 2;
         this.y = display.height / 2;
         this.outOfBounds = false;
@@ -229,10 +230,10 @@ class Player extends Entity {
                 inputGame[2] && inputGame[3] || 
                 inputGame[3] && inputGame[0] ? 0.707 : 1;
     }
-    shot(pool) {
+    shot() {
         if (this.shotBuffer === 0) {
-            pool.getFreeObject('playerBullet', this.x, this.y, 9);
-            pool.getFreeObject('playerBullet', this.x, this.y, -8);
+            this.pool.getFreeObject('playerBullet', this.x, this.y, 9);
+            this.pool.getFreeObject('playerBullet', this.x, this.y, -8);
             this.shotBuffer = this.shotBufferInit;
         };
     }

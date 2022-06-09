@@ -7,7 +7,7 @@
 // ************************************************
 
 class Stage {
-    constructor(image, imageScaled, stageNum, pool) {
+    constructor(assets, stageNum, pool) {
 
         // pool.create(1, Player)
         // pool.create(5, Enemy)
@@ -29,9 +29,9 @@ class Stage {
 
         this.bg.queue = [];
         this.bg.pattern = [...this.bg.patterns["1"]]; // Basta de cambiar esto, tiene que quedar asi XD
-        this.bg.image = image;
+        this.bg.image = assets['stage'+stageNum];
 
-        this.bg.tileScaled = this.bg.tileSize * imageScaled;
+        this.bg.tileScaled = this.bg.tileSize * assets.imageScaled;
         this.bg.imageCols = this.bg.image.width / this.bg.tileSize;
   
         this.bg.rows = this.setRowsArr(this.bg.tileSize);

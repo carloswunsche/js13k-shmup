@@ -8,7 +8,7 @@ class Assets {
 		this.imageScaled = imageScaled;
 		this.dir = dir;
 		this.filenames = {
-			bg1: 'download.png',
+			stage1: 'download.png',
 			player: 'player.png',
 			playerBullet: 'pBullet.png',
 			enemy: 'enemy.png',
