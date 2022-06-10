@@ -12,6 +12,7 @@ class Assets {
 			Player: 'player.png',
 			PlayerBullet: 'pBullet.png',
 			EnemyPop1: 'enemy.png',
+			EnemyPop2: 'enemy.png'
 		}
 		this.loadPatterns();
 	}
@@ -47,23 +48,23 @@ class Assets {
 	getPoolInputArr(stageNum){
         if (stageNum === 1)
 		return [
-			[10, PlayerBullet],
+			[12, PlayerBullet],
 			[5, EnemyPop1],
-		]
+			[5, EnemyPop2],
+		];
 
-        if (stageNum === 2) 
+        if (stageNum === 2)
 		return [
 			[],
-			[],
 			// Etc...
-		]
+		];
 	}
 	getEventsFn(stageNum) {
         if (stageNum === 1) return function(iteration){
             if (iteration === 50)    this.pool.getFreeObject('EnemyPop1', 'Enemy');
-			if (iteration === 150)   this.pool.getFreeObject('EnemyPop1', 'Enemy');
+			if (iteration === 150)   this.pool.getFreeObject('EnemyPop2', 'Enemy');
             if (iteration === 180)   this.pool.getFreeObject('EnemyPop1', 'Enemy');
-            if (iteration === 200)   this.pool.getFreeObject('EnemyPop1', 'Enemy');
+            if (iteration === 200)   this.pool.getFreeObject('EnemyPop2', 'Enemy');
             if (iteration === 200)   this.bg.speed += 1;
             if (iteration === 250)   this.bg.queue.push(...this.patterns['2'], ...this.patterns['3']);
         };

@@ -163,3 +163,14 @@ class EnemyPop1 extends Enemy {
         this.easeInOutSine('x', -this.image.width, display.width-20, 120, 2);
     }
 }
+class EnemyPop2 extends Enemy {
+    constructor(image){
+        super(image)
+        this.r__hp = 1
+        this.r__hitbox = this.setHitbox(this.image.width/2-1, this.image.height/2-3);
+    }
+    updatePos(){
+        this.easeInOutSine('y', -this.image.height, display.height-20, 200, 1);
+        this.easeInOutSine('x', -this.image.width, display.width-20, 120, 2);
+    }
+}
