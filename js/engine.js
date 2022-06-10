@@ -5,19 +5,15 @@
 let step = 1;
 
 class Engine {
-    constructor(ups, fps, updateFn, renderFn) {
+    needs(updateFn, renderFn){
+        this.callUpdate = updateFn;
+        this.callRender = renderFn;
+    }
+    init (ups = 60, fps = 60) {
         // Amount of updates per second
         this.ups = ups;
         // Amount of frames rendered per second (cannot be more than ups)
         this.fps = fps > ups ? ups : fps;
-        // Update function
-        this.callUpdate = updateFn;
-        // Render function
-        this.callRender = renderFn;
-        // Setup (isolation is necesary for game reset)
-        this.setup();
-    }
-    setup () {
         // Minimum time required for each update in ms
         this.slice = 1000 / this.ups; 
         // Necessary to render at the proper moment

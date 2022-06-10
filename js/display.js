@@ -3,18 +3,22 @@
 //////////////////////////
 
 class Display {
-    constructor(width, height, imageScaled, scanlines, hitboxes) {
+    constructor(width, height, scanlines = false, hitboxes = false) {
         this.width = width;
         this.height = height;
         this.canvas = document.querySelector('canvas');
         this.ctx = this.canvas.getContext('2d');
         this.scanlines = scanlines;
         this.hitboxes = hitboxes;
-        this.fade = {value: 100, mode: 'none', amount: 1};
+        this.fade = {value: 0, mode: 'none', speed: 1};
         this.setScaleAndResize();
-        window.addEventListener('resize', ()=>{this.setScaleAndResize()});
-        // Used for rendering background
-        this.imageScaled = imageScaled;
+        window.addEventListener('resize', ()=>{
+            this.setScaleAndResize();
+            // Deactivate the next one for best performance
+            this.render(stage.bg, game.objects);
+        });
+    }
+    needs(){
     }
 
     setScaleAndResize(forced) {
@@ -29,8 +33,8 @@ class Display {
     }
 
     render (bg, gameObjects) {
-        // Clear canvas (not needed)
-        // this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // To clear the canvas
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Render Background
         this.renderBackground(bg);
@@ -41,23 +45,23 @@ class Display {
         // Fade
         if (this.fade.value > 0) this.renderFade();
 
-        // Scanlines
-        if (this.scanlines) this.renderScanlines(50);
-
         // Hitboxes
         if (this.hitboxes) this.renderHitboxes(gameObjects);
+
+        // Scanlines
+        if (this.scanlines) this.renderScanlines(50);
     }
 
     renderBackground (bg) {
         //////////////
         // Performance
-        this.scaledTile = bg.tileSize * this.scale;
+        this.p__tileTimesScaledCanvas = bg.tileSize * this.scale;
         //////////////
         this.bgPatIndex = 0;
         bg.rows.forEach((_, y) => {
             //////////////
             // Performance
-            this.destinationY = bg.rows[y] * this.scale;
+            this.p__destinationY = bg.rows[y] * this.scale;
             //////////////
             for (let x = 0; x < this.width; x += bg.tileSize) {
                 // Para no renderizar al pedo el row que queda out of bounds (arriba)
@@ -80,11 +84,11 @@ class Display {
                         // Destination X
                         x * this.scale,
                         // Destination Y
-                        this.destinationY,
+                        this.p__destinationY,
                         // Destination Width
-                        this.scaledTile,
+                        this.p__tileTimesScaledCanvas,
                         // Destination height
-                        this.scaledTile 
+                        this.p__tileTimesScaledCanvas 
                     );
                 };
                 this.bgPatIndex++;
@@ -125,31 +129,22 @@ class Display {
         });
     }
 
-    initFade(mode, amount) {
+    initFade(mode, speed) {
         this.fade.mode = mode;
-        this.fade.amount = amount;
+        this.fade.speed = speed;
         if (mode === 'fromBlack') this.fade.value = 100;
         if (mode === 'toBlack') this.fade.value = 0;
     }
 
     updateFade(step) {
-        if (this.fade.mode === 'fromBlack') this.fade.value -= this.fade.amount * step;
-        if (this.fade.mode === 'toBlack')   this.fade.value += this.fade.amount * step;
-        if (this.fade.value === 0 || this.fade.value === 100) this.initFade('none')
+        if (this.fade.mode === 'fromBlack') this.fade.value -= this.fade.speed * step;
+        if (this.fade.mode === 'toBlack')   this.fade.value += this.fade.speed * step;
+        if (this.fade.value === 0 || this.fade.value === 100) this.initFade('none', 0)
     }
 
     renderFade () {
-        // PERFORMANCE NOTE: this only runs until this.fade.value is 0 👍
         this.ctx.globalAlpha = this.fade.value / 100; // 1.0 ~ 0.0
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.globalAlpha = 1; // Canvas globalAlpha fix
-    }
-
-    renderScanlines(intensity) {
-        this.ctx.globalAlpha = intensity / 100;
-        for (let y = 0; y < this.height; y++){
-            this.ctx.fillRect(0, y * this.scale, this.canvas.width, 0.5 * this.scale);
-        }
         this.ctx.globalAlpha = 1; // Canvas globalAlpha fix
     }
 
@@ -176,6 +171,14 @@ class Display {
         }
         this.ctx.lineTo(x*this.scale, y*this.scale);
         this.ctx.stroke();
+    }
+
+    renderScanlines(intensity) {
+        this.ctx.globalAlpha = intensity / 100;
+        for (let y = 0; y < this.height; y++){
+            this.ctx.fillRect(0, y * this.scale, this.canvas.width, 0.5 * this.scale);
+        }
+        this.ctx.globalAlpha = 1; // Canvas globalAlpha fix
     }
 
     pixelatedLook() {

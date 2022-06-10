@@ -3,32 +3,32 @@
 //////////////////////////
 
 class Pool {
-	init(assets, gameObjects){
-		this.gameObjects = gameObjects;
-		this.assets = assets;
-		this.create(10, 'playerBullet')
-		this.create(5, 'enemy')
+	needs(assets, gameObjects, gameIteration){
+		this._assets = assets;
+		this._gameObjects = gameObjects;
+		this._gameIteration = gameIteration;
 	}
-	create(size, name){
-		this[name] = new Array(size).fill(0).map(() => this.createObject(name));
+	fillWith(size, objClass){
+		this[objClass.name] = new Array(size).fill(0).map(() => 
+			new objClass(this._assets[objClass.name])
+		);
 	}
-	createObject(name){
-		if (name === 'playerBullet') return new PlayerBullet(this.assets[name]);
-		if (name === 'enemy') return new Enemy(this.assets[name]);
-		if (name === 'enemyBullet') return new EnemyBullet(this.assets[name]);
-	}
-	getFreeObject(name,a,b,c,d,e) {
+	getFreeObject(objClass,a,b,c,d,e) {
+		let name = objClass.name;
+		if (!this[name]) return console.error(`Pool: Object "${name}" not found (Game iteration #${this._gameIteration})`);
 		let arrSize = this[name].length;
 		for (let i = 0; i < arrSize; i++) {
 			if (this[name][i].free) {
 				this[name][i].free = false;
 				this[name][i].reset(a,b,c,d,e);
-				this.gameObjects[name].push(this[name][i]);
+				this._gameObjects[name].push(this[name][i]);
 				return;
 			};
 		};
-		// Debug
-		console.error(`Pool: No more free "${name}"s (Game iteration #${game.iteration})`);
+		console.error(`Pool: No more free ${name}(s) (Game iteration #${this._gameIteration})`);
 	}
 	releaseObject(obj){obj.free = true;}
+	deleteUnused(){
+		delete this._assets;
+	}
 };
