@@ -46,10 +46,10 @@ class Assets {
 	}
 	getEventsFn(stageNum) {
         if (stageNum === 1) return function(iteration){
-            if (iteration === 50)    this._pool.getFreeObject(Enemy);
-			if (iteration === 150)   this._pool.getFreeObject(Enemy);
-            if (iteration === 180)   this._pool.getFreeObject(Enemy);
-            if (iteration === 200)   this._pool.getFreeObject(Enemy);
+            if (iteration === 50)    this.pool.getFreeObject(Enemy);
+			if (iteration === 150)   this.pool.getFreeObject(Enemy);
+            if (iteration === 180)   this.pool.getFreeObject(Enemy);
+            if (iteration === 200)   this.pool.getFreeObject(Enemy);
             if (iteration === 200)   this.bg.speed += 1;
             if (iteration === 250)   this.bg.queue.push(...this.patterns['2'], ...this.patterns['3']);
         };

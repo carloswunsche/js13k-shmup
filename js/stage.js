@@ -6,22 +6,26 @@ class Stage {
     constructor(tileSizeStr){
         this._tileSize = parseInt(tileSizeStr);
     }
-    needs(assets, pool, sourceImgScaleFactor, displayW, displayH){
+    needs(assets, pool, gameObjects, sourceImgScaleFactor, displayW, displayH){
         this._assets = assets;
-        this._pool = pool;
+        // To pool stage objects and to get free ones from stage events
+        this.pool = pool;
         this._displayW = displayW;
         this._displayH = displayH;
         this._tileQty = this.getTileQty();
         this._tileScaled = this._tileSize * sourceImgScaleFactor;
+        this._gameObjects = gameObjects
     }
     init(stageNum){
+        // Create player inside gameObjects
+        this._gameObjects.Player = [new Player(assets.Player)]
         // Get stage number from comfy string
         this.stageNum = parseInt(stageNum);
         // Take raw pattern from assets, then make a patterns object
         this._rawPattern = this._assets.getRawPattern(this.stageNum);
         this.patterns = this.createPatternsObj(this._rawPattern);
         // Pool stage objects
-        this._assets.getPoolInputArr(this.stageNum).forEach(el => this._pool.fillWith(el[0], el[1]))
+        this._assets.getPoolInputArr(this.stageNum).forEach(el => this.pool.fillWith(el[0], el[1]))
         // Get events function
         this.events = this._assets.getEventsFn(this.stageNum);
         // Setup background
@@ -67,7 +71,6 @@ class Stage {
         return (this._displayW / this._tileSize) * (heightPlusOneRow / this._tileSize);
     }
     deleteUnused(){
-        // delete this._pool;
         delete this._assets;
         delete this._rawPattern;
         delete this._tileSize
@@ -75,5 +78,6 @@ class Stage {
         delete this._displayH
         delete this._tileQty;
         delete this._tileScaled;
+        delete this._gameObjects;
     }
 };

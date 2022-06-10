@@ -51,7 +51,7 @@ class Input {
 	playerInputData() {
 		return {
 			axis: this.getAxis(),
-			inputGame: this.buttons,
+			buttons: this.buttons,
 		};
 	}
 

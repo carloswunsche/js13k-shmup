@@ -8,11 +8,15 @@ class Entity {
         this.image = image;
         this.width = image.width;
         this.height = image.height;
-        // Fallback
+        // Fallback if not declared on child
         this.opacity = 100;
         this.angle = 0;
         this.x = -99;
         this.y = -99;
+        // Taken from global: Used for bullet liberation
+        this.pool = pool;
+        // Taken from global: Used for spawning bullets
+        this.queue = game.runBeforeRender;
     }
     update (playerInputData) {
         this.updateData(playerInputData);
@@ -58,23 +62,32 @@ class Player extends Entity {
         this.hitbox = this.setHitbox(4,4,0,3);
     }
     updateData (playerInputData) {
+        // Adjust input in boundaries
         this.blockInputIfBoundary(playerInputData);
+
+        // Set vector when diagonals
         this.setVectorAmplitude(playerInputData);
+
+        // Shot
+        if (playerInputData.buttons[4] > 0 && this.shotBuffer === 0) {
+            this.shot(PlayerBullet, this.x, this.y)
+            this.shotBuffer = this.shotBufferInit;
+        }
         if (this.shotBuffer > 0) this.shotBuffer -= 1 * step;
     }
     updatePos ({axis}) {
         this.x += this.speed * this.amplitude * axis[0] * step;
         this.y += this.speed * this.amplitude * axis[1] * step;
     }
-    blockInputIfBoundary ({axis, inputGame}) {
+    blockInputIfBoundary ({axis, buttons}) {
         // Evaluar los axis evita calculos innecesarios cuando la nave esta quieta sobre los bounds
         if (axis[0] !== 0) {
-            if (this.hitbox[0] <= 0) {inputGame[3] = 0; this.outOfBounds = true;}
-            if (this.hitbox[1] >= display.width) {inputGame[1] = 0; this.outOfBounds = true;}
+            if (this.hitbox[0] <= 0) {buttons[3] = 0; this.outOfBounds = true;}
+            if (this.hitbox[1] >= display.width) {buttons[1] = 0; this.outOfBounds = true;}
         };
         if (axis[1] !==0) {
-            if (this.hitbox[2] <= 0) {inputGame[0] = 0; this.outOfBounds = true;}
-            if (this.hitbox[3] >= display.height) {inputGame[2] = 0; this.outOfBounds = true;}
+            if (this.hitbox[2] <= 0) {buttons[0] = 0; this.outOfBounds = true;}
+            if (this.hitbox[3] >= display.height) {buttons[2] = 0; this.outOfBounds = true;}
         };
     }
     fixOutOfBounds () {
@@ -83,19 +96,21 @@ class Player extends Entity {
         if (this.hitbox[2] < 0) this.y = this.yMargin - this.yOffset;
         if (this.hitbox[3] > display.height) this.y = display.height - this.yMargin - this.yOffset;
     }
-    setVectorAmplitude ({inputGame}) {
+    setVectorAmplitude ({buttons}) {
         this.amplitude =
-                inputGame[0] && inputGame[1] || 
-                inputGame[1] && inputGame[2] ||
-                inputGame[2] && inputGame[3] || 
-                inputGame[3] && inputGame[0] ? 0.707 : 1;
+                buttons[0] && buttons[1] || 
+                buttons[1] && buttons[2] ||
+                buttons[2] && buttons[3] || 
+                buttons[3] && buttons[0] ? 0.707 : 1;
     }
-    shot() {
-        if (this.shotBuffer === 0) {
-            this.pool.getFreeObject('playerBullet', this.x, this.y, 9);
-            this.pool.getFreeObject('playerBullet', this.x, this.y, -8);
-            this.shotBuffer = this.shotBufferInit;
-        };
+    // shot() {
+    //     this.pool.getFreeObject(PlayerBullet, this.x, this.y, 9);
+    //     this.pool.getFreeObject(PlayerBullet, this.x, this.y, -8);
+    //     this.shotBuffer = this.shotBufferInit;
+    // }
+    shot(obj, x, y) {
+        this.queue.push(() => {this.pool.getFreeObject(obj, x, y, 9)});
+        this.queue.push(() => {this.pool.getFreeObject(obj, x, y, -8)});
     }
 };
 

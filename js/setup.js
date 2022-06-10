@@ -30,7 +30,7 @@ function setup() {
 	pool.needs(assets, game.objects, game.iteration)
 
 	// Stage Dependencies
-	stage.needs(assets, pool, sourceImgScaleFactor, display.width, display.height)
+	stage.needs(assets, pool, game.objects, sourceImgScaleFactor, display.width, display.height)
 
 	// Engine Dependencies
 	const update = () => {game.update(step)};
@@ -42,10 +42,6 @@ function setup() {
 		input: {
 			updateButtons: () => input.updateButtons(),
 			playerInputData: () => input.playerInputData(),
-			raw: input.raw,
-			game: input.game,
-			// For developing purposes:
-			get: (property) => input[property],
 		},
 		display: {
 			initFade: (a,b) => display.initFade(a, b),
