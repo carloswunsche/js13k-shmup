@@ -3,41 +3,35 @@
 //////////////////////////
 'use strict';
 
-// Player Input
-const input = new Input();
-
-// Display
-const display = new Display(320, 240);
-
-// Pool of objects **
-const pool = new Pool();
-
-// Stage **
-const stage = new Stage('16px-tileSize');
-
-// Engine **
-const engine = new Engine();
-
-// Game logic **
-const game = new Game();
-
-// Load assets
 const sourceImgScaleFactor = 9;
-const assets = new Assets('img/', sourceImgScaleFactor).loadImagesAnd(setup);
+const input 	= new Input();
+const display 	= new Display(320, 240);
+const pool 		= new Pool();
+const stage 	= new Stage('16px-tileSize');
+const engine 	= new Engine();
+const game 		= new Game();
+const assets 	= new Assets('img/', sourceImgScaleFactor).loadImagesAnd(setupAndRun);
 
-function setup() {
-	// Pool Dependencies
-	pool.needs(assets, game.objects, game.iteration)
+function setupAndRun() {
+	setDependencies();
+	initialize();
+	clean();
+	engine.start();
+}
 
-	// Stage Dependencies
-	stage.needs(assets, pool, game.objects, sourceImgScaleFactor, display.width, display.height)
+function setDependencies() {
+	// 1) Pool Dependencies
+	pool.needs(assets, game.objects, game.iteration);
 
-	// Engine Dependencies
+	// 2) Stage Dependencies
+	stage.needs(assets, pool, game.objects, sourceImgScaleFactor, display.width, display.height);
+
+	// 3) Engine Dependencies
 	const update = () => {game.update(step)};
 	const render = () => {display.render(stage.bg, game.objects)};
 	engine.needs(update, render);
 
-	// Game Dependencies
+	// 4) Game Dependencies
 	const gameFns = {
 		input: {
 			updateButtons: () => input.updateButtons(),
@@ -48,69 +42,34 @@ function setup() {
 			updateFade: (step) => display.updateFade(step),
 		},
 	}
-	game.needs(stage, pool, display.height, gameFns)
+	game.needs(stage, pool, display.height, gameFns);
+}
 
-
-	// Initialize
+function initialize(){
 	stage.init('1st-stage');
 	engine.init(60, 60);
-	game.init(assets.Player);
+	game.init();
+}
 
-	// Clean
+function clean(){
 	assets.deleteUnused();
 	pool.deleteUnused();
 	stage.deleteUnused();
 	game.deleteUnused();
-
-	// Run!
-	engine.start()
-};
-
-
-// // Game logic
-
+}
 
 
 //////////////////////////
-// SET UP
+// HELPER FUNCTIONS
 //////////////////////////
-
-// function onLoadCompletion() {
-// 	pool.init(assets, game.objects);
-// 	stage.init(assets, pool, '1st-stage');
-// 	game.init(assets, pool);
-// 	engine.start()
-// };
-
-
-
-// //////////////////////////
-// // HELPER FUNCTIONS
-// //////////////////////////
 function toRadians(degrees){return degrees * Math.PI/180};
 function loopOver(obj, callback){
 	for (const key in obj) callback(key, obj[key])
 };
-function getAllSubclasses(baseClass) {
-	var globalObject = Function('return this')(); 
-	var allVars = Object.keys(globalObject);
-	var classes = allVars.filter(function (key) {
-	try {
-	  var obj = globalObject[key];
-		  return obj.prototype instanceof baseClass;
-	  } catch (e) {
-		  return false;
-	  }
-	});
-	return classes;
+function getDecimal(n){ // Not used
+	if (Number.isInteger(n)) return 0;
+	return Number('0.'+ n.toString().split('.')[1].slice(0,1));
 };
-
-// function getDecimal(n){
-// 	if (Number.isInteger(n)) return 0;
-// 	return Number('0.'+ n.toString().split('.')[1].slice(0,1));
-// };
-
-
 
 
 //////////////////////////

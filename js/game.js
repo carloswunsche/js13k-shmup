@@ -28,6 +28,10 @@ class Game {
         this.iteration = 0;
         this.runBeforeRender.length = 0;
         this.call.display.initFade('fromBlack', 1);
+        // Remove enemies and bullets
+        this.objects.Enemy.length = 0;
+        this.objects.PlayerBullet.length = 0;
+        this.objects.EnemyBullet.length = 0;
     }
     update() {
         // // Update fade transparency
@@ -99,7 +103,7 @@ class Game {
             arr.forEach(obj => {
                 // If player, pass movement data
                 if (obj instanceof Player) {
-                    // Fix this. Check input.js for more info
+                    // Fix this if possible. Check input.js for more info
                     obj.update(this.call.input.playerInputData());
                 } else obj.update();
             });
