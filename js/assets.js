@@ -11,7 +11,7 @@ class Assets {
 			Stage1: 'stage-1.png',
 			Player: 'player.png',
 			PlayerBullet: 'pBullet.png',
-			Enemy: 'enemy.png',
+			EnemyPop1: 'enemy.png',
 		}
 		this.loadPatterns();
 	}
@@ -44,24 +44,11 @@ class Assets {
 	getRawPattern(stageNum){
 		return this.patterns[stageNum];
 	}
-	getEventsFn(stageNum) {
-        if (stageNum === 1) return function(iteration){
-            if (iteration === 50)    this.pool.getFreeObject(Enemy);
-			if (iteration === 150)   this.pool.getFreeObject(Enemy);
-            if (iteration === 180)   this.pool.getFreeObject(Enemy);
-            if (iteration === 200)   this.pool.getFreeObject(Enemy);
-            if (iteration === 200)   this.bg.speed += 1;
-            if (iteration === 250)   this.bg.queue.push(...this.patterns['2'], ...this.patterns['3']);
-        };
-        if (stageNum === 2) return function(iteration){
-            // Events here...
-        };
-    }
 	getPoolInputArr(stageNum){
         if (stageNum === 1)
 		return [
 			[10, PlayerBullet],
-			[5, Enemy],
+			[5, EnemyPop1],
 		]
 
         if (stageNum === 2) 
@@ -71,6 +58,19 @@ class Assets {
 			// Etc...
 		]
 	}
+	getEventsFn(stageNum) {
+        if (stageNum === 1) return function(iteration){
+            if (iteration === 50)    this.pool.getFreeObject('EnemyPop1', 'Enemy');
+			if (iteration === 150)   this.pool.getFreeObject('EnemyPop1', 'Enemy');
+            if (iteration === 180)   this.pool.getFreeObject('EnemyPop1', 'Enemy');
+            if (iteration === 200)   this.pool.getFreeObject('EnemyPop1', 'Enemy');
+            if (iteration === 200)   this.bg.speed += 1;
+            if (iteration === 250)   this.bg.queue.push(...this.patterns['2'], ...this.patterns['3']);
+        };
+        if (stageNum === 2) return function(iteration){
+            // Events here...
+        };
+    }
 	deleteUnused(){
 		delete this._dir;
 		delete this._imageScaled

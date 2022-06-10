@@ -52,10 +52,7 @@ class Game {
 
         // Run update function of gameObjects
         this.gameObjectsUpdate();
-
-        // Release objects if hp <= 0
-        this.gameObjectsRelease();
-        
+   
         // Run these queued functions before rendering
         this.runBeforeRender.forEach(fn => fn());
         // Always clear queue
@@ -63,6 +60,9 @@ class Game {
 
         // Test for collisions
         this.testCollisions();
+
+        // Release objects if hp <= 0
+        this.gameObjectsRelease();
     }
     scrollBackground(){
         // Scroll background: move each row, wrap around and change pattern
