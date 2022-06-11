@@ -13,10 +13,13 @@ class Entity {
         this.angle = 0;
         this.x = -99;
         this.y = -99;
-        // Taken from global: Used for bullet liberation
+        // Taken from global: Used for bullet shooting
         this.pool = pool;
         // Taken from global: Used for spawning bullets
         this.queue = game.runBeforeRender;
+        // Taken from global: Used for positioning relative to display
+        this.displayWidth = display.width
+        this.displayHeight = display.height
     }
     update (playerInputData) {
         this.updateData(playerInputData);
@@ -52,6 +55,7 @@ class Entity {
 class Player extends Entity {
     constructor(image) {
         super (image);
+        this.free = false;
         this.x = display.width / 2;
         this.y = display.height / 2;
         this.outOfBounds = false;
@@ -104,8 +108,8 @@ class Player extends Entity {
                 buttons[3] && buttons[0] ? 0.707 : 1;
     }
     shot(entity, type, x, y) {
-        this.queue.push(() => {this.pool.getFreeObject(entity, type, x, y, 9)});
-        this.queue.push(() => {this.pool.getFreeObject(entity, type, x, y, -8)});
+        this.queue.push(() => {this.pool.getFreeObject(entity, type,[x, y, 9])});
+        this.queue.push(() => {this.pool.getFreeObject(entity, type,[x, y,-8])});
     }
 }
 
@@ -114,7 +118,7 @@ class PlayerBullet extends Entity {
         super (image);
         this.speed = 12;
     }
-    reset(x, y, side = 9){
+    reset([x, y, side = 9]){
         this.x = x + side;
         this.y = y - 12;
         this.hp = 1;
@@ -129,24 +133,38 @@ class PlayerBullet extends Entity {
     };
 }
 
+//////////////////////////
+// ENEMIES
+//////////////////////////
+
 class Enemy extends Entity {
     constructor(image) {
         super(image)
     }
-    reset(){
+    reset(initArr){
         this.hp = this.r__hp;
         this.hitbox = this.r__hitbox;
         this.timers = new Array(10).fill(0);
+        this.init(initArr);
     }
-    easeOutCubic(xy, startPos, goTo, timeInFrames, timerUsed){
+    init(){} // Fallback
+    easeOutCubic(xy, startPos, goTo, timeInFrames, timerUsed = 1){
         this[xy] = (goTo-startPos) * (1 - Math.pow(1 - this.timers[timerUsed]/timeInFrames, 3)) + startPos;
         this.timerCount(timeInFrames, timerUsed);
     }
-    easeInOutSine(xy, startPos, goTo, timeInFrames, timerUsed){
+    easeInOutSine(xy, startPos, goTo, timeInFrames, timerUsed = 1){
         this[xy] = (goTo-startPos) * (-(Math.cos(Math.PI * this.timers[timerUsed]/timeInFrames) - 1) / 2) + startPos;
         this.timerCount(timeInFrames, timerUsed);
     }
-    timerCount(timeInFrames, timerUsed) {
+    sin(xy, halfCycle, freq, centerPoint, timerUsed = 1){
+        this[xy] = halfCycle * Math.sin(this.timers[timerUsed]/32*freq) + centerPoint;
+        this.timerCount();
+    }
+    cos(xy, phase, cycle, freq, centerPoint, timerUsed = 1){
+        this[xy] = cycle/2*phase * Math.cos(this.timers[timerUsed]/32*freq) + centerPoint;
+        this.timerCount();
+    }
+    timerCount(timeInFrames = 999, timerUsed = 1) {
         if(this.timers[timerUsed] < timeInFrames) this.timers[timerUsed] += 1*step;
     }
 }
@@ -157,20 +175,34 @@ class EnemyPop1 extends Enemy {
         this.angle = 180;
         this.r__hp = 1
         this.r__hitbox = this.setHitbox(this.image.width/2-1, this.image.height/2-3);
+        this.x = 25;
+        this.y = -this.height/2;
+    }
+    updateData () {
+        // Destroy if out of bounds (bottom)
+        if (this.y > this.displayHeight + this.height/2) this.hp = 0;
     }
     updatePos(){
-        this.easeInOutSine('y', -this.image.height, display.height-20, 200, 1);
-        this.easeInOutSine('x', -this.image.width, display.width-20, 120, 2);
+        // this.sin('x', 120, 0.5, 160);
+        this.cos('x',-1, 260, 1, 160);
+        this.y++
     }
 }
-class EnemyPop2 extends Enemy {
+
+class Tank extends Enemy {
     constructor(image){
         super(image)
-        this.r__hp = 1
-        this.r__hitbox = this.setHitbox(this.image.width/2-1, this.image.height/2-3);
+        this.r__hp = 5
+        this.r__hitbox = this.setHitbox(this.image.width/2-2, this.image.height/2-6,0,-2);
+    }
+    init([x]){
+        this.x = x;
+    }
+    updateData () {
+        // Destroy if out of bounds (bottom)
+        if (this.y > this.displayHeight + this.height/2) this.hp = 0;
     }
     updatePos(){
-        this.easeInOutSine('y', -this.image.height, display.height-20, 200, 1);
-        this.easeInOutSine('x', -this.image.width, display.width-20, 120, 2);
+        this.y += 1.1 * step;
     }
 }

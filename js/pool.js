@@ -16,14 +16,14 @@ class Pool {
 			new objClass(this._assets[objClass.name])
 		);
 	}
-	getFreeObject(entity,type,a,b,c,d,e) {
+	getFreeObject(entity,type,par) {
 		if (!this[entity]) return console.error(`Pool: Object "${entity}" not found (Game iteration #${this.gameIteration})`);
 		let arrSize = this[entity].length;
 		for (let i = 0; i < arrSize; i++) {
 			if (this[entity][i].free) {
 				this[entity][i].free = false;
-				this[entity][i].reset(a,b,c,d,e);
-				this.gameObjects[type].push(this[entity][i]);
+				this[entity][i].reset(par);
+				this.gameObjects.get(type).push(this[entity][i]);
 				return;
 			};
 		};

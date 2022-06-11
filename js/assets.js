@@ -12,7 +12,7 @@ class Assets {
 			Player: 'player.png',
 			PlayerBullet: 'pBullet.png',
 			EnemyPop1: 'enemy.png',
-			EnemyPop2: 'enemy.png'
+			Tank: 'tank1.png'
 		}
 		this.loadPatterns();
 	}
@@ -50,7 +50,7 @@ class Assets {
 		return [
 			[12, PlayerBullet],
 			[5, EnemyPop1],
-			[5, EnemyPop2],
+			[5, Tank],
 		];
 
         if (stageNum === 2)
@@ -61,12 +61,13 @@ class Assets {
 	}
 	getEventsFn(stageNum) {
         if (stageNum === 1) return function(iteration){
-            if (iteration === 50)    this.pool.getFreeObject('EnemyPop1', 'Enemy');
-			if (iteration === 150)   this.pool.getFreeObject('EnemyPop2', 'Enemy');
-            if (iteration === 180)   this.pool.getFreeObject('EnemyPop1', 'Enemy');
-            if (iteration === 200)   this.pool.getFreeObject('EnemyPop2', 'Enemy');
-            if (iteration === 200)   this.bg.speed += 1;
-            if (iteration === 250)   this.bg.queue.push(...this.patterns['2'], ...this.patterns['3']);
+			if (iteration === 50)   this.pool.getFreeObject('EnemyPop1', 'EnemyAir');
+			if (iteration === 80)   this.pool.getFreeObject('EnemyPop1', 'EnemyAir');
+			if (iteration === 110)   this.pool.getFreeObject('EnemyPop1', 'EnemyAir');
+            if (iteration === 75)   this.pool.getFreeObject('Tank', 'EnemyLand', [95]);
+			if (iteration === 150)   this.pool.getFreeObject('Tank', 'EnemyLand', [200]);
+            // if (iteration === 200)   this.bg.speed += 1;
+            if (iteration === 550)   this.bg.queue.push(...this.patterns['2'], ...this.patterns['3']);
         };
         if (stageNum === 2) return function(iteration){
             // Events here...

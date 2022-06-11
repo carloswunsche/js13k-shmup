@@ -5,12 +5,14 @@
 class Game {
     constructor(){
         this.objects = {
+            EnemyLand    : [],
             Player       : [],
-            Enemy        : [],
+            EnemyAir     : [],
             PlayerBullet : [],
             EnemyBullet  : [],
             Hud          : [],
         };
+        this.objects = new Map(Object.entries(this.objects));
         this.iteration = 0;
         this.runBeforeRender = [];
     }
@@ -29,9 +31,7 @@ class Game {
         this.runBeforeRender.length = 0;
         this.call.display.initFade('fromBlack', 1);
         // Remove enemies and bullets
-        this.objects.Enemy.length = 0;
-        this.objects.PlayerBullet.length = 0;
-        this.objects.EnemyBullet.length = 0;
+
     }
     update() {
         // // Update fade transparency
@@ -55,7 +55,7 @@ class Game {
    
         // Run these queued functions before rendering
         this.runBeforeRender.forEach(fn => fn());
-        // Always clear queue
+        // Clear queue
         this.runBeforeRender.length = 0;
 
         // Test for collisions
@@ -99,47 +99,49 @@ class Game {
     }
     gameObjectsUpdate(){
         // Entities update function
-        loopOver(this.objects, (_, arr) => {
+        for (const [_, arr] of this.objects){
             arr.forEach(obj => {
                 // If player, pass movement data
                 if (obj instanceof Player) {
                     // Fix this if possible. Check input.js for more info
                     obj.update(this.call.input.playerInputData());
                 } else obj.update();
-            });
-        });
+            })
+        }
     }
+
     testCollisions(){
-        // Collisions early test. Ejecutar solo si hay enemigos y pBullets en pantalla
-        if (this.objects.Enemy.length > 0 && this.objects.PlayerBullet.length > 0) {
-            // Loopear sobre los bullets y luego sobre los enemies
-            this.objects.PlayerBullet.forEach(bullet => {
-                this.objects.Enemy.forEach(enemy => {
-                    // IF necesario sino un bullet puede atacar a varios enemies que estan overlapping
-                    if (bullet.hp > 0) { 
-                        // Evaluar colision
-                        if (bullet.hitbox[0] < enemy.hitbox[1] &&
-                            enemy.hitbox[0] < bullet.hitbox[1] &&
-                            bullet.hitbox[2] < enemy.hitbox[3] &&
-                            enemy.hitbox[2] < bullet.hitbox[3]) {
-                            // bullet se marca para eliminar y al enemy le baja el hp
-                            bullet.hp = 0;
-                            enemy.hp--;
-                        };
-                    };
-                });
-            });
-        };
+        ['EnemyAir','EnemyLand'].forEach(enemyType => {
+            // Collisions early test. Ejecutar solo si hay enemigos y pBullets en pantalla
+            if (this.objects.get(enemyType).length > 0 && this.objects.get('PlayerBullet').length > 0) {
+                // Loopear sobre los bullets y luego sobre los enemies
+                this.objects.get('PlayerBullet').forEach(b => {
+                    this.objects.get(enemyType).forEach(e => {
+                        // Necesario para que un Bullet no pueda atacar a Enemy superpuestos
+                        if (b.hp > 0) { 
+                            // Condicion de la colision
+                            if (b.hitbox[0] < e.hitbox[1] &&
+                                e.hitbox[0] < b.hitbox[1] &&
+                                b.hitbox[2] < e.hitbox[3] &&
+                                e.hitbox[2] < b.hitbox[3]) {
+                                // Ambos pierden HP
+                                b.hp--; e.hp--;
+                            }
+                        }
+                    })
+                })
+            }
+        })
     }
     gameObjectsRelease(){
-        loopOver(this.objects, (_, arr) => {
+        for (const [_, arr] of this.objects){
             for (let i = 0; i < arr.length; i++) {
                 if (arr[i].hp <= 0) {
                     this.pool.releaseObject(...arr.splice(i,1));
                     i--;
                 };
             };
-        });
+        }
     }
     deleteUnused(){
 

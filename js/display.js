@@ -2,6 +2,10 @@
 // DISPLAY
 //////////////////////////
 
+const canvasTxt = window.canvasTxt.default
+canvasTxt.align = 'left';
+canvasTxt.vAlign = 'top';
+
 class Display {
     constructor(width, height, scanlines = false, hitboxes = false) {
         this.width = width;
@@ -17,6 +21,7 @@ class Display {
             // Deactivate the next one for best performance
             this.render(stage.bg, game.objects);
         });
+        this.txt = '';
     }
     needs(){
     }
@@ -50,6 +55,12 @@ class Display {
 
         // Scanlines
         if (this.scanlines) this.renderScanlines(50);
+
+        // Canvas-txt
+        if (this.txt.length > 0) {
+            canvasTxt.fontSize = 14 * this.scale;
+            canvasTxt.drawText(this.ctx, this.txt, 10, 0, this.width, this.height);
+        };
     }
 
     renderBackground (bg) {
@@ -97,7 +108,8 @@ class Display {
     }
 
     renderGameObjects (gameObjects) {
-        loopOver(gameObjects, (_,arr) => {
+        for (const [_, arr] of gameObjects){
+        // loopOver(gameObjects, (_,arr) => { // delete dis
             arr.forEach(obj => {
                 // Save canvas' context state
                 this.ctx.save();
@@ -125,8 +137,9 @@ class Display {
 
                 // Undo opacity, translation and rotation 
                 this.ctx.restore();
-            });
-        });
+            })
+        // }) // delete dis
+        }
     }
 
     initFade(mode, speed) {
@@ -149,7 +162,7 @@ class Display {
     }
 
     renderHitboxes(gameObjects) {
-        loopOver(gameObjects, (_, arr) => {
+        for (const [_, arr] of gameObjects){
             arr.forEach(obj => {
                 let color = 'white'
                 // [0] = x1, [1] = x2, [2] = y1, [3] = y2
@@ -159,7 +172,7 @@ class Display {
                 this.drawLine(obj.hitbox[0], obj.hitbox[3]);
                 this.drawLine(obj.hitbox[0], obj.hitbox[2]);
             });
-        });
+        }
     }
 
     drawLine(x,y, start, color) {

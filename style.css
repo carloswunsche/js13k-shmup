@@ -9,7 +9,7 @@ html, body {
 img { display: none; }
 
 canvas {
-    background-color: #fff;
+    background-color: #000;
     position: absolute;
     left: 50%;
     top: 50%;
