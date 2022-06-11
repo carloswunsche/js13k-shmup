@@ -16,8 +16,10 @@ class Display {
         this.hitboxes = hitboxes;
         this.fade = {value: 0, mode: 'none', speed: 1};
         this.setScaleAndResize();
+        this.pixelatedLook();
         window.addEventListener('resize', ()=>{
             this.setScaleAndResize();
+            this.pixelatedLook();
             // Deactivate the next one for best performance
             this.render(stage.bg, game.objects);
         });
@@ -83,15 +85,15 @@ class Display {
                         // Img
                         bg.image,
                         // Source X
-                        // (this.tileCode % bg.imageCols) * bg.tileScaled,
-                        (bg.pattern[this.bgPatIndex]-1) * bg.tileScaled,
+                        // (this.tileCode % bg.imageCols) * bg.tileSize,
+                        (bg.pattern[this.bgPatIndex]-1) * bg.tileSize,
                         // Source Y
-                        // Math.floor((this.tileCode / bg.imageCols)) * bg.tileScaled,
+                        // Math.floor((this.tileCode / bg.imageCols)) * bg.tileSize,
                         0,
                         // Source Width
-                        bg.tileScaled,
+                        bg.tileSize,
                         // Source Height
-                        bg.tileScaled,
+                        bg.tileSize,
                         // Destination X
                         x * this.scale,
                         // Destination Y
@@ -113,7 +115,6 @@ class Display {
             arr.forEach(obj => {
                 // Save canvas' context state
                 this.ctx.save();
-
                 // Set object's opacity
                 if (obj.opacity < 100) this.ctx.globalAlpha = obj.opacity / 100;
 
@@ -122,16 +123,25 @@ class Display {
 
                 // Rotate
                 if (obj.angle) this.ctx.rotate(toRadians(obj.angle));
-
                 // Draw
                 this.ctx.drawImage(
                     // Img
                     obj.image,
-                    // Translate (-50%, -50%) before drawing
-                    -(obj.image.width * this.scale) / 2,
+                    // Source x
+                    obj.image.sWidth * obj.imageTile,
+                    // Source y
+                    0,
+                    // Source width
+                    obj.image.sWidth,
+                    // Source height
+                    obj.image.height,
+                    // Destination x (translate -50%)
+                    -(obj.image.sWidth * this.scale) / 2,
+                    // Destination y (translate -50%)
                     -(obj.image.height * this.scale) / 2,
-                    // Draw acording to img size * scaled
-                    obj.image.width * this.scale,
+                    // Destination width
+                    obj.image.sWidth * this.scale,
+                    // Destination height
                     obj.image.height * this.scale
                 );
 

@@ -29,12 +29,18 @@ class Assets {
 		loopOver(this._filenames, (key, file) => {
 			// Create a new property for each image
 			this[key] = new Image();
-			this[key].src = this._dir + file;
 
+			// Set source image
+			// this[key].src = this._dir + file;
+
+			// Set source image with hit state
+			this.setSrcWithHitState(this[key], this._dir + file)
+
+			// When image has loaded...
 			this[key].addEventListener('load', () => {
 				// Scale down to intended size once loaded
-				this[key].width  /= this._imageScaled;
-				this[key].height /= this._imageScaled;
+				// this[key].width  /= this._imageScaled;
+				// this[key].height /= this._imageScaled;
 				remaining--;
 				// If all images have loaded...
 				if(remaining === 0) runSetupFn();
@@ -42,6 +48,41 @@ class Assets {
 		});
 		return this;
 	}
+	setSrcWithHitState(key, filename){
+		// Load original image
+		let img = new Image()
+		img.src = filename;
+		// When original image loads...
+		img.addEventListener('load', () => {
+			// Create temporal canvas
+			let canvas = document.createElement('canvas')
+			let ctx = canvas.getContext('2d');
+			canvas.height = img.height;
+			canvas.width = img.width * 2;
+			// New property on key element to save source width
+			key.sWidth = img.width;
+			// Draw original image
+			ctx.drawImage(img, 0, 0)
+			// Get pixel data
+			const imgData = ctx.getImageData(0,0,canvas.width/2,canvas.height);
+			const arr = imgData.data;
+			// Create new arr pushing modified pixel data
+			const arr2 = [];
+			arr.forEach((n)=>{
+			   if (n>0 && n<180) n += 80;
+			   if (n>255) n = 255;
+			   arr2.push(n)
+			})
+			// Create new data container and insert new arr
+			const imageData2 = ctx.createImageData(img.width, img.height);
+			imageData2.data.set(arr2)
+			// Draw new imageData right next to original
+			ctx.putImageData(imageData2, img.width, 0);
+			// Finally Load new image
+			key.src = canvas.toDataURL();
+		})
+	}
+
 	getRawPattern(stageNum){
 		return this.patterns[stageNum];
 	}
@@ -74,13 +115,13 @@ class Assets {
 			if (iteration === 660)  this.pool.getFreeObject('Tank', 'EnemyLand', {x:95});
 			if (iteration === 880)  this.pool.getFreeObject('Tank', 'EnemyLand', {x:208});
 
+			// Los  decimales NO le gustan a firefox al renderizar bg. 
+			// Chrome en cambio no tiene drama con (0.25 en adelante).
 			if (iteration === 1200)  this.bg.speed += 0.25;
-			if (iteration === 1250)  this.bg.speed += 0.25;
 			if (iteration === 1300)  this.bg.speed += 0.25;
-			if (iteration === 1350)  this.bg.speed += 0.25;
 			if (iteration === 1400)  this.bg.speed += 0.25;
-			if (iteration === 1450)  this.bg.speed += 0.25;
-        };z
+			if (iteration === 1500)  this.bg.speed += 0.25;
+        };
         if (stageNum === 2) return function(iteration){
             // Events here...
         };

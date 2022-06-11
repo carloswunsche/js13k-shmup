@@ -23,6 +23,8 @@ class Engine {
         // Multiplier passed to update function. This will be 1 for 60 ups and 0.5 for 120 ups
         this.step = (-1/120) * this.ups + 1.5;
         step = (-1/120) * this.ups + 1.5;
+        // Firefox?
+        this.firefox = typeof InstallTrigger !== 'undefined';
     }
     start () {
     // this.iterations = [0,0];
@@ -50,7 +52,7 @@ class Engine {
         this.timeAcc += this.delta;
 
         while (this.timeAcc > this.slice) {
-            this.callUpdate(this.step);
+            this.callUpdate(this.firefox, this.step);
             this.timeAcc -= this.slice;
             this.renderAcc += this.slice;
 

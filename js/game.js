@@ -14,7 +14,7 @@ class Game {
         };
         this.objects = new Map(Object.entries(this.objects));
         this.iteration = 0;
-        this.runBeforeRender = [];
+        this.queuedFns = [];
     }
     needs(stage, pool, displayHeight, fns){
         // To call level events and scroll background
@@ -28,12 +28,12 @@ class Game {
     }
     init() {
         this.iteration = 0;
-        this.runBeforeRender.length = 0;
+        this.queuedFns.length = 0;
         this.call.display.initFade('fromBlack', 1);
         // Remove enemies and bullets
 
     }
-    update() {
+    update(firefox, stepNotUsedYet) {
         // // Update fade transparency
         this.call.display.updateFade(step);
 
@@ -47,16 +47,21 @@ class Game {
         // Update Frame Counter
         this.iteration += 1 * step;
 
-        // Background Scrolling
-        this.scrollBackground();
+        // Background Scrolling (A) (Fixes firefox crappy draw function)
+        if (firefox) {
+            this.scrollBackground(this.getFlooredSpeed());
+        } else {
+            // Background Scrolling (A) (super smooth in Chrome)
+            this.scrollBackground(this.stage.bg.speed * step);
+        }
 
         // Run update function of gameObjects
         this.gameObjectsUpdate();
    
         // Run these queued functions before rendering
-        this.runBeforeRender.forEach(fn => fn());
+        this.queuedFns.forEach(fn => fn());
         // Clear queue
-        this.runBeforeRender.length = 0;
+        this.queuedFns.length = 0;
 
         // Test for collisions
         this.testCollisions();
@@ -64,14 +69,31 @@ class Game {
         // Release objects if hp <= 0
         this.gameObjectsRelease();
 
+        // DEBUG
         // Display iteration on screen
-        display.txt = String(this.iteration)
+        // display.txt = String(this.iteration)
     }
-    scrollBackground(){
+    getFlooredSpeed(){
+        let speedTimesStep = this.stage.bg.speed * step;
+        let result = 0;
+        this.stage.bg.speedDecimalAcc += this.getDecimal(speedTimesStep)
+        if (this.stage.bg.speedDecimalAcc >= 1) {
+            result += parseInt(this.stage.bg.speedDecimalAcc);
+            this.stage.bg.speedDecimalAcc = this.getDecimal(this.stage.bg.speedDecimalAcc);
+        }
+        result += parseInt(speedTimesStep)
+        return result
+    }
+    getDecimal(n){
+        if (Number.isInteger(n)) return 0;
+        return Number('0.'+ n.toString().split('.')[1].slice(0,1));
+    }
+    scrollBackground(spd){
         // Scroll background: move each row, wrap around and change pattern
         this.stage.bg.rows.forEach((_,y) => {
             // Move
-            this.stage.bg.rows[y] += this.stage.bg.speed * step;
+            // this.stage.bg.rows[y] += this.stage.bg.speed * step;
+            this.stage.bg.rows[y] += spd
 
             // If row position is greater than display height
             if (this.stage.bg.rows[y] >= this.displayHeight) { 
@@ -112,7 +134,6 @@ class Game {
             })
         }
     }
-
     testCollisions(){
         ['EnemyAir','EnemyLand'].forEach(enemyType => {
             // Collisions early test. Ejecutar solo si hay enemigos y pBullets en pantalla
@@ -129,6 +150,8 @@ class Game {
                                 e.hitbox[2] < b.hitbox[3]) {
                                 // Ambos pierden HP
                                 b.hp--; e.hp--;
+                                // Enemy cambia el tile a "Hit"
+                                e.imageTile = 1;
                             }
                         }
                     })

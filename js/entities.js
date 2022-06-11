@@ -6,8 +6,9 @@ class Entity {
     constructor(image){
         this.free = true;
         this.image = image;
-        this.width = image.width;
+        this.width = image.sWidth;
         this.height = image.height;
+	    this.imageTile = 0;
         // Fallback if not declared on child
         this.opacity = 100;
         this.angle = 0;
@@ -15,15 +16,15 @@ class Entity {
         this.y = -99;
         // Taken from global: Used for bullet shooting
         this.pool = pool;
-        // Taken from global: Used for spawning bullets
-        this.queue = game.runBeforeRender;
+        // Taken from global: Used for queue spawning bullets after objects updateData
+        this.queue = game.queuedFns;
         // Taken from global: Used for positioning relative to display
         this.displayWidth = display.width
         this.displayHeight = display.height
     }
     update (playerInputData) {
-        this.updateData(playerInputData);
-        this.updatePos(playerInputData);
+        this.updateDataGeneral(playerInputData);
+        if (this.updatePos) this.updatePos(playerInputData);
         this.hitbox = this.setHitbox();
 
         // Player only
@@ -33,8 +34,10 @@ class Entity {
             this.outOfBounds = false;
         };
     }
-    updateData() {}
-    updatePos () {}
+    updateDataGeneral(playerInputData) {
+        this.imageTile = 0;
+        if(this.updateDataParticular) this.updateDataParticular(playerInputData);
+    }
     setHitbox (xMargin = 2, yMargin = 2, xOffset = 0, yOffset = 0) {
         // Necessary for first time execution
         if (!this.hitbox) {
@@ -64,8 +67,9 @@ class Player extends Entity {
         this.shotBuffer = 0;
         this.hp = 1;
         this.hitbox = this.setHitbox(4,4,0,3);
+        this.zzfx = zzfx
     }
-    updateData (playerInputData) {
+    updateDataParticular (playerInputData) {
         // Adjust input in boundaries
         this.blockInputIfBoundary(playerInputData);
 
@@ -110,6 +114,7 @@ class Player extends Entity {
     shot(entity, type, x, y) {
         this.queue.push(() => {this.pool.getFreeObject(entity, type,[x, y, 9])});
         this.queue.push(() => {this.pool.getFreeObject(entity, type,[x, y,-8])});
+        this.zzfx(...[.5,,1450,,.01,0,2,.37,-42,,-18,.19,,,-0.8,,,.63,.01,.81]); // Blip 80
     }
 }
 
@@ -122,9 +127,9 @@ class PlayerBullet extends Entity {
         this.x = x + side;
         this.y = y - 12;
         this.hp = 1;
-        this.hitbox = this.setHitbox(this.image.width/2, this.image.height/2);
+        this.hitbox = this.setHitbox(this.width/2, this.height/2);
     }
-    updateData () {
+    updateDataParticular () {
         // Destroy if out of the top
         if (this.y < 0) this.hp = 0;
     }
@@ -174,12 +179,12 @@ class EnemyPop1 extends Enemy {
     constructor(image){
         super(image)
         this.angle = 180;
-        this.r__hp = 1
-        this.r__hitbox = this.setHitbox(this.image.width/2-1, this.image.height/2-3);
+        this.r__hp = 2;
+        this.r__hitbox = this.setHitbox(this.width/2-1, this.height/2-3);
         this.r__x = 25;
         this.r__y = -this.height/2;
     }
-    updateData () {
+    updateDataParticular () {
         // Destroy if out of bounds (bottom)
         if (this.y > this.displayHeight + this.height/2) this.hp = 0;
     }
@@ -192,12 +197,12 @@ class EnemyPop1 extends Enemy {
 class Tank extends Enemy {
     constructor(image){
         super(image)
-        this.r__hp = 5
-        this.r__hitbox = this.setHitbox(this.image.width/2-2, this.image.height/2-6,0,-2);
+        this.r__hp = 6
+        this.r__hitbox = this.setHitbox(this.width/2-2, this.height/2-6,0,-2);
         this.r__x = 160;
         this.r__y = -this.height/2;
     }
-    updateData () {
+    updateDataParticular () {
         // Destroy if out of bounds (bottom)
         if (this.y > this.displayHeight + this.height/2) this.hp = 0;
     }

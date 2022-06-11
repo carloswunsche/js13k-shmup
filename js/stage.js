@@ -6,14 +6,13 @@ class Stage {
     constructor(tileSizeStr){
         this._tileSize = parseInt(tileSizeStr);
     }
-    needs(assets, pool, gameObjects, sourceImgScaleFactor, displayW, displayH){
+    needs(assets, pool, gameObjects, displayW, displayH){
         this._assets = assets;
         // To pool stage objects and to get free ones from stage events
         this.pool = pool;
         this._displayW = displayW;
         this._displayH = displayH;
         this._tileQty = this.getTileQty();
-        this._tileScaled = this._tileSize * sourceImgScaleFactor;
         this._gameObjects = gameObjects
     }
     init(stageNum){
@@ -39,15 +38,15 @@ class Stage {
         this.bg.pattern = [...this.patterns['1']];
         this.bg.image = this._assets['Stage'+this.stageNum];
         this.bg.imageCols = this.bg.image.width / this._tileSize;
-        this.bg.tileScaled = this._tileScaled;
         this.bg.rows = this.setRowsArr();
         this.bg.tileSize = this._tileSize;
         this.bg.numCols = this._displayW / this._tileSize;
         this.bg.tileQty = this._tileQty;
         this.bg.changePattern = false;
         this.bg.speed = 1;
-        // Se recomienda moverse en intervalos de 0.25, 0.5 o 1 para mejor rendimiento. 
-        // El minimo intervalo es de 0.1
+        this.bg.speedDecimalAcc = 0;
+        // Los  decimales NO le gustan a firefox al renderizar bg. 
+        // Chrome en cambio no tiene drama con (0.25 en adelante).
     }
     createPatternsObj(rawPatArr){
         let obj = {}
@@ -77,7 +76,6 @@ class Stage {
         delete this._displayW
         delete this._displayH
         delete this._tileQty;
-        delete this._tileScaled;
         delete this._gameObjects;
     }
 };
