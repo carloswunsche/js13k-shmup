@@ -210,3 +210,17 @@ class Tank extends Enemy {
         this.y += 1.1 * step;
     }
 }
+
+//////////////////////////
+// PARTICLES
+//////////////////////////
+
+
+class Particle extends Entity {
+    constructor(image) {
+        super(image)
+    }
+    reset(custom){
+
+    }
+}

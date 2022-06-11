@@ -163,7 +163,11 @@ class Game {
         for (const [_, arr] of this.objects){
             for (let i = 0; i < arr.length; i++) {
                 if (arr[i].hp <= 0) {
+                    // Explosion sound if enemy
+                    if (arr[i] instanceof Enemy) zzfx(...[2.07,,914,.01,.12,.4,4,2.49,,.5,,,,.3,,.5,.19,.44,.17]); // Explosion 90
+                    // Remove from array and set free
                     this.pool.releaseObject(...arr.splice(i,1));
+                    // Fix loop index
                     i--;
                 };
             };
