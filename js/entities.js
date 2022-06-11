@@ -114,7 +114,7 @@ class Player extends Entity {
     shot(entity, type, x, y) {
         this.queue.push(() => {this.pool.getFreeObject(entity, type,[x, y, 9])});
         this.queue.push(() => {this.pool.getFreeObject(entity, type,[x, y,-8])});
-        this.zzfx(...[.5,,1450,,.01,0,2,.37,-42,,-18,.19,,,-0.8,,,.63,.01,.81]); // Blip 80
+        this.zzfx(...[.1,,1450,,.01,0,2,.37,-42,,-18,.19,,,-0.8,,,.63,.01,.81]); // Blip 80
     }
 }
 

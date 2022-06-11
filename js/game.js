@@ -15,6 +15,7 @@ class Game {
         this.objects = new Map(Object.entries(this.objects));
         this.iteration = 0;
         this.queuedFns = [];
+        this.zzfx = zzfx;
     }
     needs(stage, pool, displayHeight, fns){
         // To call level events and scroll background
@@ -152,6 +153,8 @@ class Game {
                                 b.hp--; e.hp--;
                                 // Enemy cambia el tile a "Hit"
                                 e.imageTile = 1;
+                                // Si el enemy murio, marcar el flag para reproducir explosion luego
+                                if (e.hp <= 0) e.sound = 'explosion';
                             }
                         }
                     })
@@ -163,8 +166,8 @@ class Game {
         for (const [_, arr] of this.objects){
             for (let i = 0; i < arr.length; i++) {
                 if (arr[i].hp <= 0) {
-                    // Explosion sound if enemy
-                    if (arr[i] instanceof Enemy) zzfx(...[1.5,,914,.01,.12,.12,4,2.49,,.5,,,,.3,,.5,.18,.44,.14]);
+                    // Check for explosion sound
+                    if (arr[i].sound === 'explosion') this.zzfx(...[.5,,914,.01,.12,.12,4,2.49,,.5,,,,.3,,.5,.18,.44,.14]);
                     // Remove from array and set free
                     this.pool.releaseObject(...arr.splice(i,1));
                     // Fix loop index
