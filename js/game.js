@@ -63,6 +63,9 @@ class Game {
 
         // Release objects if hp <= 0
         this.gameObjectsRelease();
+
+        // Display iteration on screen
+        display.txt = String(this.iteration)
     }
     scrollBackground(){
         // Scroll background: move each row, wrap around and change pattern

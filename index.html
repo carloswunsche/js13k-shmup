@@ -9,15 +9,15 @@
         <!-- Canvas -->
         <canvas></canvas>
         <!-- Debugger -->
-        <button onClick="debug.gameReset(60, 30)">Reset 30fps</button>
-        <button title="R key" onClick="debug.gameReset(60, 60)">Reset 60fps</button>
-        <button onClick="debug.gameReset(120, 120)">Reset 120fps</button>
+        <button onClick="debug.gameReset(60, 30)">30fps</button>
+        <button title="R key" onClick="debug.gameReset(60, 60)">60fps</button>
+        <button onClick="debug.gameReset(120, 120)">120fps</button>
         <button title="K key" onClick="debug.enginePause()">Pause/Advance</button>
         <button title="P key" onClick="debug.engineStart()">Resume</button>
         <!-- <button title="S key" onClick="debug.toggleScanlines()">Toggle scanlines</button> -->
         <button title="H key" onClick="debug.toggleHitboxes()">Toggle hitboxes</button>
-        <button title="+ or = key" onClick="debug.bgSpeedAdd(0.1)">BG Speed up</button>
-        <button title="- key" onClick="debug.bgSpeedSub(0.1)">BG Speed down</button>
+        <button title="+ or = key" onClick="debug.bgSpeedAdd(0.25)">BG Speed up</button>
+        <button title="- key" onClick="debug.bgSpeedSub(0.25)">BG Speed down</button>
         <button title="E key" onClick="debug.spawnEnemy()">Spawn enemy</button>
         <span style="color: #999">Press F11 for full screen</span>
         <!-- Finally load scripts, and always leave setup.js at the end -->

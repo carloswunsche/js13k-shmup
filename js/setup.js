@@ -77,10 +77,9 @@ function getDecimal(n){ // Not used
 //////////////////////////
 const debug = {
 	gameReset(ups, fps) {
-		engine.ups = ups;
-		engine.fps = fps;
-		engine.setup();
-		onLoad();
+		engine.pause()
+		engine.init(ups, fps);
+		engine.start();
 		console.log(`GAME RESET: now rendering at ${fps}fps`);
 	},
 	toggleScanlines(){
@@ -107,7 +106,7 @@ const debug = {
 		console.log('BG speed is ' + game.stage.bg.speed);
 	},
 	spawnEnemy(){
-		game.pool.getFreeObject('enemy');
+		pool.getFreeObject('EnemyPop1', 'EnemyAir');
 	},
 }
 window.addEventListener('keydown', key => {
@@ -120,8 +119,8 @@ window.addEventListener('keydown', key => {
 	if (key.code === 'Equal')debug.bgSpeedAdd(0.25);
 	if (key.code === 'Plus') debug.bgSpeedAdd(0.25);
 	if (key.code === 'KeyE') debug.spawnEnemy();
-	if (key.code === 'Digit1') {
-		localStorage.clear();
-		localStorage.setItem('savedInputs', JSON.stringify(input.history));
-	}
+	// if (key.code === 'Digit1') {
+	// 	localStorage.clear();
+	// 	localStorage.setItem('savedInputs', JSON.stringify(input.history));
+	// }
 });

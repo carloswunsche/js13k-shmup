@@ -50,7 +50,7 @@ class Assets {
 		return [
 			[12, PlayerBullet],
 			[5, EnemyPop1],
-			[5, Tank],
+			[3, Tank],
 		];
 
         if (stageNum === 2)
@@ -61,14 +61,26 @@ class Assets {
 	}
 	getEventsFn(stageNum) {
         if (stageNum === 1) return function(iteration){
-			if (iteration === 50)   this.pool.getFreeObject('EnemyPop1', 'EnemyAir');
-			if (iteration === 80)   this.pool.getFreeObject('EnemyPop1', 'EnemyAir');
-			if (iteration === 110)   this.pool.getFreeObject('EnemyPop1', 'EnemyAir');
-            if (iteration === 75)   this.pool.getFreeObject('Tank', 'EnemyLand', [95]);
-			if (iteration === 150)   this.pool.getFreeObject('Tank', 'EnemyLand', [200]);
+			if (iteration === 50)   this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:-1});
+			if (iteration === 80)   this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:-1});
+            if (iteration === 145)  this.pool.getFreeObject('Tank', 'EnemyLand', {x:95});
+			if (iteration === 225)  this.pool.getFreeObject('Tank', 'EnemyLand', {x:200});
             // if (iteration === 200)   this.bg.speed += 1;
-            if (iteration === 550)   this.bg.queue.push(...this.patterns['2'], ...this.patterns['3']);
-        };
+			if (iteration === 400)  this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:1});
+			if (iteration === 430)  this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:1});
+			if (iteration === 460)  this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:1});
+			if (iteration === 490)  this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:1});
+            if (iteration === 550)  this.bg.queue.push(...this.patterns['2'], ...this.patterns['3']);
+			if (iteration === 660)  this.pool.getFreeObject('Tank', 'EnemyLand', {x:95});
+			if (iteration === 880)  this.pool.getFreeObject('Tank', 'EnemyLand', {x:208});
+
+			if (iteration === 1200)  this.bg.speed += 0.25;
+			if (iteration === 1250)  this.bg.speed += 0.25;
+			if (iteration === 1300)  this.bg.speed += 0.25;
+			if (iteration === 1350)  this.bg.speed += 0.25;
+			if (iteration === 1400)  this.bg.speed += 0.25;
+			if (iteration === 1450)  this.bg.speed += 0.25;
+        };z
         if (stageNum === 2) return function(iteration){
             // Events here...
         };

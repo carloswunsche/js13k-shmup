@@ -73,7 +73,7 @@ class Player extends Entity {
         this.setVectorAmplitude(playerInputData);
 
         // Shot
-        if (playerInputData.buttons[4] > 0 && this.shotBuffer === 0) {
+        if (playerInputData.buttons[4] > 0 && this.shotBuffer <= 0) {
             this.shot('PlayerBullet', 'PlayerBullet', this.x, this.y)
             this.shotBuffer = this.shotBufferInit;
         }
@@ -141,13 +141,14 @@ class Enemy extends Entity {
     constructor(image) {
         super(image)
     }
-    reset(initArr){
+    reset(custom){
         this.hp = this.r__hp;
         this.hitbox = this.r__hitbox;
         this.timers = new Array(10).fill(0);
-        this.init(initArr);
+        this.x = custom?.x || this.r__x;
+        this.y = custom?.y || this.r__y;
+        this.phase = custom?.phase || 1;
     }
-    init(){} // Fallback
     easeOutCubic(xy, startPos, goTo, timeInFrames, timerUsed = 1){
         this[xy] = (goTo-startPos) * (1 - Math.pow(1 - this.timers[timerUsed]/timeInFrames, 3)) + startPos;
         this.timerCount(timeInFrames, timerUsed);
@@ -175,17 +176,16 @@ class EnemyPop1 extends Enemy {
         this.angle = 180;
         this.r__hp = 1
         this.r__hitbox = this.setHitbox(this.image.width/2-1, this.image.height/2-3);
-        this.x = 25;
-        this.y = -this.height/2;
+        this.r__x = 25;
+        this.r__y = -this.height/2;
     }
     updateData () {
         // Destroy if out of bounds (bottom)
         if (this.y > this.displayHeight + this.height/2) this.hp = 0;
     }
     updatePos(){
-        // this.sin('x', 120, 0.5, 160);
-        this.cos('x',-1, 260, 1, 160);
-        this.y++
+        this.cos('x',this.phase, 260, 1, 160);
+        this.y += 1 * step
     }
 }
 
@@ -194,9 +194,8 @@ class Tank extends Enemy {
         super(image)
         this.r__hp = 5
         this.r__hitbox = this.setHitbox(this.image.width/2-2, this.image.height/2-6,0,-2);
-    }
-    init([x]){
-        this.x = x;
+        this.r__x = 160;
+        this.r__y = -this.height/2;
     }
     updateData () {
         // Destroy if out of bounds (bottom)
