@@ -164,7 +164,7 @@ class Game {
             for (let i = 0; i < arr.length; i++) {
                 if (arr[i].hp <= 0) {
                     // Explosion sound if enemy
-                    if (arr[i] instanceof Enemy) zzfx(...[2.07,,914,.01,.12,.4,4,2.49,,.5,,,,.3,,.5,.19,.44,.17]); // Explosion 90
+                    if (arr[i] instanceof Enemy) zzfx(...[1.5,,914,.01,.12,.12,4,2.49,,.5,,,,.3,,.5,.18,.44,.14]);
                     // Remove from array and set free
                     this.pool.releaseObject(...arr.splice(i,1));
                     // Fix loop index
