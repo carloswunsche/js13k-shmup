@@ -3,16 +3,13 @@
 //////////////////////////
 'use strict';
 
-
-
-const sourceImgScaleFactor = 9;
 const input 	= new Input();
 const display 	= new Display(320, 240);
 const pool 		= new Pool();
 const stage 	= new Stage('16px-tileSize');
 const engine 	= new Engine();
 const game 		= new Game();
-const assets 	= new Assets('img/', sourceImgScaleFactor).loadImagesAnd(setupAndRun);
+const assets 	= new Assets('assets/').loadAnd(setupAndRun);
 
 function setupAndRun() {
 	setDependencies();
@@ -72,6 +69,9 @@ function getDecimal(n){ // Not used
 	if (Number.isInteger(n)) return 0;
 	return Number('0.'+ n.toString().split('.')[1].slice(0,1));
 };
+function randomBetween(min, max) { // min and max included 
+	return Math.floor(Math.random() * (max - min + 1) + min)
+}
 
 
 //////////////////////////

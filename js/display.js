@@ -174,13 +174,15 @@ class Display {
     renderHitboxes(gameObjects) {
         for (const [_, arr] of gameObjects){
             arr.forEach(obj => {
-                let color = 'white'
-                // [0] = x1, [1] = x2, [2] = y1, [3] = y2
-                this.drawLine(obj.hitbox[0], obj.hitbox[2], 'start', color);
-                this.drawLine(obj.hitbox[1], obj.hitbox[2]);
-                this.drawLine(obj.hitbox[1], obj.hitbox[3]);
-                this.drawLine(obj.hitbox[0], obj.hitbox[3]);
-                this.drawLine(obj.hitbox[0], obj.hitbox[2]);
+                if (obj.hitbox) {
+                    let color = 'white'
+                    // [0] = x1, [1] = x2, [2] = y1, [3] = y2
+                    this.drawLine(obj.hitbox[0], obj.hitbox[2], 'start', color);
+                    this.drawLine(obj.hitbox[1], obj.hitbox[2]);
+                    this.drawLine(obj.hitbox[1], obj.hitbox[3]);
+                    this.drawLine(obj.hitbox[0], obj.hitbox[3]);
+                    this.drawLine(obj.hitbox[0], obj.hitbox[2]);
+                }
             });
         }
     }

@@ -21,7 +21,7 @@ class Stage {
         // Get stage number from comfy string
         this.stageNum = parseInt(stageNum);
         // Take raw pattern from assets, then make a patterns object
-        this._rawPattern = this._assets.getRawPattern(this.stageNum);
+        this._rawPattern = this._assets.patterns[this.stageNum];
         this.patterns = this.createPatternsObj(this._rawPattern);
         // Pool stage objects
         this._assets.getPoolInputArr(this.stageNum).forEach(el => this.pool.fillWith(el[0], el[1]))

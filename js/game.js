@@ -70,6 +70,10 @@ class Game {
         // Release objects if hp <= 0
         this.gameObjectsRelease();
 
+        // Yes. A second time is needed
+        this.queuedFns.forEach(fn => fn());
+        this.queuedFns.length = 0;
+
         // DEBUG
         // Display iteration on screen
         // display.txt = String(this.iteration)
@@ -142,8 +146,7 @@ class Game {
                 // Loopear sobre los bullets y luego sobre los enemies
                 this.objects.get('PlayerBullet').forEach(b => {
                     this.objects.get(enemyType).forEach(e => {
-                        // Necesario para que un Bullet no pueda atacar a Enemy superpuestos
-                        if (b.hp > 0) { 
+                        if (b.hp > 0 && e.hp > 0) { 
                             // Condicion de la colision
                             if (b.hitbox[0] < e.hitbox[1] &&
                                 e.hitbox[0] < b.hitbox[1] &&
@@ -153,8 +156,13 @@ class Game {
                                 b.hp--; e.hp--;
                                 // Enemy cambia el tile a "Hit"
                                 e.imageTile = 1;
-                                // Si el enemy murio, marcar el flag para reproducir explosion luego
-                                if (e.hp <= 0) e.sound = 'explosion';
+                                if (e.hp <= 0) {
+                                    // Si el enemy murio, marcar el flag para reproducir explosion luego
+                                    e.sound = 'explosion';
+                                    // Particulas de la explosion
+                                    for (let i = 0; i < 30; i++)
+                                    this.queuedFns.push(() => {this.pool.getFreeObject('Particle', 'Player',[e.x, e.y])});
+                                }
                             }
                         }
                     })

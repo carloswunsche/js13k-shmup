@@ -12,20 +12,27 @@ class Entity {
         // Fallback if not declared on child
         this.opacity = 100;
         this.angle = 0;
-        this.x = -99;
-        this.y = -99;
+        this.x = 50;
+        this.y = 50;
         // Taken from global: Used for bullet shooting
         this.pool = pool;
         // Taken from global: Used for queue spawning bullets after objects updateData
         this.queue = game.queuedFns;
+        // Taken from global: Used for enemy bullets to follow player
+        this.player = game.objects.get('Player')[0];
         // Taken from global: Used for positioning relative to display
-        this.displayWidth = display.width
-        this.displayHeight = display.height
+        this.displayWidth = display.width;
+        this.displayHeight = display.height;
     }
     update (playerInputData) {
+        // General updates for all entities
         this.updateDataGeneral(playerInputData);
+        // If instance has these functions, run them
+        if(this.updateDataParticular) this.updateDataParticular(playerInputData);
         if (this.updatePos) this.updatePos(playerInputData);
-        this.hitbox = this.setHitbox();
+
+        // Non-particles get their hitbox updated
+        if ((this instanceof Particle) === false) this.hitbox = this.setHitbox();
 
         // Player only
         if (this.outOfBounds) {
@@ -36,7 +43,6 @@ class Entity {
     }
     updateDataGeneral(playerInputData) {
         this.imageTile = 0;
-        if(this.updateDataParticular) this.updateDataParticular(playerInputData);
     }
     setHitbox (xMargin = 2, yMargin = 2, xOffset = 0, yOffset = 0) {
         // Necessary for first time execution
@@ -147,6 +153,7 @@ class Enemy extends Entity {
         super(image)
     }
     reset(custom){
+        this.sound = undefined;
         this.hp = this.r__hp;
         this.hitbox = this.r__hitbox;
         this.timers = new Array(10).fill(0);
@@ -220,7 +227,24 @@ class Particle extends Entity {
     constructor(image) {
         super(image)
     }
-    reset(custom){
-
+    reset([x, y]){
+        this.x = x;
+        this.y = y;
+        this.hp = 1;
+        this.speed = 5;
+        // To set angle towards player position:
+        // this.angle = Math.atan2(this.y - this.player.y, this.player.x - this.x);
+        // To set a random angle:
+        this.angle = toRadians(randomBetween(0, 359));
+    }
+    updateDataParticular () {
+        // When speed is low, free
+        this.speed -= randomBetween(2, 8)/20 * step
+        if (this.speed <= 1) this.hp = 0;
+    }
+    updatePos () {
+        this.x = this.x + Math.cos(this.angle) * this.speed * step;
+        this.y = this.y - Math.sin(this.angle) * this.speed * step;
+        this.y = this.y + 1 * step;
     }
 }
