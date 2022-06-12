@@ -155,7 +155,7 @@ class Game {
                                 // Ambos pierden HP
                                 b.hp--; e.hp--;
                                 // Enemy cambia el tile a "Hit"
-                                e.imageTile = 1;
+                                e.animation = 1;
                                 if (e.hp <= 0) {
                                     // Si el enemy murio, marcar el flag para reproducir explosion luego
                                     e.sound = 'explosion';

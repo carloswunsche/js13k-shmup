@@ -122,13 +122,13 @@ class Display {
                 this.ctx.translate(obj.x * this.scale, obj.y * this.scale);
 
                 // Rotate
-                if (obj.angle) this.ctx.rotate(toRadians(obj.angle));
+                if (obj.rotation) this.ctx.rotate(toRadians(obj.rotation));
                 // Draw
                 this.ctx.drawImage(
                     // Img
                     obj.image,
                     // Source x
-                    obj.image.sWidth * obj.imageTile,
+                    obj.image.sWidth * obj.animation,
                     // Source y
                     0,
                     // Source width

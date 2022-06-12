@@ -8,10 +8,9 @@ class Entity {
         this.image = image;
         this.width = image.sWidth;
         this.height = image.height;
-	    this.imageTile = 0;
-        // Fallback if not declared on child
+	    this.animation = 0;
         this.opacity = 100;
-        this.angle = 0;
+        this.rotation = 0;
         this.x = 50;
         this.y = 50;
         // Taken from global: Used for bullet shooting
@@ -23,26 +22,26 @@ class Entity {
         // Taken from global: Used for positioning relative to display
         this.displayWidth = display.width;
         this.displayHeight = display.height;
+        // Taken from global: To play sounds
+        this.zzfx = zzfx;
     }
     update (playerInputData) {
         // General updates for all entities
-        this.updateDataGeneral(playerInputData);
-        // If instance has these functions, run them
-        if(this.updateDataParticular) this.updateDataParticular(playerInputData);
-        if (this.updatePos) this.updatePos(playerInputData);
-
+        this.updateDataGeneral();
+        // Particular updateData
+        this.updateData2(playerInputData);
+        // Update position
+        this.updatePos(playerInputData);
         // Non-particles get their hitbox updated
-        if ((this instanceof Particle) === false) this.hitbox = this.setHitbox();
-
-        // Player only
+        if (this.hitbox) this.hitbox = this.setHitbox();
+        // Player only calculations
         if (this.outOfBounds) {
             this.fixOutOfBounds();
             this.hitbox = this.setHitbox();
-            this.outOfBounds = false;
         };
     }
-    updateDataGeneral(playerInputData) {
-        this.imageTile = 0;
+    updateDataGeneral() {
+        this.animation = 0;
     }
     setHitbox (xMargin = 2, yMargin = 2, xOffset = 0, yOffset = 0) {
         // Necessary for first time execution
@@ -63,19 +62,24 @@ class Entity {
 
 class Player extends Entity {
     constructor(image) {
+        // Immutables
         super (image);
-        this.free = false;
-        this.x = display.width / 2;
-        this.y = display.height / 2;
-        this.outOfBounds = false;
         this.speed = 2.5;
         this.shotBufferInit = 4;
+    }
+    reset(){
+        this.outOfBounds = false;
+        this.x = this.displayWidth / 2;
+        this.y = 180;
         this.shotBuffer = 0;
         this.hp = 1;
         this.hitbox = this.setHitbox(4,4,0,3);
-        this.zzfx = zzfx
+        // Just because you're always using it...
+        this.free = false;
+        // Useful if chaining methods
+        return this;  
     }
-    updateDataParticular (playerInputData) {
+    updateData2 (playerInputData) {
         // Adjust input in boundaries
         this.blockInputIfBoundary(playerInputData);
 
@@ -84,7 +88,7 @@ class Player extends Entity {
 
         // Shot
         if (playerInputData.buttons[4] > 0 && this.shotBuffer <= 0) {
-            this.shot('PlayerBullet', 'PlayerBullet', this.x, this.y)
+            this.shot('PlayerBullet', 'PlayerBullet', this.x, this.y);
             this.shotBuffer = this.shotBufferInit;
         }
         if (this.shotBuffer > 0) this.shotBuffer -= 1 * step;
@@ -97,18 +101,19 @@ class Player extends Entity {
         // Evaluar los axis evita calculos innecesarios cuando la nave esta quieta sobre los bounds
         if (axis[0] !== 0) {
             if (this.hitbox[0] <= 0) {buttons[3] = 0; this.outOfBounds = true;}
-            if (this.hitbox[1] >= display.width) {buttons[1] = 0; this.outOfBounds = true;}
+            if (this.hitbox[1] >= this.displayWidth) {buttons[1] = 0; this.outOfBounds = true;}
         };
         if (axis[1] !==0) {
             if (this.hitbox[2] <= 0) {buttons[0] = 0; this.outOfBounds = true;}
-            if (this.hitbox[3] >= display.height) {buttons[2] = 0; this.outOfBounds = true;}
+            if (this.hitbox[3] >= this.displayHeight) {buttons[2] = 0; this.outOfBounds = true;}
         };
     }
     fixOutOfBounds () {
         if (this.hitbox[0] < 0) this.x = this.xMargin - this.xOffset;
-        if (this.hitbox[1] > display.width) this.x = display.width - this.xMargin - this.xOffset;
+        if (this.hitbox[1] > this.displayWidth) this.x = this.displayWidth - this.xMargin - this.xOffset;
         if (this.hitbox[2] < 0) this.y = this.yMargin - this.yOffset;
-        if (this.hitbox[3] > display.height) this.y = display.height - this.yMargin - this.yOffset;
+        if (this.hitbox[3] > this.displayHeight) this.y = this.displayHeight - this.yMargin - this.yOffset;
+        this.outOfBounds = false;
     }
     setVectorAmplitude ({buttons}) {
         this.amplitude =
@@ -129,17 +134,18 @@ class PlayerBullet extends Entity {
         super (image);
         this.speed = 12;
     }
-    reset([x, y, side = 9]){
+    reset([x, y, side]){
         this.x = x + side;
         this.y = y - 12;
         this.hp = 1;
         this.hitbox = this.setHitbox(this.width/2, this.height/2);
     }
-    updateDataParticular () {
+    updateData2 () {
         // Destroy if out of the top
-        if (this.y < 0) this.hp = 0;
+        if (this.y <= 0) this.hp = 0;
     }
     updatePos () {
+        // Move up
         this.y -= this.speed * step;
     };
 }
@@ -151,33 +157,36 @@ class PlayerBullet extends Entity {
 class Enemy extends Entity {
     constructor(image) {
         super(image)
+        this.timers = new Array(10).fill(0);
     }
     reset(custom){
-        this.sound = undefined;
+        this.sound = 'none';
         this.hp = this.r__hp;
         this.hitbox = this.r__hitbox;
-        this.timers = new Array(10).fill(0);
         this.x = custom?.x || this.r__x;
         this.y = custom?.y || this.r__y;
         this.phase = custom?.phase || 1;
+        this.rotation = this.r__rotation || 0;
+        this.timers.fill(0);
+        // Useful if chaining methods
+        return this;
     }
-    easeOutCubic(xy, startPos, goTo, timeInFrames, timerUsed = 1){
+    easeOutCubic(xy, startPos, goTo, timeInFrames, timerUsed = 0){
         this[xy] = (goTo-startPos) * (1 - Math.pow(1 - this.timers[timerUsed]/timeInFrames, 3)) + startPos;
-        this.timerCount(timeInFrames, timerUsed);
     }
-    easeInOutSine(xy, startPos, goTo, timeInFrames, timerUsed = 1){
+    easeInOutSine(xy, startPos, goTo, timeInFrames, timerUsed = 0){
         this[xy] = (goTo-startPos) * (-(Math.cos(Math.PI * this.timers[timerUsed]/timeInFrames) - 1) / 2) + startPos;
-        this.timerCount(timeInFrames, timerUsed);
     }
-    sin(xy, halfCycle, freq, centerPoint, timerUsed = 1){
+    sin(xy, halfCycle, freq, centerPoint, timerUsed = 0){
         this[xy] = halfCycle * Math.sin(this.timers[timerUsed]/32*freq) + centerPoint;
-        this.timerCount();
     }
-    cos(xy, phase, cycle, freq, centerPoint, timerUsed = 1){
+    cos(xy, phase, cycle, freq, centerPoint, timerUsed = 0){
         this[xy] = cycle/2*phase * Math.cos(this.timers[timerUsed]/32*freq) + centerPoint;
-        this.timerCount();
     }
-    timerCount(timeInFrames = 999, timerUsed = 1) {
+    timerCount(timeInFrames = 999, timerUsed = 0) {
+        // Para que no se pueda usar un timer inexistente
+        if (timerUsed >= this.timers.length) timerUsed = this.timers.length-1;
+        // Count time
         if(this.timers[timerUsed] < timeInFrames) this.timers[timerUsed] += 1*step;
     }
 }
@@ -185,18 +194,21 @@ class Enemy extends Entity {
 class EnemyPop1 extends Enemy {
     constructor(image){
         super(image)
-        this.angle = 180;
+        // Used by Enemy class reset
+        this.r__rotation = 180;
         this.r__hp = 2;
         this.r__hitbox = this.setHitbox(this.width/2-1, this.height/2-3);
         this.r__x = 25;
         this.r__y = -this.height/2;
     }
-    updateDataParticular () {
+    updateData2 () {
         // Destroy if out of bounds (bottom)
         if (this.y > this.displayHeight + this.height/2) this.hp = 0;
     }
     updatePos(){
-        this.cos('x',this.phase, 260, 1, 160);
+        // Cosine movement
+        this.cos('x', this.phase, 260, 1, 160);
+        this.timerCount(999);
         this.y += 1 * step
     }
 }
@@ -204,16 +216,18 @@ class EnemyPop1 extends Enemy {
 class Tank extends Enemy {
     constructor(image){
         super(image)
+        // Used by Enemy class reset
         this.r__hp = 6
         this.r__hitbox = this.setHitbox(this.width/2-2, this.height/2-6,0,-2);
         this.r__x = 160;
         this.r__y = -this.height/2;
     }
-    updateDataParticular () {
+    updateData2 () {
         // Destroy if out of bounds (bottom)
         if (this.y > this.displayHeight + this.height/2) this.hp = 0;
     }
     updatePos(){
+        // Go down
         this.y += 1.1 * step;
     }
 }
@@ -232,13 +246,13 @@ class Particle extends Entity {
         this.y = y;
         this.hp = 1;
         this.speed = 5;
+        // Set random angle:
+        this.angle = toRadians(randomBetween(0, 359));
         // To set angle towards player position:
         // this.angle = Math.atan2(this.y - this.player.y, this.player.x - this.x);
-        // To set a random angle:
-        this.angle = toRadians(randomBetween(0, 359));
     }
-    updateDataParticular () {
-        // When speed is low, free
+    updateData2 () {
+        // Subtract speed until bye
         this.speed -= randomBetween(2, 8)/20 * step
         if (this.speed <= 1) this.hp = 0;
     }
