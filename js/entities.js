@@ -242,14 +242,14 @@ class EnemyPop2 extends Enemy {
     }
     updateData () {
         this.timerCount(100);
-        if (this.timers[0] < 50) this.speed -= 0.05;
+        if (this.timers[0] < 50) this.speed -= 0.05 * step;
         if (this.timers[0] === 80) {
             // Shot!
             this.pool.getFreeObject('EnemyBullet', 'EnemyBullet', {x: this.x+1, y: this.y+6, speed: 2, angle:'toPlayer'});
             // Sound
             this.zzfx(...[.1,,346,,,.01,,1.64,-4.1,,,,,.9,,,.04,.95,.08]);
         }
-        if (this.timers[0] === 100) this.speed += 0.04;
+        if (this.timers[0] === 100) this.speed += 0.04 * step;
         // Destroy if out of bounds (bottom)
         if (this.y > this.displayHeight + this.height/2) this.hp = 0;
     }
