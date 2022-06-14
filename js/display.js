@@ -41,7 +41,7 @@ class Display {
 
     render (bg, gameObjects) {
         // To clear the canvas
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // Render Background
         this.renderBackground(bg);
@@ -61,7 +61,7 @@ class Display {
         // Canvas-txt
         if (this.txt.length > 0) {
             canvasTxt.fontSize = 14 * this.scale;
-            canvasTxt.drawText(this.ctx, this.txt, 10, 0, this.width, this.height);
+            canvasTxt.drawText(this.ctx, this.txt, 10, 0, this.width * this.scale, this.height * this.scale);
         };
     }
 

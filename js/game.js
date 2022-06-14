@@ -17,32 +17,38 @@ class Game {
         this.queuedFns = [];
         this.zzfx = zzfx;
     }
-    needs(stage, pool, displayHeight, fns){
+    needs(stage, pool, input, displayHeight, initFade, updateFade){
         // To call level events and scroll background
         this.stage = stage;
         // To scroll background
         this.displayHeight = displayHeight;
         // To liberate objects when hp <= 0
         this.pool = pool;
-        // To control display fades, to update input buttons and get player data from input (fix)
-        this.call = fns;
+        // To access buttons mainly
+        this.input = input;
+        // To initialize display fades
+        this.initFade = initFade;
+        // To update fade state
+        this.updateFade = updateFade;
     }
     init() {
         this.iteration = 0;
         this.queuedFns.length = 0;
-        this.call.display.initFade('fromBlack', 1);
-        // Remove enemies and bullets
-
+        this.initFade('fromBlack', 1);
     }
     update(firefox, stepNotUsedYet) {
         // // Update fade transparency
-        this.call.display.updateFade(step);
+        this.updateFade(step);
 
         // Update arr of pressed buttons
-        this.call.input.updateButtons();
+        // Checking if integer makes the ship feel the same both with 60ups & 120ups
+        if (Number.isInteger(this.iteration)) this.input.updateButtons();
 
         // Current level events
-        this.stage.events(this.iteration);
+        // Checking if integer will boost performance a little bit with 120ups
+        if (Number.isInteger(this.iteration)) this.stage.events(this.iteration);
+
+        // Debug only (to prevent negative scrolling)
         if (this.stage.bg.speed < 0) this.stage.bg.speed = 0;
 
         // Update Frame Counter
@@ -59,7 +65,7 @@ class Game {
         // Run update function of gameObjects
         this.gameObjectsUpdate();
    
-        // Run these queued functions before rendering
+        // Usually for bullet creation
         this.queuedFns.forEach(fn => fn());
         // Clear queue
         this.queuedFns.length = 0;
@@ -70,12 +76,13 @@ class Game {
         // Release objects if hp <= 0
         this.gameObjectsRelease();
 
+        // Usually for particles
         // Yes. A second time is needed
         this.queuedFns.forEach(fn => fn());
         this.queuedFns.length = 0;
 
         // DEBUG
-        // Display iteration on screen
+        // display.txt = String(this.objects.get('Player')[0].vectorAmp)
         // display.txt = String(this.iteration)
     }
     getFlooredSpeed(){
@@ -128,16 +135,8 @@ class Game {
         });
     }
     gameObjectsUpdate(){
-        // Entities update function
-        for (const [_, arr] of this.objects){
-            arr.forEach(obj => {
-                // If player, pass movement data
-                if (obj instanceof Player) {
-                    // Fix this if possible. Check input.js for more info
-                    obj.update(this.call.input.playerInputData());
-                } else obj.update();
-            })
-        }
+        // Run entities update function
+        for (const [_, arr] of this.objects) arr.forEach(obj => obj.update())
     }
     testCollisions(){
         ['EnemyAir','EnemyLand'].forEach(enemyType => {
@@ -183,6 +182,9 @@ class Game {
                 };
             };
         }
+    }
+    ceilIteration(){
+        this.iteration = Math.ceil(this.iteration);
     }
     deleteUnused(){
 

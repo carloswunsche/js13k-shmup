@@ -17,25 +17,23 @@ class Entity {
         this.pool = pool;
         // Taken from global: Used for queue spawning bullets after objects updateData
         this.queue = game.queuedFns;
-        // Taken from global: Used for enemy bullets to follow player
-        this.player = game.objects.get('Player')[0];
         // Taken from global: Used for positioning relative to display
         this.displayWidth = display.width;
         this.displayHeight = display.height;
         // Taken from global: To play sounds
         this.zzfx = zzfx;
     }
-    update (playerInputData) {
+    update () {
         // General updates for all entities
         this.updateDataGeneral();
         // Particular updateData
-        this.updateData2(playerInputData);
+        this.updateData();
         // Update position
-        this.updatePos(playerInputData);
+        this.updatePos();
         // Non-particles get their hitbox updated
         if (this.hitbox) this.hitbox = this.setHitbox();
-        // Player only calculations
-        if (this.outOfBounds) {
+        // Test for out of bounds (Player only)
+        if (this instanceof Player) {
             this.fixOutOfBounds();
             this.hitbox = this.setHitbox();
         };
@@ -52,10 +50,10 @@ class Entity {
             this.yOffset = yOffset;
         };
         return [
-            this.x - this.xMargin + this.xOffset,  //x1
-            this.x + this.xMargin + this.xOffset,  //x2
-            this.y - this.yMargin + this.yOffset,  //y1
-            this.y + this.yMargin + this.yOffset,  //y2
+            this.x - this.xMargin + this.xOffset,  //x1 (left)
+            this.x + this.xMargin + this.xOffset,  //x2 (right)
+            this.y - this.yMargin + this.yOffset,  //y1 (up)
+            this.y + this.yMargin + this.yOffset,  //y2 (down)
         ];
     }
 }
@@ -66,6 +64,8 @@ class Player extends Entity {
         super (image);
         this.speed = 2.5;
         this.shotBufferInit = 4;
+        // Taken from global: Used for moving and shooting
+        this.buttons = input.buttons;
     }
     reset(){
         this.outOfBounds = false;
@@ -79,53 +79,51 @@ class Player extends Entity {
         // Useful if chaining methods
         return this;  
     }
-    updateData2 (playerInputData) {
-        // Adjust input in boundaries
-        this.blockInputIfBoundary(playerInputData);
-
-        // Set vector when diagonals
-        this.setVectorAmplitude(playerInputData);
-
-        // Shot
-        if (playerInputData.buttons[4] > 0 && this.shotBuffer <= 0) {
-            this.shot('PlayerBullet', 'PlayerBullet', this.x, this.y);
+    updateData () {
+        // If button pressed & buffer empty...
+        if (this.buttons[4] > 0 && this.shotBuffer <= 0) {
+            // Queue 2 bullets
+            this.queue.push(() => {this.pool.getFreeObject('PlayerBullet', 'PlayerBullet',{x: this.x, y: this.y, offset: 9})});
+            this.queue.push(() => {this.pool.getFreeObject('PlayerBullet', 'PlayerBullet',{x: this.x, y: this.y, offset: -8})});
+            // Blip!
+            this.zzfx(...[.1,,1450,,.01,0,2,.37,-42,,-18,.19,,,-0.8,,,.63,.01,.81]);
+            // Reset buffer
             this.shotBuffer = this.shotBufferInit;
         }
+        // Buffer timer
         if (this.shotBuffer > 0) this.shotBuffer -= 1 * step;
     }
-    updatePos ({axis}) {
-        this.x += this.speed * this.amplitude * axis[0] * step;
-        this.y += this.speed * this.amplitude * axis[1] * step;
+    updatePos () {
+        // Start from no-movement
+        this.xDir = 0; this.yDir = 0;
+        // Un-press button if out of bounds
+        if (this.hitbox[2] <= 0)                    this.buttons[0] = 0;
+        if (this.hitbox[1] >= this.displayWidth)    this.buttons[1] = 0;
+        if (this.hitbox[3] >= this.displayHeight)   this.buttons[2] = 0;
+        if (this.hitbox[0] <= 0)                    this.buttons[3] = 0;
+        // Set direction based on pressed buttons
+        if (this.buttons[0]) this.yDir--
+        if (this.buttons[1]) this.xDir++
+        if (this.buttons[2]) this.yDir++
+        if (this.buttons[3]) this.xDir--
+        // Set correct vector amplitude
+        this.vectorAmp = this.setVectorAmplitude(); // 1 or 0.707
+        // Update position
+        this.x += (this.xDir * this.vectorAmp) * this.speed * step;
+        this.y += (this.yDir * this.vectorAmp) * this.speed * step;
     }
-    blockInputIfBoundary ({axis, buttons}) {
-        // Evaluar los axis evita calculos innecesarios cuando la nave esta quieta sobre los bounds
-        if (axis[0] !== 0) {
-            if (this.hitbox[0] <= 0) {buttons[3] = 0; this.outOfBounds = true;}
-            if (this.hitbox[1] >= this.displayWidth) {buttons[1] = 0; this.outOfBounds = true;}
-        };
-        if (axis[1] !==0) {
-            if (this.hitbox[2] <= 0) {buttons[0] = 0; this.outOfBounds = true;}
-            if (this.hitbox[3] >= this.displayHeight) {buttons[2] = 0; this.outOfBounds = true;}
-        };
+    setVectorAmplitude () {
+        // If diagonals then return 0.707, if not return 1
+        return this.buttons[0] && this.buttons[1] ||
+               this.buttons[1] && this.buttons[2] ||
+               this.buttons[2] && this.buttons[3] || 
+               this.buttons[3] && this.buttons[0] ? 0.707 : 1;
     }
     fixOutOfBounds () {
-        if (this.hitbox[0] < 0) this.x = this.xMargin - this.xOffset;
-        if (this.hitbox[1] > this.displayWidth) this.x = this.displayWidth - this.xMargin - this.xOffset;
         if (this.hitbox[2] < 0) this.y = this.yMargin - this.yOffset;
+        if (this.hitbox[1] > this.displayWidth) this.x = this.displayWidth - this.xMargin - this.xOffset;
         if (this.hitbox[3] > this.displayHeight) this.y = this.displayHeight - this.yMargin - this.yOffset;
-        this.outOfBounds = false;
-    }
-    setVectorAmplitude ({buttons}) {
-        this.amplitude =
-                buttons[0] && buttons[1] || 
-                buttons[1] && buttons[2] ||
-                buttons[2] && buttons[3] || 
-                buttons[3] && buttons[0] ? 0.707 : 1;
-    }
-    shot(entity, type, x, y) {
-        this.queue.push(() => {this.pool.getFreeObject(entity, type,[x, y, 9])});
-        this.queue.push(() => {this.pool.getFreeObject(entity, type,[x, y,-8])});
-        this.zzfx(...[.1,,1450,,.01,0,2,.37,-42,,-18,.19,,,-0.8,,,.63,.01,.81]); // Blip 80
+        if (this.hitbox[0] < 0) this.x = this.xMargin - this.xOffset;
     }
 }
 
@@ -134,13 +132,13 @@ class PlayerBullet extends Entity {
         super (image);
         this.speed = 12;
     }
-    reset([x, y, side]){
-        this.x = x + side;
-        this.y = y - 12;
+    reset(custom){
+        this.x = custom.x + custom.offset;
+        this.y = custom.y - 12;
         this.hp = 1;
         this.hitbox = this.setHitbox(this.width/2, this.height/2);
     }
-    updateData2 () {
+    updateData () {
         // Destroy if out of the top
         if (this.y <= 0) this.hp = 0;
     }
@@ -158,15 +156,21 @@ class Enemy extends Entity {
     constructor(image) {
         super(image)
         this.timers = new Array(10).fill(0);
+        // Taken from global: Used for Enemy and EnemyBullet to follow player
+        // NOTE: NO sirve llamar a X y a Y individualmente. Hay que tener acceso
+        // al objeto entero para que sus propiedades esten siempre actualizadas.
+        this.player = game.objects.get('Player')[0];
     }
     reset(custom){
         this.sound = 'none';
-        this.hp = this.r__hp;
+        this.hp = this.r__hp || 1;
         this.hitbox = this.r__hitbox;
-        this.x = custom?.x || this.r__x;
-        this.y = custom?.y || this.r__y;
+        this.x = custom?.x || this.r__x || this.displayWidth/2;
+        this.y = custom?.y || this.r__y || -this.height/2;
         this.phase = custom?.phase || 1;
+        this.speed = custom?.speed || this.r__speed || 0;
         this.rotation = this.r__rotation || 0;
+        this.angle = custom?.angle === 'toPlayer' ? Math.atan2(this.y - this.player.y, this.player.x - this.x) : 0;
         this.timers.fill(0);
         // Useful if chaining methods
         return this;
@@ -191,17 +195,33 @@ class Enemy extends Entity {
     }
 }
 
+class EnemyBullet extends Enemy {
+    constructor(image) {
+        super (image);
+        this.r__hitbox = this.setHitbox(this.width/2, this.height/2);
+    }
+    updateData () {
+        // Destroy if out of bounds (how ?)
+        // temporal
+        if (this.timers[0] === 500) this.hp = 0;
+    }
+    updatePos () {
+        // Move in the direction of player
+        this.x = this.x + Math.cos(this.angle) * this.speed * step;
+        this.y = this.y - Math.sin(this.angle) * this.speed * step;
+        this.timerCount(500)
+
+    };
+}
+
 class EnemyPop1 extends Enemy {
     constructor(image){
         super(image)
         // Used by Enemy class reset
-        this.r__rotation = 180;
-        this.r__hp = 2;
         this.r__hitbox = this.setHitbox(this.width/2-1, this.height/2-3);
-        this.r__x = 25;
-        this.r__y = -this.height/2;
+        this.r__hp = 2;
     }
-    updateData2 () {
+    updateData () {
         // Destroy if out of bounds (bottom)
         if (this.y > this.displayHeight + this.height/2) this.hp = 0;
     }
@@ -212,17 +232,41 @@ class EnemyPop1 extends Enemy {
         this.y += 1 * step
     }
 }
+class EnemyPop2 extends Enemy {
+    constructor(image){
+        super(image)
+        // Used by Enemy class reset
+        this.r__hitbox = this.setHitbox(this.width/2-4, this.height/2-5);
+        this.r__speed = 3;
+        this.r__hp = 4;
+    }
+    updateData () {
+        this.timerCount(100);
+        if (this.timers[0] < 50) this.speed -= 0.05;
+        if (this.timers[0] === 80) {
+            // Shot!
+            this.pool.getFreeObject('EnemyBullet', 'EnemyBullet', {x: this.x+1, y: this.y+6, speed: 2, angle:'toPlayer'});
+            // Sound
+            this.zzfx(...[.1,,346,,,.01,,1.64,-4.1,,,,,.9,,,.04,.95,.08]);
+        }
+        if (this.timers[0] === 100) this.speed += 0.04;
+        // Destroy if out of bounds (bottom)
+        if (this.y > this.displayHeight + this.height/2) this.hp = 0;
+    }
+    updatePos(){
+        // Go down adding (variable) speed
+        this.y += this.speed * step;
+    }
+}
 
 class Tank extends Enemy {
     constructor(image){
         super(image)
         // Used by Enemy class reset
-        this.r__hp = 6
         this.r__hitbox = this.setHitbox(this.width/2-2, this.height/2-6,0,-2);
-        this.r__x = 160;
-        this.r__y = -this.height/2;
+        this.r__hp = 6
     }
-    updateData2 () {
+    updateData () {
         // Destroy if out of bounds (bottom)
         if (this.y > this.displayHeight + this.height/2) this.hp = 0;
     }
@@ -251,7 +295,7 @@ class Particle extends Entity {
         // To set angle towards player position:
         // this.angle = Math.atan2(this.y - this.player.y, this.player.x - this.x);
     }
-    updateData2 () {
+    updateData () {
         // Subtract speed until bye
         this.speed -= randomBetween(2, 8)/20 * step
         if (this.speed <= 1) this.hp = 0;

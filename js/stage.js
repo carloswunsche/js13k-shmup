@@ -7,12 +7,16 @@ class Stage {
         this._tileSize = parseInt(tileSizeStr);
     }
     needs(assets, pool, gameObjects, displayW, displayH){
+        // Purpose
         this._assets = assets;
         // To pool stage objects and to get free ones from stage events
         this.pool = pool;
+        // Purpose
         this._displayW = displayW;
         this._displayH = displayH;
+        // Purpose
         this._tileQty = this.getTileQty();
+        // Purpose
         this._gameObjects = gameObjects
     }
     init(stageNum){
@@ -43,10 +47,8 @@ class Stage {
         this.bg.numCols = this._displayW / this._tileSize;
         this.bg.tileQty = this._tileQty;
         this.bg.changePattern = false;
-        this.bg.speed = 1;
+        this.bg.speed = 0; // See stage events for initial speed
         this.bg.speedDecimalAcc = 0;
-        // Los  decimales NO le gustan a firefox al renderizar bg. 
-        // Chrome en cambio no tiene drama con (0.25 en adelante).
     }
     createPatternsObj(rawPatArr){
         let obj = {}

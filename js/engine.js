@@ -41,6 +41,8 @@ class Engine {
         return 'Engine started';
     }   
     loop (newStamp) {
+        // Segun la documentacion de mozilla, lo primero que hacer en el main loop es ya pedirle el siguiente frame al navegador
+        window.requestAnimationFrame((newStamp) => this.loop(newStamp));
     // if (this.iterations[0] >= 100 * (this.step === 1 ? 1 : 2))  {this.paused = true;console.log(this.iterations);}
         if (this.paused) return;
 
@@ -64,7 +66,6 @@ class Engine {
             this.renderAcc = 0;
     // this.iterations[1]++
         };
-        return window.requestAnimationFrame((newStamp) => this.loop(newStamp));
     }    
     pause () {
         if (!this.paused) {

@@ -6,12 +6,18 @@ class Assets {
 	constructor(dir) {
 		this._dir = dir;
 		this._filenames = {
-			Stage1: 'stage-1.png',
-			Player: 'player.png',
-			PlayerBullet: 'pBullet.png',
-			EnemyPop1: 'enemy.png',
-			Tank: 'tank1.png',
-			Particle: 'part.png',
+			// Backgrounds
+			Stage1: 		'stage-1.png',
+			// Player
+			Player: 		'player.png',
+			PlayerBullet: 	'pBullet.png',
+			// Enemies
+			EnemyPop1: 		'enemy.png',
+			EnemyPop2: 		'enemy2.png',
+			Tank: 			'tank1.png',
+			EnemyBullet: 	'eBullet.png',
+			// Particles
+			Particle: 		'part.png',
 		}
 		this.patterns = {};
 		this.patterns[1] = 
@@ -34,9 +40,6 @@ class Assets {
 
 			// When image has loaded...
 			this[key].addEventListener('load', () => {
-				// Scale down to intended size once loaded
-				// this[key].width  /= this._imageScaled;
-				// this[key].height /= this._imageScaled;
 				remaining--;
 				// If all images have loaded...
 				if(remaining === 0) runSetupFn();
@@ -81,10 +84,12 @@ class Assets {
 	getPoolInputArr(stageNum){
         if (stageNum === 1)
 		return [
-			[12,PlayerBullet],
-			[4, EnemyPop1],
-			[2, Tank],
-			[150,Particle]
+			[12,	PlayerBullet],
+			[5,		EnemyBullet],
+			[4, 	EnemyPop1],
+			[3, 	EnemyPop2],
+			[2, 	Tank],
+			[100,	Particle],
 		];
 
         if (stageNum === 2)
@@ -95,27 +100,33 @@ class Assets {
 	}
 	getEventsFn(stageNum) {
         if (stageNum === 1) return function(iteration){
+			if (iteration === 0)	this.bg.speed = 1;
 			if (iteration === 50)   this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:-1});
 			if (iteration === 60)   this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:-1});
 			if (iteration === 70)   this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:-1});
 			if (iteration === 80)   this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:-1});
             if (iteration === 145)  this.pool.getFreeObject('Tank', 'EnemyLand', {x:95});
 			if (iteration === 225)  this.pool.getFreeObject('Tank', 'EnemyLand', {x:200});
-            // if (iteration === 200)   this.bg.speed += 1;
+			if (iteration === 300)  this.pool.getFreeObject('EnemyPop2', 'EnemyAir', {x: 60});
 			if (iteration === 400)  this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:1});
 			if (iteration === 430)  this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:1});
 			if (iteration === 460)  this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:1});
 			if (iteration === 490)  this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:1});
             if (iteration === 550)  this.bg.queue.push(...this.patterns['2'], ...this.patterns['3'], ...this.patterns['4']);
+			if (iteration === 550)  this.pool.getFreeObject('EnemyPop2', 'EnemyAir', {x: 260});
 			if (iteration === 660)  this.pool.getFreeObject('Tank', 'EnemyLand', {x:95});
-			if (iteration === 880)  this.pool.getFreeObject('Tank', 'EnemyLand', {x:208});
-
-			// Los  decimales NO le gustan a firefox al renderizar bg. 
-			// Chrome en cambio no tiene drama con (0.25 en adelante).
-			if (iteration === 1200)  this.bg.speed += 0.25;
-			if (iteration === 1300)  this.bg.speed += 0.25;
-			if (iteration === 1400)  this.bg.speed += 0.25;
-			if (iteration === 1500)  this.bg.speed += 0.25;
+			if (iteration === 750)  this.pool.getFreeObject('EnemyPop2', 'EnemyAir');
+			if (iteration === 820)  this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:-1});
+			if (iteration === 840)  this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:-1});
+			if (iteration === 860)  this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:-1});
+			if (iteration === 880)	this.pool.getFreeObject('Tank', 'EnemyLand', {x:208});
+			if (iteration === 1000) this.pool.getFreeObject('EnemyPop2', 'EnemyAir');
+			if (iteration === 1020) this.pool.getFreeObject('EnemyPop2', 'EnemyAir', {x: 60});
+			if (iteration === 1040) this.pool.getFreeObject('EnemyPop2', 'EnemyAir', {x: 260});
+			if (iteration === 1200)	this.bg.speed += 0.25;
+			if (iteration === 1300) this.bg.speed += 0.25;
+			if (iteration === 1400) this.bg.speed += 0.25;
+			if (iteration === 1500) this.bg.speed += 0.25;
         };
         if (stageNum === 2) return function(iteration){
             // Events here...
