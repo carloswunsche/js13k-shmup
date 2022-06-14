@@ -14,6 +14,7 @@ class Assets {
 			// Enemies
 			EnemyPop1: 		'enemy.png',
 			EnemyPop2: 		'enemy2.png',
+			EnemyPop3: 		'pop_3.png',
 			Tank: 			'tank1.png',
 			EnemyBullet: 	'eBullet.png',
 			// Particles
@@ -85,9 +86,10 @@ class Assets {
         if (stageNum === 1)
 		return [
 			[12,	PlayerBullet],
-			[5,		EnemyBullet],
+			[20,	EnemyBullet],
 			[4, 	EnemyPop1],
 			[3, 	EnemyPop2],
+			[2, 	EnemyPop3],
 			[2, 	Tank],
 			[100,	Particle],
 		];
@@ -114,6 +116,7 @@ class Assets {
 			if (iteration === 490)  this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:1});
             if (iteration === 550)  this.bg.queue.push(...this.patterns['2'], ...this.patterns['3'], ...this.patterns['4']);
 			if (iteration === 550)  this.pool.getFreeObject('EnemyPop2', 'EnemyAir', {x: 260});
+			if (iteration === 580)  this.pool.getFreeObject('EnemyPop3', 'EnemyAir', {side: 1});
 			if (iteration === 660)  this.pool.getFreeObject('Tank', 'EnemyLand', {x:95});
 			if (iteration === 750)  this.pool.getFreeObject('EnemyPop2', 'EnemyAir');
 			if (iteration === 820)  this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:-1});
@@ -123,6 +126,8 @@ class Assets {
 			if (iteration === 1000) this.pool.getFreeObject('EnemyPop2', 'EnemyAir');
 			if (iteration === 1020) this.pool.getFreeObject('EnemyPop2', 'EnemyAir', {x: 60});
 			if (iteration === 1040) this.pool.getFreeObject('EnemyPop2', 'EnemyAir', {x: 260});
+			if (iteration === 1200) this.pool.getFreeObject('EnemyPop3', 'EnemyAir', {side: 1});
+			if (iteration === 1200) this.pool.getFreeObject('EnemyPop3', 'EnemyAir', {side: -1});
 			if (iteration === 1200)	this.bg.speed += 0.25;
 			if (iteration === 1300) this.bg.speed += 0.25;
 			if (iteration === 1400) this.bg.speed += 0.25;

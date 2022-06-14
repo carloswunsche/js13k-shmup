@@ -165,13 +165,15 @@ class Enemy extends Entity {
         this.sound = 'none';
         this.hp = this.r__hp || 1;
         this.hitbox = this.r__hitbox;
+        this.side = custom?.side || 1;
         this.x = custom?.x || this.r__x || this.displayWidth/2;
         this.y = custom?.y || this.r__y || -this.height/2;
         this.phase = custom?.phase || 1;
-        this.speed = custom?.speed || this.r__speed || 0;
+        this.speed = custom?.speed || this.r__speed || 1;
         this.rotation = this.r__rotation || 0;
-        this.angle = custom?.angle === 'toPlayer' ? Math.atan2(this.y - this.player.y, this.player.x - this.x) : 0;
         this.timers.fill(0);
+        // If reset2 exists for this entity, run!
+        this.reset2?.(custom);
         // Useful if chaining methods
         return this;
     }
@@ -194,11 +196,15 @@ class Enemy extends Entity {
         if(this.timers[timerUsed] < timeInFrames) this.timers[timerUsed] += 1*step;
     }
 }
-
 class EnemyBullet extends Enemy {
     constructor(image) {
         super (image);
         this.r__hitbox = this.setHitbox(this.width/2, this.height/2);
+    }
+    reset2(custom){
+        this.angle = custom?.angle === 'toPlayer' ? Math.atan2(this.y - this.player.y, this.player.x - this.x) : this.r__angle || 0;
+
+        this.angle += (toRadians(custom?.add) || 0)
     }
     updateData () {
         // Destroy if out of bounds (how ?)
@@ -213,7 +219,6 @@ class EnemyBullet extends Enemy {
 
     };
 }
-
 class EnemyPop1 extends Enemy {
     constructor(image){
         super(image)
@@ -238,7 +243,7 @@ class EnemyPop2 extends Enemy {
         // Used by Enemy class reset
         this.r__hitbox = this.setHitbox(this.width/2-4, this.height/2-5);
         this.r__speed = 3;
-        this.r__hp = 4;
+        this.r__hp = 3;
     }
     updateData () {
         this.timerCount(100);
@@ -256,6 +261,39 @@ class EnemyPop2 extends Enemy {
     updatePos(){
         // Go down adding (variable) speed
         this.y += this.speed * step;
+    }
+}
+class EnemyPop3 extends Enemy {
+    constructor(image){
+        super(image)
+        // Used by Enemy class reset
+        this.r__hitbox = this.setHitbox(this.width/2-2, this.height/2-2);
+        this.r__hp = 4;
+        this.r__y = 10;
+    }
+    reset2(){
+        this.x = this.displayWidth/2 - (this.displayWidth/2 + 40) * this.side;
+    }
+    updateData () {
+        this.timerCount(300);
+        if (this.timers[0] === 80) {
+            // Shot 3 bulletz
+            this.pool.getFreeObject('EnemyBullet', 'EnemyBullet', {x: this.x+1, y: this.y+6, speed: 2, angle:'toPlayer', add:-20});
+            this.pool.getFreeObject('EnemyBullet', 'EnemyBullet', {x: this.x+1, y: this.y+6, speed: 2, angle:'toPlayer'});
+            this.pool.getFreeObject('EnemyBullet', 'EnemyBullet', {x: this.x+1, y: this.y+6, speed: 2, angle:'toPlayer', add:20});
+            // Sound
+            this.zzfx(...[.1,,346,,,.01,,1.64,-4.1,,,,,.9,,,.04,.95,.08]);
+        }
+        // If out of bounds
+        // (side === 1)
+        if (this.side === 1 && this.x >= this.displayWidth + this.height/2) this.hp = 0;
+        // (side === -1)
+        if (this.side === -1 && this.x <= 0 - this.height/2) this.hp = 0;
+    }
+    updatePos(){
+        // Go down adding (variable) speed
+        this.x += (this.speed * 1.5) * this.side * step;
+        this.y += (this.speed * 0.5) * step;
     }
 }
 
