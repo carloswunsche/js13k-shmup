@@ -202,7 +202,7 @@ class Enemy extends Entity {
 class EnemyBullet extends Enemy {
     constructor(image) {
         super (image);
-        this.r__hitbox = this.setHitbox(this.width/2, this.height/2);
+        this.r__hitbox = this.setHitbox(this.width/2-1, this.height/2-1);
     }
     reset2(custom){
         this.angle = custom?.angle === 'toPlayer' ? Math.atan2(this.y - this.player.y, this.player.x - this.x) : this.r__angle || 0;
