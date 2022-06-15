@@ -7,7 +7,7 @@ const input 	  = new Input();
 const display 	  = new Display(320, 240);
 const audioPlayer = new AudioPlayer();
 const pool 		  = new Pool();
-const stage 	  = new Stage('16px-tileSize');
+const stage 	  = new Stage();
 const engine 	  = new Engine();
 const game 		  = new Game();
 const assets 	  = new Assets('assets/').loadAnd(setupAndRun);
@@ -15,17 +15,16 @@ const assets 	  = new Assets('assets/').loadAnd(setupAndRun);
 function setupAndRun() {
 	setDependencies();
 	initialize();
-	// Deactivated or else temporary game reset won't work
-	// clean();
+	clean();
 	engine.start();
 }
 
 function setDependencies() {
 	// 1) Pool Dependencies
-	pool.needs(assets, game.objects, game.iteration);
+	pool.needs(assets, game.objects);
 
 	// 2) Stage Dependencies
-	stage.needs(assets, pool, game.objects, display.width, display.height);
+	stage.needs(assets, pool, display.width, display.height);
 
 	// 3) Engine Dependencies
 	const update = (firefox, step) => {game.update(firefox, step)};
@@ -73,23 +72,18 @@ function randomBetween(min, max) {
 //////////////////////////
 const debug = {
 	gameReset() {
-		// Liberar todos los objetos del pool (fix thiss!!!)
-		pool.Player.forEach(el => el.free = true);
-		pool.PlayerBullet.forEach(el => el.free = true);
-		pool.EnemyBullet.forEach(el => el.free = true);
-		pool.EnemyPop1.forEach(el => el.free = true);
-		pool.EnemyPop2.forEach(el => el.free = true);
-		pool.EnemyPop3.forEach(el => el.free = true);
-		pool.Tank.forEach(el => el.free = true);
-		pool.Particle.forEach(el => el.free = true);
+		// Liberar todos los objetos del pool
+		for(const key in pool.type) {
+			pool.type[key].forEach(el => el.free = true);
+		}
 		// Reset stage
 		stage.bg.pattern = [...stage.patterns['1']];
 		stage.bg.queue.length = 0
 		stage.bg.changePattern = false;
 		stage.bg.speedDecimalAcc = 0;
-		stage.bg.rows = stage.setRowsArr();
+		stage.bg.rows = [-16, 0, 16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224];
 		stage.bg.speed = 0;
-		// Limpiar game.objects 
+		// Quitar game.objects 
 		for (const [_, arr] of game.objects) {
 			arr.length = 0;
 		}
@@ -103,12 +97,13 @@ const debug = {
 		game.initFade('fromBlack', 1);
 		// Restart
 		engine.start();
+		console.log('Game reset');
 	},
 	changeFps(ups, fps) {
 		engine.init(ups, fps);
 		game.ceilIteration()
 		engine.start();
-		console.log(`GAME RESET: now rendering at ${fps}fps`);
+		console.log(`Now rendering at ${fps}fps`);
 	},
 	toggleScanlines(){
 		display.scanlines = display.scanlines ? undefined : 'scanlines';

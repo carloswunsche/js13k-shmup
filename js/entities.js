@@ -124,8 +124,6 @@ class Player extends Entity {
         if (this.hitbox[0] < 0) this.x = this.xMargin - this.xOffset;
     }
     disable(){
-        // this.x = this.displayWidth/2;
-        // this.y = this.displayHeight + 100;
         this.x = this.displayWidth/2;
         this.y = this.displayHeight + 100;
     }
@@ -163,7 +161,7 @@ class Enemy extends Entity {
         // Taken from global: Used for Enemy and EnemyBullet to follow player
         // NOTE: NO sirve llamar a X y a Y individualmente. Hay que tener acceso
         // al objeto entero para que sus propiedades esten siempre actualizadas.
-        this.player = pool.Player[0];
+        this.player = pool.type.Player[0];
     }
     reset(custom){
         this.hp = this.r__hp || 1;

@@ -33,31 +33,29 @@ class Assets {
 			// Create a new property for each image
 			this[key] = new Image();
 
-			// Set source image
-			// this[key].src = this._dir + file;
-
 			// Set source image with hit state
 			this.setSrcWithHitState(this[key], this._dir + file)
 
 			// When image has loaded...
 			this[key].addEventListener('load', () => {
 				remaining--;
-				// If all images have loaded...
 				if(remaining === 0) runSetupFn();
 			});
 		});
 		return this;
 	}
-	setSrcWithHitState(key, filename){
+	setSrcWithHitState(key, imgPath){
 		// Load original image
 		let img = new Image()
-		img.src = filename;
+		img.src = imgPath;
 		// When original image loads...
 		img.addEventListener('load', () => {
 			// Create temporal canvas
 			let canvas = document.createElement('canvas')
 			let ctx = canvas.getContext('2d');
+			// Set dimensions to image size
 			canvas.height = img.height;
+			// But double the width to be able to draw hit state image later on
 			canvas.width = img.width * 2;
 			// New property on key element to save source width
 			key.sWidth = img.width;
@@ -66,7 +64,7 @@ class Assets {
 			// Get pixel data
 			const imgData = ctx.getImageData(0,0,canvas.width/2,canvas.height);
 			const arr = imgData.data;
-			// Create new arr pushing modified pixel data
+			// Create new arr and push modified pixel data
 			const arr2 = [];
 			arr.forEach((n)=>{
 			   if (n>0 && n<180) n += 80;
@@ -78,7 +76,7 @@ class Assets {
 			imageData2.data.set(arr2)
 			// Draw new imageData right next to original
 			ctx.putImageData(imageData2, img.width, 0);
-			// Finally Load new image
+			// Finally Load new image that includes the original + a hit state
 			key.src = canvas.toDataURL();
 		})
 	}

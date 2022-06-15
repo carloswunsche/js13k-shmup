@@ -3,23 +3,22 @@
 //////////////////////////
 
 class Stage {
-    constructor(tileSizeStr){
-        this._tileSize = parseInt(tileSizeStr);
+    constructor(){
+        this._tileSize = 16;
     }
-    needs(assets, pool, gameObjects, displayW, displayH){
-        // Purpose
+    needs(assets, pool, displayW, displayH){
+        // To get the pool input array for the current level
         this._assets = assets;
-        // To pool stage objects and to get free ones from stage events
+        // To pool objects from assets' input array and to get free ones from stage events
         this.pool = pool;
-        // Purpose
+        // To set bg number of columns
         this._displayW = displayW;
+        // To use setRowsArr function and get tile quantity
         this._displayH = displayH;
-        // Purpose
-        this._tileQty = this.getTileQty();
-        // Purpose
-        this._gameObjects = gameObjects
     }
     init(stageNum){
+        // Get tile quantity
+        this._tileQty = this.getTileQty();
         // Get stage number from comfy string
         this.stageNum = parseInt(stageNum);
         // Take raw pattern from assets, then make a patterns object
@@ -40,7 +39,7 @@ class Stage {
         this.bg.pattern = [...this.patterns['1']];
         this.bg.image = this._assets['Stage'+this.stageNum];
         this.bg.imageCols = this.bg.image.width / this._tileSize;
-        this.bg.rows = this.setRowsArr();
+        this.bg.rows = this._setRowsArr();
         this.bg.tileSize = this._tileSize;
         this.bg.numCols = this._displayW / this._tileSize;
         this.bg.tileQty = this._tileQty;
@@ -58,7 +57,7 @@ class Stage {
         };
         return obj;
     }
-    setRowsArr () {
+    _setRowsArr () {
         let arr =  [];
         for (let n = -this._tileSize; n < this._displayH; n += this._tileSize) arr.push(n);
         return arr;
@@ -72,10 +71,10 @@ class Stage {
     deleteUnused(){
         delete this._assets;
         delete this._rawPattern;
-        delete this._tileSize
-        delete this._displayW
-        delete this._displayH
+        delete this._tileSize;
+        delete this._displayW;
+        delete this._displayH;
+        delete this._setRowsArr;
         delete this._tileQty;
-        delete this._gameObjects;
     }
 };
