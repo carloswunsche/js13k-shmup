@@ -85,13 +85,14 @@ class Assets {
 	getPoolInputArr(stageNum){
         if (stageNum === 1)
 		return [
+			[1,		Player],
 			[12,	PlayerBullet],
 			[20,	EnemyBullet],
 			[4, 	EnemyPop1],
 			[3, 	EnemyPop2],
 			[2, 	EnemyPop3],
 			[2, 	Tank],
-			[100,	Particle],
+			[120,	Particle],
 		];
 
         if (stageNum === 2)
@@ -102,6 +103,7 @@ class Assets {
 	}
 	getEventsFn(stageNum) {
         if (stageNum === 1) return function(iteration){
+			if (iteration === 0)	this.pool.getFreeObject('Player', 'Player');
 			if (iteration === 0)	this.bg.speed = 1;
 			if (iteration === 50)   this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:-1});
 			if (iteration === 60)   this.pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:-1});

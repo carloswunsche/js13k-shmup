@@ -9,9 +9,9 @@
         <!-- Canvas -->
         <canvas></canvas>
         <!-- Debugger -->
-        <button onClick="debug.gameReset(60, 30)">30fps</button>
-        <button title="R key" onClick="debug.gameReset(60, 60)">60fps</button>
-        <button onClick="debug.gameReset(120, 120)">120fps</button>
+        <button onClick="debug.changeFps(60, 30)">30fps</button>
+        <button onClick="debug.changeFps(60, 60)">60fps</button>
+        <button onClick="debug.changeFps(120, 120)">120fps</button>
         <button title="K key" onClick="debug.enginePause()">Pause/Advance</button>
         <button title="P key" onClick="debug.engineStart()">Resume</button>
         <!-- <button title="S key" onClick="debug.toggleScanlines()">Toggle scanlines</button> -->
@@ -32,6 +32,7 @@
         <script type="text/javascript" src="js/engine.js"></script>
         <script type="text/javascript" src="js/input.js"></script>
         <script type="text/javascript" src="js/game.js"></script>
+        <script type="text/javascript" src="js/audio.js"></script>
         <script type="text/javascript" src="js/display.js"></script>
         <script type="text/javascript" src="js/pool.js"></script>
         <script type="text/javascript" src="js/setup.js"></script>

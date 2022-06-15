@@ -3,18 +3,20 @@
 //////////////////////////
 'use strict';
 
-const input 	= new Input();
-const display 	= new Display(320, 240);
-const pool 		= new Pool();
-const stage 	= new Stage('16px-tileSize');
-const engine 	= new Engine();
-const game 		= new Game();
-const assets 	= new Assets('assets/').loadAnd(setupAndRun);
+const input 	  = new Input();
+const display 	  = new Display(320, 240);
+const audioPlayer = new AudioPlayer();
+const pool 		  = new Pool();
+const stage 	  = new Stage('16px-tileSize');
+const engine 	  = new Engine();
+const game 		  = new Game();
+const assets 	  = new Assets('assets/').loadAnd(setupAndRun);
 
 function setupAndRun() {
 	setDependencies();
 	initialize();
-	clean();
+	// Deactivated or else temporary game reset won't work
+	// clean();
 	engine.start();
 }
 
@@ -33,7 +35,7 @@ function setDependencies() {
 	// 4) Game Dependencies
 	const initFade = (a,b) => display.initFade(a, b);
 	const updateFade = (step) => display.updateFade(step);
-	game.needs(stage, pool, input, display.height, initFade, updateFade);
+	game.needs(stage, pool, input, display.height, audioPlayer, initFade, updateFade);
 }
 
 function initialize(){
@@ -70,8 +72,39 @@ function randomBetween(min, max) {
 // DEBUGGER
 //////////////////////////
 const debug = {
-	gameReset(ups, fps) {
-		engine.pause()
+	gameReset() {
+		// Liberar todos los objetos del pool (fix thiss!!!)
+		pool.Player.forEach(el => el.free = true);
+		pool.PlayerBullet.forEach(el => el.free = true);
+		pool.EnemyBullet.forEach(el => el.free = true);
+		pool.EnemyPop1.forEach(el => el.free = true);
+		pool.EnemyPop2.forEach(el => el.free = true);
+		pool.EnemyPop3.forEach(el => el.free = true);
+		pool.Tank.forEach(el => el.free = true);
+		pool.Particle.forEach(el => el.free = true);
+		// Reset stage
+		stage.bg.pattern = [...stage.patterns['1']];
+		stage.bg.queue.length = 0
+		stage.bg.changePattern = false;
+		stage.bg.speedDecimalAcc = 0;
+		stage.bg.rows = stage.setRowsArr();
+		stage.bg.speed = 0;
+		// Limpiar game.objects 
+		for (const [_, arr] of game.objects) {
+			arr.length = 0;
+		}
+		// Volver a primera iteracion
+		game.iteration = 0;
+		// Quitar queued functions
+		game.queuedFns.length = 0;
+		// Reset reset counter (lol)
+		game.resetCounter = 0;
+		// Set fade in
+		game.initFade('fromBlack', 1);
+		// Restart
+		engine.start();
+	},
+	changeFps(ups, fps) {
 		engine.init(ups, fps);
 		game.ceilIteration()
 		engine.start();
@@ -110,6 +143,7 @@ window.addEventListener('keydown', key => {
 	if (key.code === 'Equal')debug.bgSpeedAdd(0.25);
 	if (key.code === 'Plus') debug.bgSpeedAdd(0.25);
 	if (key.code === 'KeyE') debug.spawnEnemy();
+	if (key.code === 'KeyR') debug.gameReset();
 	// if (key.code === 'KeyS') debug.toggleScanlines();
 	// if (key.code === 'Digit1') {
 	// 	localStorage.clear();

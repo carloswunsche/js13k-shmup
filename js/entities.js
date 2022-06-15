@@ -20,8 +20,8 @@ class Entity {
         // Taken from global: Used for positioning relative to display
         this.displayWidth = display.width;
         this.displayHeight = display.height;
-        // Taken from global: To play sounds
-        this.zzfx = zzfx;
+        // Taken from global: To flag sounds
+        this.sfx = game.audio.sfx;
     }
     update () {
         // General updates for all entities
@@ -74,19 +74,17 @@ class Player extends Entity {
         this.shotBuffer = 0;
         this.hp = 1;
         this.hitbox = this.setHitbox(4,4,0,3);
-        // Just because you're always using it...
-        this.free = false;
         // Useful if chaining methods
         return this;  
     }
     updateData () {
-        // If button pressed & buffer empty...
+        // Shot: If button pressed & buffer empty...
         if (this.buttons[4] > 0 && this.shotBuffer <= 0) {
             // Queue 2 bullets
             this.queue.push(() => {this.pool.getFreeObject('PlayerBullet', 'PlayerBullet',{x: this.x, y: this.y, offset: 9})});
             this.queue.push(() => {this.pool.getFreeObject('PlayerBullet', 'PlayerBullet',{x: this.x, y: this.y, offset: -8})});
-            // Blip!
-            this.zzfx(...[.1,,1450,,.01,0,2,.37,-42,,-18,.19,,,-0.8,,,.63,.01,.81]);
+            // Sound
+            this.sfx.sfx_playerShot = true;
             // Reset buffer
             this.shotBuffer = this.shotBufferInit;
         }
@@ -125,6 +123,12 @@ class Player extends Entity {
         if (this.hitbox[3] > this.displayHeight) this.y = this.displayHeight - this.yMargin - this.yOffset;
         if (this.hitbox[0] < 0) this.x = this.xMargin - this.xOffset;
     }
+    disable(){
+        // this.x = this.displayWidth/2;
+        // this.y = this.displayHeight + 100;
+        this.x = this.displayWidth/2;
+        this.y = this.displayHeight + 100;
+    }
 }
 
 class PlayerBullet extends Entity {
@@ -159,10 +163,9 @@ class Enemy extends Entity {
         // Taken from global: Used for Enemy and EnemyBullet to follow player
         // NOTE: NO sirve llamar a X y a Y individualmente. Hay que tener acceso
         // al objeto entero para que sus propiedades esten siempre actualizadas.
-        this.player = game.objects.get('Player')[0];
+        this.player = pool.Player[0];
     }
     reset(custom){
-        this.sound = 'none';
         this.hp = this.r__hp || 1;
         this.hitbox = this.r__hitbox;
         this.side = custom?.side || 1;
@@ -248,11 +251,11 @@ class EnemyPop2 extends Enemy {
     updateData () {
         this.timerCount(100);
         if (this.timers[0] < 50) this.speed -= 0.05 * step;
-        if (this.timers[0] === 80) {
+        if (this.timers[0] === 60) {
             // Shot!
             this.pool.getFreeObject('EnemyBullet', 'EnemyBullet', {x: this.x+1, y: this.y+6, speed: 2, angle:'toPlayer'});
             // Sound
-            this.zzfx(...[.1,,346,,,.01,,1.64,-4.1,,,,,.9,,,.04,.95,.08]);
+            this.sfx.sfx_enemyShot = true;
         }
         if (this.timers[0] === 100) this.speed += 0.04 * step;
         // Destroy if out of bounds (bottom)
@@ -282,7 +285,7 @@ class EnemyPop3 extends Enemy {
             this.pool.getFreeObject('EnemyBullet', 'EnemyBullet', {x: this.x+1, y: this.y+6, speed: 2, angle:'toPlayer'});
             this.pool.getFreeObject('EnemyBullet', 'EnemyBullet', {x: this.x+1, y: this.y+6, speed: 2, angle:'toPlayer', add:20});
             // Sound
-            this.zzfx(...[.1,,346,,,.01,,1.64,-4.1,,,,,.9,,,.04,.95,.08]);
+            this.sfx.sfx_enemyShot = true;
         }
         // If out of bounds
         // (side === 1)
@@ -323,11 +326,12 @@ class Particle extends Entity {
     constructor(image) {
         super(image)
     }
-    reset([x, y]){
-        this.x = x;
-        this.y = y;
+    reset(custom){
+        this.speed = custom?.speed || 5;
+        this.x = custom?.x || 0;
+        this.y = custom?.y || 0;
+        this.rndRange = custom?.rndRange || [2,8];
         this.hp = 1;
-        this.speed = 5;
         // Set random angle:
         this.angle = toRadians(randomBetween(0, 359));
         // To set angle towards player position:
@@ -335,7 +339,7 @@ class Particle extends Entity {
     }
     updateData () {
         // Subtract speed until bye
-        this.speed -= randomBetween(2, 8)/20 * step
+        this.speed -= randomBetween(...this.rndRange)/20 * step
         if (this.speed <= 1) this.hp = 0;
     }
     updatePos () {

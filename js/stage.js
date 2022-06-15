@@ -20,8 +20,6 @@ class Stage {
         this._gameObjects = gameObjects
     }
     init(stageNum){
-        // Push new Player inside gameObjects
-        this._gameObjects.get('Player').push(new Player(assets.Player).reset())
         // Get stage number from comfy string
         this.stageNum = parseInt(stageNum);
         // Take raw pattern from assets, then make a patterns object
