@@ -12,13 +12,6 @@ const engine 	  = new Engine();
 const game 		  = new Game();
 const assets 	  = new Assets('assets/').loadAnd(setupAndRun);
 
-function setupAndRun() {
-	setDependencies();
-	initialize();
-	clean();
-	engine.start();
-}
-
 function setDependencies() {
 	// 1) Pool Dependencies
 	pool.needs(assets, game.objects);
@@ -32,22 +25,26 @@ function setDependencies() {
 	engine.needs(update, render);
 
 	// 4) Game Dependencies
-	const initFade = (a,b) => display.initFade(a, b);
+	const initFade   = (a,b)  => display.initFade(a, b);
 	const updateFade = (step) => display.updateFade(step);
 	game.needs(stage, pool, input, display.height, audioPlayer, initFade, updateFade);
 }
-
 function initialize(){
 	stage.init('1st-stage');
 	engine.init(60, 60);
 	game.init();
 }
-
 function clean(){
 	assets.deleteUnused();
 	pool.deleteUnused();
 	stage.deleteUnused();
 	game.deleteUnused();
+}
+function setupAndRun() {
+	setDependencies();
+	initialize();
+	clean();
+	engine.start();
 }
 
 
@@ -72,21 +69,18 @@ function randomBetween(min, max) {
 //////////////////////////
 const debug = {
 	gameReset() {
-		// Liberar todos los objetos del pool
-		for(const key in pool.type) {
-			pool.type[key].forEach(el => el.free = true);
-		}
-		// Reset stage
+		// Pool: Liberar todos los objetos del los pools
+		for(const key in pool.type) pool.type[key].forEach(el => el.free = true);
+		// Stage: Reset values
 		stage.bg.pattern = [...stage.patterns['1']];
 		stage.bg.queue.length = 0
 		stage.bg.changePattern = false;
 		stage.bg.speedDecimalAcc = 0;
 		stage.bg.rows = [-16, 0, 16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224];
 		stage.bg.speed = 0;
-		// Quitar game.objects 
-		for (const [_, arr] of game.objects) {
-			arr.length = 0;
-		}
+		// Game: 
+		// Vaciar mapa game.objects
+		for (const [_, arr] of game.objects) arr.length = 0;
 		// Volver a primera iteracion
 		game.iteration = 0;
 		// Quitar queued functions
@@ -95,7 +89,7 @@ const debug = {
 		game.resetCounter = 0;
 		// Set fade in
 		game.initFade('fromBlack', 1);
-		// Restart
+		// Engine: (Re)start
 		engine.start();
 		console.log('Game reset');
 	},
@@ -134,11 +128,11 @@ window.addEventListener('keydown', key => {
 	if (key.code === 'KeyK') debug.enginePause();
 	if (key.code === 'KeyP') debug.engineStart();
 	if (key.code === 'KeyH') debug.toggleHitboxes();
-	if (key.code === 'Minus')debug.bgSpeedSub(0.25);
-	if (key.code === 'Equal')debug.bgSpeedAdd(0.25);
-	if (key.code === 'Plus') debug.bgSpeedAdd(0.25);
-	if (key.code === 'KeyE') debug.spawnEnemy();
 	if (key.code === 'KeyR') debug.gameReset();
+	// if (key.code === 'Minus')debug.bgSpeedSub(0.25);
+	// if (key.code === 'Equal')debug.bgSpeedAdd(0.25);
+	// if (key.code === 'Plus') debug.bgSpeedAdd(0.25);
+	// if (key.code === 'KeyE') debug.spawnEnemy();
 	// if (key.code === 'KeyS') debug.toggleScanlines();
 	// if (key.code === 'Digit1') {
 	// 	localStorage.clear();
