@@ -109,7 +109,7 @@ class Assets {
 			if (iteration === 0)		   this.pool.getFreeObject('Player', 'Player');
 			// if (iteration === 0)	       this.bg.speed += 2;
 			// if (iteration === 0)	return game.iteration = 2069;
-			if (iteration === 0)	return this.bg.speed = 1;
+			if (iteration === 0)	return this.bg.speed = 0.5;
 			if (iteration === 50)   return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:-1});
 			if (iteration === 60)   return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:-1});
 			if (iteration === 70)   return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:-1});

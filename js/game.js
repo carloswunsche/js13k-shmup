@@ -39,7 +39,7 @@ class Game {
     init() {
         this.iteration = 0;
         this.queuedFns.length = 0;
-        // this.initFade('fromBlack', 1);
+        this.initFade('fromBlack', 1);
     }
     update(firefox, stepNotUsedYet) {
         // Update fade transparency
@@ -96,7 +96,7 @@ class Game {
         }
 
         // DEBUG TXT
-        display.txt = String(this.iteration)
+        // display.txt = String(this.iteration)
     }
     getFlooredSpeed(){
         let speedTimesStep = this.stage.bg.speed * step;
@@ -117,7 +117,6 @@ class Game {
         // Scroll background: move each row, wrap around and change pattern
         this.stage.bg.rows.forEach((_,y) => {
             // Move
-            // this.stage.bg.rows[y] += this.stage.bg.speed * step;
             this.stage.bg.rows[y] += spd
 
             // If row position is greater than display height
@@ -223,7 +222,6 @@ class Game {
                 }
             })
         })
-        // }
     }
     gameObjectsRelease(){
         for (const [_, arr] of this.objects){

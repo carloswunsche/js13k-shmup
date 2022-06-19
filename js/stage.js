@@ -3,8 +3,8 @@
 //////////////////////////
 
 class Stage {
-    constructor(){
-        this._tileSize = 16;
+    constructor(tileSize){
+        this._tileSize = tileSize;
     }
     needs(assets, pool, displayW, displayH){
         // To get the pool input array for the current level
@@ -67,14 +67,5 @@ class Stage {
     getTileQty() {
         let heightPlusOneRow = this._displayH + this._tileSize;
         return (this._displayW / this._tileSize) * (heightPlusOneRow / this._tileSize);
-    }
-    deleteUnused(){
-        delete this._assets;
-        delete this._rawPattern;
-        delete this._tileSize;
-        delete this._displayW;
-        delete this._displayH;
-        delete this._setRowsArr;
-        delete this._tileQty;
     }
 };

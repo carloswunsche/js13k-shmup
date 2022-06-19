@@ -99,18 +99,18 @@ class Player extends Entity {
     constructor(image) {
         // Immutables
         super(image);
-        this.speed = 2.5;
-        this.shotBufferInit = 4;
+        this.speed = 1.5;
+        this.shotBufferInit = 5;
         // Taken from global: Used for moving and shooting
         this.buttons = input.buttons;
     }
     reset() {
         this.outOfBounds = false;
         this.x = this.displayWidth / 2;
-        this.y = 180;
+        this.y = 95;
         this.shotBuffer = 0;
         this.hp = 1;
-        this.hitbox = this.setHitbox(4, 4, 0, 3);
+        this.hitbox = this.setHitbox(3, 3, 0, 2);
         // Useful if chaining methods
         return this;
     }
@@ -118,8 +118,8 @@ class Player extends Entity {
         // Shot: If button pressed & buffer empty...
         if (this.buttons[4] > 0 && this.shotBuffer <= 0) {
             // Queue 2 bullets
-            this.queue.push(() => { this.pool.getFreeObject('PlayerBullet', 'PlayerBullet', { x: this.x, y: this.y, offset: 9 }) });
-            this.queue.push(() => { this.pool.getFreeObject('PlayerBullet', 'PlayerBullet', { x: this.x, y: this.y, offset: -8 }) });
+            this.queue.push(() => { this.pool.getFreeObject('PlayerBullet', 'PlayerBullet', { x: this.x, y: this.y, offset: 5 }) });
+            this.queue.push(() => { this.pool.getFreeObject('PlayerBullet', 'PlayerBullet', { x: this.x, y: this.y, offset: -4 }) });
             // Sound
             this.sfx.sfx_playerShot = true;
             // Reset buffer
@@ -169,12 +169,12 @@ class Player extends Entity {
 class PlayerBullet extends Entity {
     constructor(image) {
         super(image);
-        this.speed = 12;
+        this.speed = 6;
         this.deadBound = 'top';
     }
     reset(custom) {
         this.x = custom.x + custom.offset;
-        this.y = custom.y - 12;
+        this.y = custom.y - 6;
         this.hp = 1;
         this.hitbox = this.setHitbox(this.width / 2, this.height / 2);
     }
@@ -261,8 +261,8 @@ class EnemyBullet extends Enemy {
         this.deadBound = 'any';
     }
     reset2(custom) {
-        // Check between mode 'toPlayer' and regular degrees
-        if (custom?.angle === 'toPlayer') {
+        // Check between mode 'auto' (towards Player) and regular degrees
+        if (custom?.angle === 'auto') {
             this.angle = Math.atan2(this.y - this.player.y, this.player.x - this.x);
         } else {
             this.angle = this.toRadians(custom?.angle || 0);
@@ -287,7 +287,7 @@ class SinePop extends Enemy {
     constructor(image) {
         super(image)
         // Used by Enemy class reset
-        this.r__hitbox = this.setHitbox(this.width / 2 - 1, this.height / 2 - 3);
+        this.r__hitbox = this.setHitbox(this.width / 2 - 1, this.height / 2 - 2);
         this.r__hp = 2;
         this.deadBound = 'bottom';
     }
@@ -306,7 +306,7 @@ class Sniper extends Enemy {
     constructor(image) {
         super(image)
         // Used by Enemy class reset
-        this.r__hitbox = this.setHitbox(this.width / 2 - 4, this.height / 2 - 5);
+        this.r__hitbox = this.setHitbox(this.width / 2 - 2, this.height / 2 - 2);
         this.r__speed = 3;
         this.r__hp = 3;
         this.deadBound = 'bottom';
@@ -314,7 +314,7 @@ class Sniper extends Enemy {
     updateData() {
         this.timerCount(100);
         if (this.timers[0] < 50) this.speed -= 0.05 * step;
-        if (this.timers[0] === 60) this.shot(1, 2, 'toPlayer', 0, 1, 6);
+        if (this.timers[0] === 60) this.shot(1, 2, 'auto', 0, -2, 4);
         if (this.timers[0] === 100) this.speed += 0.04 * step;
         // Destroy if out of bounds (bottom)
         if (this.y > this.displayHeight + this.height / 2) this.hp = 0;
@@ -340,7 +340,7 @@ class Fatty extends Enemy {
     }
     updateData() {
         this.timerCount(300);
-        if (this.timers[0] === 80) this.shot(3, 2.5, 'toPlayer', 20);
+        if (this.timers[0] === 80) this.shot(3, 2.5, 'auto', 20);
     }
     updatePos() {
         // Go down adding (variable) speed
@@ -352,7 +352,7 @@ class Tank extends Enemy {
     constructor(image) {
         super(image)
         // Used by Enemy class reset
-        this.r__hitbox = this.setHitbox(this.width / 2 - 2, this.height / 2 - 6, 0, -2);
+        this.r__hitbox = this.setHitbox(this.width / 2 - 2, this.height / 2 - 2, 0, -1);
         this.r__hp = 6;
         this.deadBound = 'bottom';
     }
@@ -379,7 +379,7 @@ class Assaulter extends Enemy {
         if (this.timers[0] === 40)  this.shot(10, 2);
         if (this.timers[0] === 80)  this.angle = Math.atan2(this.y - this.player.y, this.player.x - this.x);
         if (this.timers[0] > 80)    this.speed += 0.04 * step;
-        if (this.timers[0] === 99)  this.shot(3, 2, 'toPlayer', 20);
+        if (this.timers[0] === 99)  this.shot(3, 2, 'auto', 20);
     }
     updatePos() {
         this.x = this.x + Math.cos(this.angle) * this.speed * step;

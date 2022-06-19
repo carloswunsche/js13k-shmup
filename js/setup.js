@@ -4,10 +4,10 @@
 'use strict';
 
 const input 	  = new Input();
-const display 	  = new Display(320, 240);
+const display 	  = new Display(160, 120, 8);
 const audioPlayer = new AudioPlayer();
 const pool 		  = new Pool();
-const stage 	  = new Stage();
+const stage 	  = new Stage(8);
 const engine 	  = new Engine();
 const game 		  = new Game();
 const assets 	  = new Assets('assets/').loadAnd(setupAndRun);
@@ -34,12 +34,6 @@ function initialize(){
 	engine.init(60, 60);
 	game.init();
 }
-// function clean(){
-// 	assets.deleteUnused();
-// 	pool.deleteUnused();
-// 	stage.deleteUnused();
-// 	game.deleteUnused();
-// }
 function setupAndRun() {
 	setDependencies();
 	initialize();
@@ -60,7 +54,7 @@ const debug = {
 		stage.bg.queue.length = 0
 		stage.bg.changePattern = false;
 		stage.bg.speedDecimalAcc = 0;
-		stage.bg.rows = [-16, 0, 16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224];
+		stage.bg.rows = stage._setRowsArr();;
 		stage.bg.speed = 0;
 		// Game: 
 		// Vaciar mapa game.objects
