@@ -30,9 +30,6 @@ class Pool {
 		};
 		console.error(`Pool: No more free ${entity}(s)`);
 	}
-	releaseObject(obj){
-		obj.free = true;
-	}
 	deleteUnused(){
 		delete this._assets;
 	}

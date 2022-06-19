@@ -1,23 +1,11 @@
-html, body {
-    height: 100%;
-    width: 100%;
+body {
     margin: 0;
-    padding: 0;
-    background-color: #000;
+    background-color: #000
 }
 
-img { display: none; }
-
 canvas {
-    background-color: #000;
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
-    /* image-rendering: optimizeSpeed;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: -o-crisp-edges;
-    image-rendering: pixelated;
-    -ms-interpolation-mode: nearest-neighbor; */
+    transform: translate(-50%, -50%)
 }

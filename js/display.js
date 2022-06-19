@@ -15,6 +15,8 @@ class Display {
         this.scanlines = scanlines;
         this.hitboxes = hitboxes;
         this.fade = {value: 0, mode: 'none', speed: 1};
+        // Used for compressed pattern array
+        this.currentTile;
         this.setScaleAndResize();
         this.pixelatedLook();
         window.addEventListener('resize', ()=>{
@@ -36,7 +38,9 @@ class Display {
         if (forced) this.scale = forced;
         // Resize
         this.canvas.width = this.scale * this.width;
-        this.canvas.height = this.scale * this.height;    
+        this.canvas.height = this.scale * this.height;
+
+        this.p__tileTimesScaledCanvas = 16 * this.scale;
     }
 
     render (bg, gameObjects) {
@@ -66,47 +70,69 @@ class Display {
     }
 
     renderBackground (bg) {
-        //////////////
-        // Performance
-        this.p__tileTimesScaledCanvas = bg.tileSize * this.scale;
-        //////////////
-        this.bgPatIndex = 0;
+        let i = 0;
         bg.rows.forEach((_, y) => {
             //////////////
             // Performance
-            this.p__destinationY = bg.rows[y] * this.scale;
+            let p__destY = bg.rows[y] * this.scale;
             //////////////
             for (let x = 0; x < this.width; x += bg.tileSize) {
                 // Para no renderizar al pedo el row que queda out of bounds (arriba)
-                if (bg.rows[y] <= -bg.tileSize) {this.bgPatIndex++; continue;}
-                // Check if tile is not empty/transparent
-                if (bg.pattern[this.bgPatIndex] !== 0) { 
-                    this.ctx.drawImage(
-                        // Img
-                        bg.image,
-                        // Source X
-                        // (this.tileCode % bg.imageCols) * bg.tileSize,
-                        (bg.pattern[this.bgPatIndex]-1) * bg.tileSize,
-                        // Source Y
-                        // Math.floor((this.tileCode / bg.imageCols)) * bg.tileSize,
-                        0,
-                        // Source Width
-                        bg.tileSize,
-                        // Source Height
-                        bg.tileSize,
-                        // Destination X
-                        x * this.scale,
-                        // Destination Y
-                        this.p__destinationY,
-                        // Destination Width
-                        this.p__tileTimesScaledCanvas,
-                        // Destination height
-                        this.p__tileTimesScaledCanvas 
-                    );
-                };
-                this.bgPatIndex++;
+                if (bg.rows[y] <= -bg.tileSize) {i++; continue;}
+                // Update scanned tile if not undefined
+                if(bg.pattern[i] !== undefined) this.currentTile = bg.pattern[i];
+                // Draw
+                this.drawBg(bg, x, p__destY);
+                // Update pattern index
+                i++;
             };
         });
+    }
+
+    drawBg(bg, x, p__destY){
+        // Determine rotation state
+        typeof this.currentTile === 'string' ? this.r = 1 : this.r = 0;
+        // If rotation is on... get angle and more stuff
+        if (this.r) {
+            let a;
+            switch (this.currentTile.slice(-1)) {
+                case 'a': a = 1.5708; break; // 90 degree
+                case 'b': a = 3.1415; break; // 180 degree
+                case 'c': a = 4.7123; break; // 270 degree
+            }
+            // Save context before rotating
+            this.ctx.save();
+            // Translate canvas to render position
+            this.ctx.translate((x + 8) * this.scale, p__destY + (8 * this.scale));
+            // Rotate
+            this.ctx.rotate(a);
+        }
+
+        this.ctx.drawImage(
+            // Img
+            bg.image,
+            // Source X
+            // (this.tileCode % bg.imageCols) * bg.tileSize,
+            parseInt(this.currentTile) * bg.tileSize,
+            // Source Y
+            // Math.floor((this.tileCode / bg.imageCols)) * bg.tileSize,
+            0,
+            // Source Width
+            bg.tileSize,
+            // Source Height
+            bg.tileSize,
+            // Destination X
+            this.r ? -8 * this.scale : x * this.scale,
+            // Destination Y
+            this.r ? -8 * this.scale : p__destY,
+            // Destination Width
+            this.p__tileTimesScaledCanvas,
+            // Destination height
+            this.p__tileTimesScaledCanvas 
+        );
+
+        // Finally, if rotation was activated, restore context
+        if (this.r) this.ctx.restore();
     }
 
     renderGameObjects (gameObjects) {

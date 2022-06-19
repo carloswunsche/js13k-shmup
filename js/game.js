@@ -14,7 +14,6 @@ class Game {
             Hud          : [],
         };
         this.objects = new Map(Object.entries(this.objects));
-        this.iteration = 0;
         this.queuedFns = [];
         this.resetCounter = 0;
     }
@@ -40,17 +39,11 @@ class Game {
     init() {
         this.iteration = 0;
         this.queuedFns.length = 0;
-        this.initFade('fromBlack', 1);
+        // this.initFade('fromBlack', 1);
     }
     update(firefox, stepNotUsedYet) {
         // Update fade transparency
         this.updateFade(step);
-
-        // Reset game if player dies
-        if (this.objects.get('Player').length === 0) this.resetCounter += 1 * step;
-        if (this.resetCounter === 50) this.initFade('toBlack', 1);
-        if (this.resetCounter === 150) debug.gameReset();
-
 
         // Update arr of pressed buttons
         // Checking if integer makes the ship feel the same both with 60ups & 120ups
@@ -66,21 +59,19 @@ class Game {
         // Update Frame Counter
         this.iteration += 1 * step;
 
-        // Background Scrolling (A) (Fixes firefox crappy draw function)
         if (firefox) {
+            // Background Scrolling (A) (Fixes firefox crappy draw function)
             this.scrollBackground(this.getFlooredSpeed());
         } else {
             // Background Scrolling (A) (super smooth in Chrome)
             this.scrollBackground(this.stage.bg.speed * step);
         }
 
-        // Run update function of gameObjects
-        this.gameObjectsUpdate();
+        // Run update function of each gameObject
+        for (const [_, arr] of this.objects) arr.forEach(obj => obj.update());
    
-        // Usually for bullet creation
-        this.queuedFns.forEach(fn => fn());
-        // Clear queue
-        this.queuedFns.length = 0;
+        // At this point call functions inside queue (usually bullet creation)
+        this.runQueued();
 
         // Test for collisions between PlayerBullets and Enemy
         this.testCollision();
@@ -91,28 +82,32 @@ class Game {
         // Release objects if hp <= 0
         this.gameObjectsRelease();
 
-        // Usually for particles
-        // Yes. A second time is needed
-        this.queuedFns.forEach(fn => fn());
-        this.queuedFns.length = 0;
+        // Call functions inside queue again (usually particle creation)
+        this.runQueued();
 
-        // Play sounds
-        this.audio.player.playSfx(this.audio.sfx)
+        // Play sounds if any
+        this.audio.player.playSfx(this.audio.sfx);
 
-        // DEBUG
-        // display.txt = String(this.objects.get('Player')[0].vectorAmp)
-        // display.txt = String(this.iteration)
+        // Reset game if player dies
+        if (!this.objects.get('Player')[0]) {
+            this.resetCounter += 1 * step;
+            if (this.resetCounter === 50) this.initFade('toBlack', 1);
+            if (this.resetCounter === 150) debug.gameReset();
+        }
+
+        // DEBUG TXT
+        display.txt = String(this.iteration)
     }
     getFlooredSpeed(){
         let speedTimesStep = this.stage.bg.speed * step;
         let result = 0;
-        this.stage.bg.speedDecimalAcc += this.getDecimal(speedTimesStep)
+        this.stage.bg.speedDecimalAcc += this.getDecimal(speedTimesStep);
         if (this.stage.bg.speedDecimalAcc >= 1) {
-            result += parseInt(this.stage.bg.speedDecimalAcc);
+            result += Math.floor(this.stage.bg.speedDecimalAcc);
             this.stage.bg.speedDecimalAcc = this.getDecimal(this.stage.bg.speedDecimalAcc);
         }
-        result += parseInt(speedTimesStep)
-        return result
+        result += Math.floor(speedTimesStep);
+        return result;
     }
     getDecimal(n){
         if (Number.isInteger(n)) return 0;
@@ -152,16 +147,13 @@ class Game {
             };
         });
     }
-    gameObjectsUpdate(){
-        // Run entities update function
-        for (const [_, arr] of this.objects) arr.forEach(obj => obj.update())
-    }
     testCollision(){
+        let pBulLayer = this.objects.get('PlayerBullet');
         ['EnemyAir','EnemyLand'].forEach(enemyType => {
             // Collisions early test. Ejecutar solo si hay enemigos y pBullets en pantalla
-            if (this.objects.get(enemyType).length > 0 && this.objects.get('PlayerBullet').length > 0) {
+            if (this.objects.get(enemyType).length > 0 && pBulLayer.length > 0) {
                 // Loopear sobre los bullets y luego sobre los enemies
-                this.objects.get('PlayerBullet').forEach(b => {
+                pBulLayer.forEach(b => {
                     this.objects.get(enemyType).forEach(e => {
                         if (b.hp > 0 && e.hp > 0) { 
                             // Condicion de la colision
@@ -173,10 +165,11 @@ class Game {
                                 b.hp--; e.hp--;
                                 // Enemy cambia el tile a "Hit"
                                 e.animation = 1;
+                                // Si el enemy evaluado murio...
                                 if (e.hp <= 0) {
                                     // Audio: explosion sfx flag
                                     this.audio.sfx.sfx_explosion = true;
-                                    // Particulas de la explosion
+                                    // Pool: Liberar particulas de la explosion
                                     for (let i = 0; i < 30; i++)
                                     this.queuedFns.push(() => {
                                         this.pool.getFreeObject(
@@ -186,9 +179,8 @@ class Game {
                                         )
                                     });
                                 }
-                                // Performance:
-                                // Salir del forEach de los enemigos si el bullet actual murio
-                                if (b.hp <= 0) return;
+                                // Salir del forEach de los enemigos ya que el bullet actual murió
+                                return;
                             }
                         }
                     })
@@ -200,8 +192,10 @@ class Game {
         // To speed up player collision test
         let player = this.objects.get('Player')[0];
         // Collisions early test. Ejecutar solo si hay Enemy Bullets en pantalla y player existe
-        if (this.objects.get('EnemyBullet').length > 0 && player) {
-            this.objects.get('EnemyBullet').forEach(b => {
+        // if (this.objects.get('EnemyBullet').length > 0 && player) {
+        ['EnemyBullet', 'EnemyAir'].forEach(layer => {
+            if (!player) return;
+            this.objects.get(layer).forEach(b => {
                 if (b.hp > 0 && player.hp > 0) { 
                     // Si hay colision...
                     if (b.hitbox[0] < player.hitbox[1] &&
@@ -224,19 +218,20 @@ class Game {
                             )
                         });
                         player.disable();
-                        // Performance: Se aborta el resto del forEach
                         return;
                     }
                 }
             })
-        }
+        })
+        // }
     }
     gameObjectsRelease(){
         for (const [_, arr] of this.objects){
             for (let i = 0; i < arr.length; i++) {
+                // Checks if there's any dead entity
                 if (arr[i].hp <= 0) {
                     // Remove from array and set free
-                    this.pool.releaseObject(...arr.splice(i,1));
+                    arr.splice(i,1)[0].free = true;
                     // Shift loop index
                     i--;
                 };
@@ -246,8 +241,9 @@ class Game {
     ceilIteration(){
         this.iteration = Math.ceil(this.iteration);
     }
-    deleteUnused(){
-
+    runQueued(){
+        this.queuedFns.forEach(fn => fn());
+        this.queuedFns.length = 0;
     }
 }
 

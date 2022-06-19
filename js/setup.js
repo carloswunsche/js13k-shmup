@@ -34,33 +34,17 @@ function initialize(){
 	engine.init(60, 60);
 	game.init();
 }
-function clean(){
-	assets.deleteUnused();
-	pool.deleteUnused();
-	stage.deleteUnused();
-	game.deleteUnused();
-}
+// function clean(){
+// 	assets.deleteUnused();
+// 	pool.deleteUnused();
+// 	stage.deleteUnused();
+// 	game.deleteUnused();
+// }
 function setupAndRun() {
 	setDependencies();
 	initialize();
-	clean();
+	// clean();
 	engine.start();
-}
-
-
-//////////////////////////
-// HELPER FUNCTIONS
-//////////////////////////
-function toRadians(degrees){return degrees * Math.PI/180};
-function loopOver(obj, callback){
-	for (const key in obj) callback(key, obj[key])
-};
-function getDecimal(n){
-	if (Number.isInteger(n)) return 0;
-	return Number('0.'+ n.toString().split('.')[1].slice(0,1));
-};
-function randomBetween(min, max) {
-	return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
 
