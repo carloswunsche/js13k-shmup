@@ -182,17 +182,17 @@ class Assets {
 		a[1800]	=b=> this.p.free('SinePop', '2', {phase:-1});
 		a[1810]	=b=> this.p.free('SinePop', '2', {phase:-1});
 		a[1850]	=b=> this.s.bg.speed += 0.25;
-		a[1910]	=b=> this.p.free('Sniper', '2', {x: 60});
-		a[1920]	=b=> this.p.free('Sniper', '2', {x: 100});
-		a[1930]	=b=> this.p.free('Sniper', '2', {x: 140});
-		a[1940]	=b=> this.p.free('Sniper', '2', {x: 180});
-		a[1950]	=b=> this.p.free('Sniper', '2', {x: 220});
-		a[1960]	=b=> this.p.free('Sniper', '2', {x: 260});
+		a[1910]	=b=> this.p.free('Sniper', '2', {x: 30});
+		a[1920]	=b=> this.p.free('Sniper', '2', {x: 50});
+		a[1930]	=b=> this.p.free('Sniper', '2', {x: 70});
+		a[1940]	=b=> this.p.free('Sniper', '2', {x: 90});
+		a[1950]	=b=> this.p.free('Sniper', '2', {x: 110});
+		a[1960]	=b=> this.p.free('Sniper', '2', {x: 130});
 		a[2070]	=b=> this.s.bg.queue.push(...this.s.patterns['5'], ...this.s.patterns['6'], ...this.s.patterns['7']);
-		a[2220]	=b=> this.p.free('Tank', '1', {x:210});
-		a[2250]	=b=> this.p.free('Tank', '1', {x:265});
-		a[2270]	=b=> this.p.free('Tank', '1', {x:175});
-		a[2290]	=b=> this.p.free('Tank', '1', {x:235});
+		a[2120]	=b=> this.p.free('Tank', '1', {x:105});
+		a[2150]	=b=> this.p.free('Tank', '1', {x:132});
+		a[2170]	=b=> this.p.free('Tank', '1', {x:95});
+		a[2190]	=b=> this.p.free('Tank', '1', {x:117});
 		// a[]	=b=>
 		return a
     }
