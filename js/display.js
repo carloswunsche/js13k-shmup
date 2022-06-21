@@ -72,77 +72,78 @@ class Display {
     renderBackground (bg) {
         let i = 0;
         bg.rows.forEach((_, y) => {
-            //////////////
-            // Performance
             let p__destY = bg.rows[y] * this.scale;
-            //////////////
             for (let x = 0; x < this.width; x += this.tileSize) {
                 // Para no renderizar al pedo el row que queda out of bounds (arriba)
                 if (bg.rows[y] <= -this.tileSize) {i++; continue;}
-                // Update scanned tile if not undefined
-                if(bg.pattern[i] !== undefined) this.currentTile = bg.pattern[i];
+                // Update scanned tile if not undefined (void 0 === undefined)
+                if(bg.pattern[i] != void 0) this.currentTile = bg.pattern[i];
                 // Draw
-                this.drawBg(bg, x, p__destY);
+                // this.drawBg(bg, x, p__destY);
+                this.ctx.drawImage(bg.image,this.currentTile*8,0,8,8,x*this.scale,p__destY,8*this.scale,8*this.scale);
                 // Update pattern index
                 i++;
             };
         });
     }
 
-    drawBg(bg, x, p__destY){
-        // // Determine rotation state
-        // typeof this.currentTile === 'string' ? this.r = 1 : this.r = 0;
-        // // If rotation is on... get angle and more stuff
-        // if (this.r) {
-        //     let a;
-        //     switch (this.currentTile.slice(-1)) {
-        //         case 'a': a = 1.5708; break; // 90 degree
-        //         case 'b': a = 3.1415; break; // 180 degree
-        //         case 'c': a = 4.7123; break; // 270 degree
-        //     }
-        //     // Save context before rotating
-        //     this.ctx.save();
-        //     // Translate canvas to render position
-        //     this.ctx.translate((x + (this.tileSize/2)) * this.scale, p__destY + ((this.tileSize/2) * this.scale));
-        //     // Rotate
-        //     this.ctx.rotate(a);
-        // }
+    // Previous draw function
+    // drawBg(bg, x, p__destY){
+    //     // // Determine rotation state
+    //     // typeof this.currentTile === 'string' ? this.r = 1 : this.r = 0;
+    //     // // If rotation is on... get angle and more stuff
+    //     // if (this.r) {
+    //     //     let a;
+    //     //     switch (this.currentTile.slice(-1)) {
+    //     //         case 'a': a = 1.5708; break; // 90 degree
+    //     //         case 'b': a = 3.1415; break; // 180 degree
+    //     //         case 'c': a = 4.7123; break; // 270 degree
+    //     //     }
+    //     //     // Save context before rotating
+    //     //     this.ctx.save();
+    //     //     // Translate canvas to render position
+    //     //     this.ctx.translate((x + (this.tileSize/2)) * this.scale, p__destY + ((this.tileSize/2) * this.scale));
+    //     //     // Rotate
+    //     //     this.ctx.rotate(a);
+    //     // }
 
-        this.ctx.drawImage(
-            // Img
-            bg.image,
-            // Source X
-            // (this.tileCode % bg.imageCols) * this.tileSize,
-            // parseInt(this.currentTile) * this.tileSize,
-            this.currentTile * this.tileSize,
-            // Source Y
-            // Math.floor((this.tileCode / bg.imageCols)) * this.tileSize,
-            0,
-            // Source Width
-            this.tileSize,
-            // Source Height
-            this.tileSize,
-            // Destination X
-            // this.r ? (-this.tileSize/2) * this.scale : x * this.scale,
-            x * this.scale,
-            // Destination Y
-            // this.r ? (-this.tileSize/2) * this.scale : p__destY,
-            p__destY,
-            // Destination Width
-            this.p__tileTimesScaledCanvas,
-            // Destination height
-            this.p__tileTimesScaledCanvas 
-        );
+    //     this.ctx.drawImage(
+    //         // Img
+    //         bg.image,
+    //         // Source X
+    //         // (this.tileCode % bg.imageCols) * this.tileSize,
+    //         // parseInt(this.currentTile) * this.tileSize,
+    //         this.currentTile * this.tileSize,
+    //         // Source Y
+    //         // Math.floor((this.tileCode / bg.imageCols)) * this.tileSize,
+    //         0,
+    //         // Source Width
+    //         this.tileSize,
+    //         // Source Height
+    //         this.tileSize,
+    //         // Destination X
+    //         // this.r ? (-this.tileSize/2) * this.scale : x * this.scale,
+    //         x * this.scale,
+    //         // Destination Y
+    //         // this.r ? (-this.tileSize/2) * this.scale : p__destY,
+    //         p__destY,
+    //         // Destination Width
+    //         this.p__tileTimesScaledCanvas,
+    //         // Destination height
+    //         this.p__tileTimesScaledCanvas 
+    //     );
 
-        // // If rotation was activated, restore context
-        // if (this.r) this.ctx.restore();
-    }
+    //     // // If rotation was activated, restore context
+    //     // if (this.r) this.ctx.restore();
+    // }
 
     renderGameObjects (gameObjects) {
         for (const [_, arr] of gameObjects){
             arr.forEach(obj => {
                 // Save canvas' context state
                 this.ctx.save();
+
+                // Unnecesary ?
                 // Set object's opacity
                 if (obj.opacity < 100) this.ctx.globalAlpha = obj.opacity / 100;
 
@@ -186,9 +187,9 @@ class Display {
         if (mode === 'toBlack') this.fade.value = 0;
     }
 
-    updateFade(step) {
-        if (this.fade.mode === 'fromBlack') this.fade.value -= this.fade.speed * step;
-        if (this.fade.mode === 'toBlack')   this.fade.value += this.fade.speed * step;
+    updateFade() {
+        if (this.fade.mode === 'fromBlack') this.fade.value -= this.fade.speed;
+        if (this.fade.mode === 'toBlack')   this.fade.value += this.fade.speed;
         if (this.fade.value === 0 || this.fade.value === 100) this.initFade('none', 0)
     }
 
@@ -234,17 +235,7 @@ class Display {
     // }
 
     pixelatedLook() {
-        // Not used because... I don't see the difference lol.
-        // this.canvas.style.cssText = 
-        // 'image-rendering: optimizeSpeed;' +             // FireFox < 6.0
-        // 'image-rendering: -moz-crisp-edges;' +          // FireFox
-        // 'image-rendering: -o-crisp-edges;' +            // Opera
-        // 'image-rendering: -webkit-crisp-edges;' +       // Chrome
-        // 'image-rendering: crisp-edges;' +               // Chrome
-        // 'image-rendering: -webkit-optimize-contrast;' + // Safari
-        // 'image-rendering: pixelated; ' +                // Future browsers
-        // '-ms-interpolation-mode: nearest-neighbor;';    // IE
-        // These work:
+        // Used if scaling is done through JS
         this.ctx.mozImageSmoothingEnabled = 0;
         this.ctx.webkitImageSmoothingEnabled = 0;
         this.ctx.msImageSmoothingEnabled = 0;

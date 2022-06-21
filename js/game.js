@@ -47,7 +47,7 @@ class Game {
     }
     update() {
         // Update fade transparency
-        this.updateFade(step);
+        this.updateFade();
 
         // Update arr of pressed buttons
         // Checking if integer makes the ship feel the same both with 60ups & 120ups
@@ -63,7 +63,7 @@ class Game {
         // if (this.stage.bg.speed < 0) this.stage.bg.speed = 0;
 
         // Update Frame Counter
-        this.iteration += 1 * step;
+        this.iteration++;
 
         // // Previous background renderer if firefox
         // if (firefox) {
@@ -71,9 +71,9 @@ class Game {
         //     this.scrollBackground(this.getFlooredSpeed());
         // } else {
         //     // Background Scrolling (A) (super smooth in Chrome)
-        //     this.scrollBackground(this.stage.bg.speed * step);
+        //     this.scrollBackground(this.stage.bg.speed);
         // }
-        this.scrollBackground(this.stage.bg.speed * step);
+        this.scrollBackground(this.stage.bg.speed);
 
         // Run update function of each gameObject
         for (const [_, arr] of this.objects) arr.forEach(obj => obj.update());
@@ -98,7 +98,7 @@ class Game {
 
         // Reset game if player dies
         if (!this.objects.get('4')[0]) {
-            this.resetCounter += 1 * step;
+            this.resetCounter++;
             if (this.resetCounter === 50) this.initFade('toBlack', 1);
             if (this.resetCounter === 150) debug.gameReset();
         }

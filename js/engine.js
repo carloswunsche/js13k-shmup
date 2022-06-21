@@ -2,32 +2,29 @@
 // ENGINE
 //////////////////////////
 
-let step = 1;
-
-// Unnecesary implementation of 120hz. Remove everything including step
-
 class Engine {
     needs(updateFn, renderFn){
         this.callUpdate = updateFn;
         this.callRender = renderFn;
     }
-    init (ups = 60, fps = 60) {
+    // init (ups = 60, fps = 60) {
+    // init () {
         // Amount of updates per second
-        this.ups = ups;
+        // this.ups = ups;
         // Amount of frames rendered per second (cannot be more than ups)
-        this.fps = fps > ups ? ups : fps;
+        // this.fps = fps > ups ? ups : fps;
         // Minimum time required for each update in ms
-        this.slice = 1000 / this.ups; 
+        // this.slice = 1000 / this.ups;
         // Necessary to render at the proper moment
-        this.renderAcc = 0;
+        // this.renderAcc = 0;
         // One frame in ms
-        this.oneFrameInMs = 1000 / this.fps;
+        // this.oneFrameInMs = 1000 / this.fps;
         // Multiplier passed to update function. This will be 1 for 60 ups and 0.5 for 120 ups
-        this.step = (-1/120) * this.ups + 1.5;
-        step = (-1/120) * this.ups + 1.5;
+        // this.step = (-1/120) * this.ups + 1.5;
+        // step = (-1/120) * this.ups + 1.5;
         // Firefox? // Unnecesary?
         // this.firefox = typeof InstallTrigger !== 'undefined';
-    }
+    // }
     start () {
     // this.iterations = [0,0];
         // Pause flag
@@ -45,6 +42,7 @@ class Engine {
         // Segun la documentacion de mozilla, lo primero que hacer en el main loop es ya pedirle el siguiente frame al navegador
         window.requestAnimationFrame((newStamp) => this.loop(newStamp));
     // if (this.iterations[0] >= 100 * (this.step === 1 ? 1 : 2))  {this.paused = true;console.log(this.iterations);}
+        // Unnecesary when removing all debug functions
         if (this.paused) return;
 
         // A delta se le suma la diferencia entre newStamp y lastStamp
@@ -54,32 +52,34 @@ class Engine {
         // Se acumula delta
         this.timeAcc += this.delta;
 
-        while (this.timeAcc > this.slice) {
+        // while (this.timeAcc > this.slice) {
+        while (this.timeAcc > 16.6) {
             // this.callUpdate(this.firefox, this.step);
             this.callUpdate();
-            this.timeAcc -= this.slice;
-            this.renderAcc += this.slice;
+            // this.timeAcc -= this.slice;
+            this.timeAcc -=  16.6;
+            // this.renderAcc += this.slice;
 
     // this.iterations[0]++
         };
 
-        if (this.renderAcc >= this.oneFrameInMs) {
+        // if (this.renderAcc >= this.oneFrameInMs) {
             this.callRender();
             this.renderAcc = 0;
     // this.iterations[1]++
-        };
+        // };
     }
 
-    // Unnecesary. Debug function must go away
+    // Unnecesary. Debug function
     pause () {
         if (!this.paused) {
-            this.paused = true;
-            return 'Engine Paused';
+            this.paused = !0;
+            // return 'Engine Paused';
         };
         if (this.paused) {
-            this.callUpdate(this.step);
+            this.callUpdate();
             this.callRender();
-            return 'Advance one frame';
+            // return 'Advance one frame';
         };
     }
 };

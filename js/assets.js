@@ -130,18 +130,12 @@ class Assets {
 			[2, 	Assaulter],
 			[120,	Particle],
 		];
-
-        if (stageNum === 2)
-		return [
-			[],
-			// Etc...
-		];
 	}
 	getEventsFn(stageNum) {
 		// 1=EnemyLand, 2=EnemyAir, 3=Particle, 4=Player, 5=pBullet, 6=eBullet, 7=Hud
 		let a = new Array(5**6).fill(b=>b); // 15625 empty functions
 		a[0]	=b=>{this.p.free('Player', '4');
-					 this.s.bg.speed = 0.5};
+					 this.s.bg.speed = .5};
 		a[50]	=b=> this.p.free('SinePop', '2', {phase:-1});
 		a[60]	=b=> this.p.free('SinePop', '2', {phase:-1});
 		a[70]	=b=> this.p.free('SinePop', '2', {phase:-1});
@@ -167,21 +161,21 @@ class Assets {
 		a[1040]	=b=> this.p.free('Sniper', '2', {x: 130});
 		a[1200]	=b=>{this.p.free('Fatty', '2', {side: 1});
 					 this.p.free('Fatty', '2', {side: -1});
-					 this.s.bg.speed += 0.25;}
-		a[1300]	=b=> this.s.bg.speed += 0.25;
-		a[1400]	=b=>{this.s.bg.speed += 0.25;
+					 this.s.bg.speed += .25;}
+		a[1300]	=b=> this.s.bg.speed += .25;
+		a[1400]	=b=>{this.s.bg.speed += .25;
 					 this.p.free('Assaulter', '2', {x: 130});}
-		a[1450]	=b=> this.s.bg.speed += 0.25;
-		a[1550]	=b=>{this.s.bg.speed += 0.25;
+		a[1450]	=b=> this.s.bg.speed += .25;
+		a[1550]	=b=>{this.s.bg.speed += .25;
 					 this.p.free('Assaulter', '2', {x: 30});}
-		a[1650]	=b=> this.s.bg.speed += 0.25;
+		a[1650]	=b=> this.s.bg.speed += .25;
 		a[1700]	=b=> this.p.free('Assaulter', '2');
-		a[1750]	=b=> this.s.bg.speed += 0.25;
+		a[1750]	=b=> this.s.bg.speed += .25;
 		a[1780]	=b=> this.p.free('SinePop', '2', {phase:-1});
 		a[1790]	=b=> this.p.free('SinePop', '2', {phase:-1});
 		a[1800]	=b=> this.p.free('SinePop', '2', {phase:-1});
 		a[1810]	=b=> this.p.free('SinePop', '2', {phase:-1});
-		a[1850]	=b=> this.s.bg.speed += 0.25;
+		a[1850]	=b=> this.s.bg.speed += .25;
 		a[1910]	=b=> this.p.free('Sniper', '2', {x: 30});
 		a[1920]	=b=> this.p.free('Sniper', '2', {x: 50});
 		a[1930]	=b=> this.p.free('Sniper', '2', {x: 70});

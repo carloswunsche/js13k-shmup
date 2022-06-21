@@ -42,9 +42,9 @@ tar -czf final.tar.gz index.html i
 cd ..
 
 # Get file sizes before cleaning
-uglyfied=$(ls -l build/game.min.js | awk '{print $5}')
-roadrolled=$(ls -l build/game.roadrolled.js | awk '{print $5}')
-zipped=$(ls -l build/final.tar.gz | awk '{print $5}')
+gamesize=$(ls -l build/index.html | awk '{print $5}')
+imagessize=$(du -sb build/i | awk '{print $1}')
+zippedsize=$(ls -l build/final.tar.gz | awk '{print $5}')
 
 # Clean
 rm build/game.js
@@ -54,9 +54,9 @@ rm build/style.min.css
 rm build/css_ready.html
 
 # Display game logic and tar.gz sizes
-echo "Game logic size (uglyfied):   $uglyfied bytes"
-echo "Game logic size (roadrolled): $roadrolled bytes"
-echo "GZip size (including images): $zipped bytes"
+echo "Game size: $gamesize bytes"
+echo "Images size: $imagessize bytes"
+echo "GZip size: $zippedsize bytes"
 
 
 # History of build sizes (in bytes):
@@ -64,4 +64,7 @@ echo "GZip size (including images): $zipped bytes"
 # 9917 (compressing most images to webp + 15 color limit)
 # 9916 (changing event function system)
 # 9777 (without firefox scrolling support)
-# 9347 ((compressing background to webp + 5 color limit)
+# 9347 (compressing background to webp + 5 color limit)
+# 9233 (removing 120hz functionality and step intervention)
+# 9123 (removing unused stuff from engine and some debug functions)
+# 9105 (simplifying render background function)

@@ -35,7 +35,7 @@ function setDependencies() {
 }
 function initialize(){
 	stage.init('1st-stage');
-	engine.init(60, 60);
+	// engine.init(60, 60);
 	game.init();
 }
 function setupAndRun() {
@@ -72,19 +72,19 @@ const debug = {
 		game.initFade('fromBlack', 1);
 		// Engine: (Re)start
 		engine.start();
-		console.log('Game reset');
+		// console.log('Game reset');
 	},
-	changeFps(ups, fps) {
-		engine.init(ups, fps);
-		game.ceilIteration()
-		engine.start();
-		console.log(`Now rendering at ${fps}fps`);
-	},
-	toggleScanlines(){
-		display.scanlines = display.scanlines ? undefined : 'scanlines';
-		display.intensity = 50;
-		display.render(stage.bg, game.objects);
-	},
+	// changeFps(ups, fps) {
+	// 	engine.init(ups, fps);
+	// 	game.ceilIteration()
+	// 	engine.start();
+	// 	console.log(`Now rendering at ${fps}fps`);
+	// },
+	// toggleScanlines(){
+	// 	display.scanlines = display.scanlines ? undefined : 'scanlines';
+	// 	display.intensity = 50;
+	// 	display.render(stage.bg, game.objects);
+	// },
 	toggleHitboxes(){
 		display.hitboxes = display.hitboxes ? undefined : 'hitboxes';
 		display.render(stage.bg, game.objects);
@@ -95,15 +95,15 @@ const debug = {
 	engineStart(){
 		engine.start();
 	},
-	bgSpeedAdd(n){
-		game.stage.bg.speed += n;
-	},
-	bgSpeedSub(n){
-		game.stage.bg.speed -= n;
-	},
-	spawnEnemy(){
-		pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:-1});
-	},
+	// bgSpeedAdd(n){
+	// 	game.stage.bg.speed += n;
+	// },
+	// bgSpeedSub(n){
+	// 	game.stage.bg.speed -= n;
+	// },
+	// spawnEnemy(){
+	// 	pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:-1});
+	// },
 }
 window.addEventListener('keydown', key => {
 	if (key.code === 'KeyK') debug.enginePause();
