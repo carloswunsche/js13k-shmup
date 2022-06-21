@@ -13,12 +13,12 @@ class Pool {
 		// Used to push free objects into game.objects
 		this.gameObjects = gameObjects;
 	}
-	fillWith(size, objClass){
+	fillWith([size, objClass]){
 		this.type[objClass.name] = new Array(size).fill(0).map(() => 
 			new objClass(this._assets[objClass.name])
 		);
 	}
-	getFreeObject(entity,location,parametersObj) {
+	free(entity,location,parametersObj) {
 		let arrSize = this.type[entity].length;
 		for (let i = 0; i < arrSize; i++) {
 			if (this.type[entity][i].free) {
@@ -28,9 +28,7 @@ class Pool {
 				return;
 			};
 		};
+		// Unnecesary Delete this console log before build
 		console.error(`Pool: No more free ${entity}(s)`);
-	}
-	deleteUnused(){
-		delete this._assets;
 	}
 };

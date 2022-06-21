@@ -4,6 +4,8 @@
 
 let step = 1;
 
+// Unnecesary implementation of 120hz. Remove everything including step
+
 class Engine {
     needs(updateFn, renderFn){
         this.callUpdate = updateFn;
@@ -23,8 +25,8 @@ class Engine {
         // Multiplier passed to update function. This will be 1 for 60 ups and 0.5 for 120 ups
         this.step = (-1/120) * this.ups + 1.5;
         step = (-1/120) * this.ups + 1.5;
-        // Firefox?
-        this.firefox = typeof InstallTrigger !== 'undefined';
+        // Firefox? // Unnecesary?
+        // this.firefox = typeof InstallTrigger !== 'undefined';
     }
     start () {
     // this.iterations = [0,0];
@@ -38,7 +40,6 @@ class Engine {
         this.lastStamp = performance?.now ? performance.now() : new Date().getTime();
         // Start loop passing newStamp
         window.requestAnimationFrame(newStamp => this.loop(newStamp));
-        return 'Engine started';
     }   
     loop (newStamp) {
         // Segun la documentacion de mozilla, lo primero que hacer en el main loop es ya pedirle el siguiente frame al navegador
@@ -54,7 +55,8 @@ class Engine {
         this.timeAcc += this.delta;
 
         while (this.timeAcc > this.slice) {
-            this.callUpdate(this.firefox, this.step);
+            // this.callUpdate(this.firefox, this.step);
+            this.callUpdate();
             this.timeAcc -= this.slice;
             this.renderAcc += this.slice;
 
@@ -66,7 +68,9 @@ class Engine {
             this.renderAcc = 0;
     // this.iterations[1]++
         };
-    }    
+    }
+
+    // Unnecesary. Debug function must go away
     pause () {
         if (!this.paused) {
             this.paused = true;

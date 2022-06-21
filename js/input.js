@@ -8,9 +8,9 @@ class Input {
 		this.raw = new Array(6).fill(0);
 		this.buttons = new Array(6).fill(0);
 
-		this.inputHistory = [];
-		this.savedInputs = localStorage.getItem('savedInputs') || [];
-		this.savedInputs = typeof this.savedInputs === 'string' ? JSON.parse(this.savedInputs) : [];
+		// this.inputHistory = [];
+		// this.savedInputs = localStorage.getItem('savedInputs') || [];
+		// this.savedInputs = typeof this.savedInputs === 'string' ? JSON.parse(this.savedInputs) : [];
 
 		window.addEventListener('keydown', key => {
 			this.updateRaw(key.code, this.raw, 1);
@@ -19,6 +19,7 @@ class Input {
 		window.addEventListener('keyup', key => {
 			this.updateRaw(key.code, this.raw, 0);
 		})
+		// Unnecesary
 		window.addEventListener('visibilitychange', e => {
 			if (e.target.visibilityState === 'hidden') {
 				this.raw.fill(0);
@@ -27,14 +28,16 @@ class Input {
 	}
 
 	updateRaw (keyCode, arr, pressed) {
-		switch (keyCode) {
-			case 'ArrowUp':   arr[0]  = pressed; return;
-			case 'ArrowRight':arr[1]  = pressed; return;
-			case 'ArrowDown': arr[2]  = pressed; return;
-			case 'ArrowLeft': arr[3]  = pressed; return;
-			case 'KeyZ':      arr[4]  = pressed; return;
-			case 'KeyX':      arr[5]  = pressed; return;
-		};
+		// Switch case es mas economico en bytes que if
+		switch(keyCode){
+			case 'ArrowUp':   return arr[0] = pressed;
+			case 'ArrowRight':return arr[1] = pressed;
+			case 'ArrowDown': return arr[2] = pressed;
+			case 'ArrowLeft': return arr[3] = pressed;
+			case 'KeyZ':      return arr[4] = pressed;
+			// Ojo este boton no se esta usando
+			case 'KeyX':      return arr[5] = pressed;
+		}
 	}
 
 	updateButtons () {

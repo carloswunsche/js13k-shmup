@@ -2,32 +2,47 @@
 // ASSETS
 //////////////////////////
 
+
+// Built game's size before mirrored sprites: 10669 bytes
+// Built game's size after mirrored sprites: 10277 bytes
+
 class Assets {
-	constructor(dir) {
-		this._dir = dir;
+	constructor() {
+		// All .webp have been compressed using whoosh with pallete limitation of 15 colors 
+		// With exception of the background which has a limitation of 5 colors
 		this._filenames = {
 			// Backgrounds
-			Stage1: 		'stage-1.png',
+			Stage1: 		'stage-1.webp',
 			// Player
-			Player: 		'player.png',
-			PlayerBullet: 	'pBullet.png',
+			Player: 		'player.webp',
+			PlayerBullet: 	'pBullet.webp',
 			// Enemies
-			SinePop: 		'enemy.png',
-			Sniper: 		'enemy2.png',
-			Fatty: 			'pop_3.png',
-			Tank: 			'tank1.png',
-			Assaulter: 		'assault.png',
-			EnemyBullet: 	'eBullet.png',
+			SinePop: 		'enemy.webp',
+			Sniper: 		'enemy2.webp',
+			Fatty: 			'pop_3.webp',
+			Tank: 			'tank1.webp',
+			Assaulter: 		'assault.webp',
+			EnemyBullet: 	'eBullet.webp',
 			// Particles
-			Particle: 		'part.png',
+			// Particle: 		'part.png',
+			Particle: 		'part.webp',
+			// Particle: 		0,
 		}
 		this.patterns = {};
-		this.patterns[1] = 
-		[0,,,,,,,,,,,,1,0,,,,,,1,0,1,0,,,,,,,,,,,,,,,2,0,,0,,,,,,,,,,,,,,,,,,,,0,,,,,,1,0,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,,,,,0,2,0,,,,,,,,,,,,,,,,1,0,0,,,1,0,,,,,,,,,,,,,,,,0,,,,,,,,,1,0,,,,,,,,,,0,,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,1,0,,,,,,0,,1,0,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,2,0,,,,,1,0,,,0,,,,,,1,0,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,,,,,3,4,5,,,,0,,1,0,,,,,,,,1,0,,6,,3,,,,4,0,,,,,,,,,,,,,7,6,,8,,6,'3a','5a',0,,,,,1,0,,,,,,8,,,,,6,,4,0,,,,,,,,,,1,0,8,,,,6,9,10,'3a','5a',0,,,,,,,,,,,6,8,,,,,6,,4,0,,,,,,,,,,,8,,,,,,6,,'3a','5a',0,,1,0,,,,,,,8,,,,,,,,6,4,0,,,,,,,,,,8,,,,,,,6,,'3a','5a',0,,,,,,1,0,,8,,,,,,,6,,'3a','5a',0,,,,,,,,,8,,,,,,9,10,6,'4a',0,,,,,,,,,,8,,,,,,6,,'4a',0,,,,1,0,,,,,,8,,,,,6,,'4a',0,,,,,,,,,,,'4c',6,,8,,6,,'4a',0,,,1,0,,,,,,5,'4c',6,6,8,,6,,'4a',0,,,,,,,,,,'4c',6,,,6,,,,,4,5,0,,,,5,,,,'4c',6,,,,11,'3b',,6,,,,4,0,,'4c',6,,,,,,,'3b','11c',12,,13,11,6,,,,4,'4c',6,,,14,15,6,'3b','11c',12,,12,,,13,11,6,,16,17,18,19,6,,,'3b','11c',12,,,,12,,,,20,'3c',6,21,22,23,24,6,,'11c',12,,,,,,12,,,,13,11,6,25,26,27,28,6,'3a',12,,,,,,,12,,,,,13,11,6,14,15,6,,'11c',12,,,,,,,12,,,,,,13,11,6,,,'3a',12,,,,,,,,12,,,,,,,20,'3c',6,,'3a',12,,,,,,,,12,,,,,,,13,11,6,,,'11b',12,,,,,,,12,,,,,,,,13,11,6,,,'11b',12,,,,,,12,,,,,,,,,13,11,7,6,'3a',12,,,,,,12,,,,,,,,,,13,11,6,,'11b',12,,,,,12,,,,,,,,,,,20,'3c',6,'3a',12,,,,,12,,,,,,,,,,,13,11,'3b','11c',12,,,,,12,,,,,,,,,,,,20,29,30,12,,,,,12,,,,,,,,,,,,13,31,32,12,,,,,33,,34,12,,,,,,,,,,35,12,,,,,,36,,12,,,,,,,,,,,35,12,,,,,,12,,,,,,,,,,,,,35,12,,,,,,12,,,,,,,,,,,,,35,12,,,,,,33,,,,,,,,,,,,,35,33,,,,,,36,,,,,,,,,,,,,35,36,,,,,,12,,,,,,,,,,,,,35,12,,,,,,12,,,,,,,,,,,,,35,12,,,'34b',33,,12,,,,,,,,,,,,,35,12,,,,36,,12,,,,,,,,,,,,,35,12,,,,,,12,,,,,,,,,,,,,35,12,,,,,,12,,,,,,,,,,,,,35,12,,,,,,12,,,,,,,,,,,,,35,12,,,,,,12,'34b',33,,,34,12,,,,,,,35,12,,,,,,12,,36,,,12,,,,,,,,35,12,,,,,,12,,,,,,,,,,,,,35,12,,,,,,12,,,,,,,,,,,'11a',3,,'11b',12,,,,,12,,,,,,,,,,,37,38,,39,12,,,,'11a',12,,,,,'11a',3,,'11b',12,,20,40,29,30,12,,,,37,12,,,,,'3c',7,41,'3a',12,,13,42,43,32,12,,,,20,12,,,,,37,38,,39,12,,,,35,12,,,,,13,12,,,,,20,40,29,30,12,,,,35,12,,,,,,12,,,,,13,42,44,32,12,,,,35,12,,,,,,3,'11b',12,,,,,,,,,,,35,12,,,,,,38,39,12,,,,,,,,,,,35,12,,,,,,29,30,12,,,,,,,,,,,35,12,,,,,,44,32,12,,,,,,,,,,,35,12,,,,,,12,,,,,,,,,,,,,35,12,,,,,,33,,,,,,,,,,,,,35,33,,,,,,36,,,,,,,,,,,,,35,36,,,,,,12,,,,,,,,,,'11a',3,,45,'11b',12,,,,,12,,,,,,,,,,'3c',6,'4a','4b','3a',12,,,,,12,,,,,,,,,46,'3c',6,'5a','5c','3a','46a',12,,,,12,,,,,,,,'34b','11a',6,,'5a','5c',6,'11b',34,12,,,12,,,,,,,,'34b','3c',6,,4,'5c',6,'3a',34,12,,,12,,,,,,,,46,'3c',41,6,,47,6,'3a','46a',12,,,12,,,,,,,'34b','11a',6,,,,47,6,,'11b',34,12,,12,,,,,,,46,'3c',6,,,,47,6,7,'3a',34,12,,12,,,,,,'34b','11a',6,,,,,47,6,,'3a',34,12,,12,,,,,,46,'3c',6,,,,'4a','5c',6,,'3a','46a',12,,12,,,,,46,'11a',6,,,,,'5a','5c',6,,,'11b',34,12,12,,,,46,'11a',6,,,,41,6,'5a','5c',6,,,'3a',34,12,12,,,46,'11a',6,,,,,,,'5a',0,'4b',6,,'3a','46a',12,12,,'34b','11a',6,,,,,,,,'5a',1,'5c',6,,,'11b',34,12,,46,'3c',6,,,,,,,,4,0,'5c',6,,,'3a',34,12,'34b','11a',6,,,,,,,,,,'5a',0,'4b',6,,'3a',34,12,'34b','3c',6,,,,,,,,,,'5a',1,'5c',6,,'3a',34,12,'34b','3c',6,,,,,,,,,'4a',0,,'5c',6,,'3a',34,12,'34b','3c',8,6,,41,6,,,,,'5a',0,1,'5c',6,,'3a',34,12,46,'3c',6,,,,,,,,'4a',0,,,'4c',6,,'3a',34,46,'11a',6,,,,,,,'4a','5b',0,,,'4c',6,,,'3a',34,'11a',6,,,,,,,'4a',0,,,,'4c',6,,41,6,'3a',34,'3c',6,,,,,'4a','5b',0,1,0,,'4c',6,,,,,'11c',34,'3c',6,,,,'4a',0,,,1,0,'4c',6,,,,,'11c','46b',12,'3c',6,,'4a','5b',0,,,,5,'4c',6,,,,,'3a','46b',12,,11,6,,4,0,,,,'4c',6,,,,,,,'3a',34,12,,'46c',11,6,,4,1,0,'5c',6,,,,,8,6,,'3a',34,12,,12,'46c','3c',6,,4,0,,'4b',6,,,,,,,'3a','46a',12,,12,46,'3c',6,,,4,0,,'4b',6,,,,,,,'11b',34,12,'34b','11a',6,,,,,4,5,0,'4b',6,,,,,,'3a',34,12,'34b','3c',6,,41,6,,,,4,0,'5b',,'4b',6,,,'3a','46a',12,'34b',11,6,,,,,8,6,,4,0,,,'4b',6,,,'11b',34,12,'46c','3c',6,,,,,,,,4,0,,'5c',6,,,'3a',34,12,'34b','3c',6,,,,,,,,,'5a',0,,'4b',6,,'3a',34];
-	}
+		this.patterns[1] = [0,,,,,,,,,,,,,,,,1,0,,,1,0,,,2,0,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,,,2,0,0,,,,,,,,,,1,0,,,,,,,,,0,,,,,,,,,,,,,,,,,,,,0,2,0,,,1,0,,,,,,,,,,,,,,0,,,,,,,,,,,,2,0,,,,,,,0,,,,,,,,,,,,,,,,,,1,0,0,,,,,,,,,,,,,,,,,,,,0,1,0,,,,,,1,0,,,,,,,,,,,0,,,,,,,,,,,,,,,,2,0,,,0,,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,,,,,0,,,,,,,2,0,,,,,,1,0,,,,,0,,,,,,,,,,,,,,,,,,,,2,0,1,0,,,,,,,,,,,,,,,,,0,3,,,,,0,,,1,0,,,,,,,,,,4,5,,,,,6,3,0,,,,,,,,,,,,5,7,8,9,10,5,,,6,0,,,,,,,1,0,,,5,11,12,13,14,5,,15,5,16,0,,,,,,,,,,5,17,18,19,20,5,,,,6,0,1,0,,,,,,,,5,,21,22,5,,,,,,16,0,,,,,,,,,5,,,,7,8,9,10,5,,16,0,,,,,,,,,5,15,5,,11,12,13,14,5,,16,0,,,,,,,,,5,,,,17,18,19,20,5,23,0,,,,1,0,,,,1,5,,,,,21,22,5,,16,0,,,,,,,,,,5,,,,,,,,23,0,,,,,,,,,,,7,8,9,10,5,15,5,,16,0,,,,,,,,,,,11,12,13,14,5,,,23,0,,1,0,,,,,,,,,17,18,19,20,5,,23,0,,,,,,,,,,,,,5,21,22,5,,,16,0,,,,,,,,1,0,,,,5,,,,,23,0,1,0,,,,,3,,,,,,,24,,5,,,6,3,0,,,,3,4,5,,,,,,24,25,26,27,24,5,,,6,3,0,28,5,,,,,,,29,30,31,,25,26,27,5,,,,16,28,15,5,,,,,29,30,31,31,,,,26,27,24,5,,6,0,32,5,,,,29,30,31,,31,,,,,25,26,27,5,,6,0,32,5,,29,30,31,,,31,,,,,,,26,33,5,,6,4,5,29,30,31,,,,31,,,,,,,,27,15,5,,,34,30,35,31,,,,31,,,,,,,,26,27,5,,,34,36,31,,,,,31,35,31,,,,,,,26,27,5,,,37,36,31,,,,31,,,,,,,,,,26,27,38,24,5,37,36,31,,,31,,,,,,,,,,,25,39,26,33,34,36,31,,,31,,,,,,,,,,,,39,40,27,5,37,36,31,,31,,,,,,,,,,,,39,31,26,27,29,36,31,,31,,,35,31,,,,,,,,39,31,,25,,31,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,35,31,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,41,,,,,,,,,,,,39,41,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,35,31,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,35,31,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,35,31,,,,,,,,39,31,,,,,,,31,,,,,,,,,,42,43,,37,31,,,,,,31,,,,,,,,,,27,5,,34,31,,,,,42,43,,37,31,,,,,,,26,27,24,29,31,,,,42,5,44,45,5,37,31,,,,,,,25,,,31,,,,33,5,24,5,,29,31,,,,,,,,,,,,,,27,5,26,27,29,30,31,,,,,,,,,,,,,,26,27,31,25,,31,,,,,,,,,,,,,,,,25,31,,,,,,,,,,,,,42,37,31,,,,,31,,,,,,,,,,,,42,5,,43,37,31,,,31,,,,,,,,,,,,33,46,5,,34,31,,,31,,,,,,,,,,,,27,24,38,24,29,31,,,31,,,,,,,,,,,,25,,39,25,,31,,,31,,42,43,,,37,31,,,,,,,39,31,,,,,31,,27,5,47,5,34,31,,,,,,,39,31,,,,,31,,26,27,24,,29,31,,,,,,,39,31,,,,,31,,,25,,,,31,,,,,,,39,31,,,,,31,,,,,,,,,,,,48,,39,48,31,,,,31,,,,,,,,,,,40,42,43,49,37,50,31,,,31,,,,,,,,,,,51,33,5,49,5,37,36,31,,31,,,,,,,,,,40,42,5,,49,5,34,36,31,,31,,,,,,,,,,51,33,5,,49,5,34,36,31,,31,,,,,,,,,51,42,5,,,49,5,34,50,31,,31,,,,,,,,51,42,15,5,,23,28,5,,37,36,31,31,,,,,,,51,42,5,,,,16,28,5,,34,36,31,31,,,,,,51,42,5,,,,,16,28,5,,34,36,31,31,,,,,51,42,5,,,,,,16,28,5,,34,36,31,31,,,,40,42,15,5,,,,,,16,28,5,,34,36,31,31,,,,51,33,5,,,,,,,16,28,5,,34,50,31,31,,,51,42,5,,,,,,,,16,28,5,,,37,36,31,,51,42,5,,,,,,,,23,0,28,5,,46,34,36,31,40,42,5,15,5,,,,,,23,0,,,32,5,,34,36,31,51,33,5,,,,,,,,16,0,,,28,5,,34,36,40,42,5,,,,,,,,,16,0,,,4,5,,29,36,40,33,15,5,,,,,,,23,0,1,0,4,5,,29,52,31,40,27,5,,,,,,,23,0,,,4,5,,34,52,31,,31,53,27,47,5,,,,23,0,,,4,5,,,34,50,31,,31,,40,33,5,,23,54,0,,,4,5,,,,,37,50,31,31,40,42,5,,23,0,,,,4,5,,,,,,,37,36,31,51,33,5,23,1,0,,3,4,5,,,,15,5,,,29,36,40,42,5,,6,0,,28,5,,,,,,,,,29,52,31,51,33,5,,,16,0,,32,5,,,,,,,34,52,31,,42,5,,,,6,0,,,32,5,,,,,,34,50,31,,33,5,,,,,6,0,,,32,5,,,,,,37,50,31,27,5,,,,,,16,0,,,32,5,,,,,,37,36,53,27,5,,,,,6,3,0,,,32,5,,,,,34,36,31,53,33,5,,,,,,6,0,,,32,5,,47,5,34,36,31,40,33,5,15,5,,,,,6,0,1,0,32,5,,,34,36,31,51,33,5,,,,,,,,6,0,,28,5,,,34,36];
 
+		// Decompressor for "repeat function" arrays
+		// let r = this.patterns[1];
+		// for(let i=r.length;i>0;i--)r[i]<0?r.splice(i,1,...new Array(M.abs(r[i]))):0
+	}
+	needs(){
+		// For stage events
+		this.p = pool;
+		this.s = stage;
+	}
 	loadAnd(runSetupFn) {
 		// Get number of remaining images to be loaded
+		// Reduce to literal
 		let remaining = Object.keys(this._filenames).length;
 
 		for (const key in this._filenames) {
@@ -35,54 +50,73 @@ class Assets {
 			this[key] = new Image();
 
 			// Set source image with hit state
-			this.setSrcWithHitState(this[key], this._dir + this._filenames[key])
+			this.setSrcwithMirroredImg(this[key], this._filenames[key])
 
 			// When image has loaded...
-			this[key].addEventListener('load', () => {
-				remaining--;
-				if(remaining === 0) runSetupFn();
-			});
+			this[key].onload = () => {remaining--;if(!remaining) runSetupFn()};
 		};
 		return this;
 	}
-	setSrcWithHitState(key, imgPath){
-		// Load original image
-		let img = new Image()
-		// Required to fix "The canvas has been tainted by cross-origin data" (not really necesary when uploaded to netlify)
-		// img.crossOrigin = "Anonymous"
-		// Insert png into source
-		img.src = imgPath;
-		// When png loads...
-		img.addEventListener('load', () => {
-			// Create temporal canvas
-			let c = document.createElement('canvas')
-			let ctx = c.getContext('2d');
-			// Set dimensions to image size
-			c.height = img.height;
-			// But double the width to be able to draw hit state image later on
-			c.width = img.width * 2;
-			// New property on key element to save source width
-			key.sWidth = img.width;
-			// Draw original image
-			ctx.drawImage(img, 0, 0)
-			// Get pixel data
-			let imgData = ctx.getImageData(0,0,c.width/2,c.height);
-			// Create new arr and push modified pixel data
-			let arr2 = [];
-			imgData.data.forEach((n)=>{
-			   if (n>0 && n<180) n += 80;
-			   if (n>255) n = 255;
-			   arr2.push(n)
-			})
-			// Create new data container and insert new arr
-			let imgData2 = ctx.createImageData(img.width, img.height);
-			imgData2.data.set(arr2)
-			// Draw new imageData right next to original
-			ctx.putImageData(imgData2, img.width, 0);
-			// Finally Load new image that includes the original + a hit state
+	setSrcwithMirroredImg(key, filename){
+		let c=document.createElement('canvas'),x=c.getContext('2d');
+		// Single pixel drawing for particles
+		// if (!filename) {
+		// 	c.width, c.height = 1;
+		// 	x.fillStyle='ivory';
+		// 	x.fillRect(0,0,1,1);
+		// 	key.sWidth = 1;
+		// 	return key.src = c.toDataURL();
+		// }
+		let i = new Image();
+		i.src = 'i/'+filename;
+		i.onload = () => {
+			c.height = i.height;
+			c.width = i.width * 2;
+			key.sWidth = i.width * 2;
+			x.drawImage(i, 0,0);
+			x.scale(-1, 1);
+			x.drawImage(i, -i.width+1, 0, -i.width, i.height);
 			key.src = c.toDataURL();
-		})
+		}
 	}
+	// setSrcWithHitState(key, filename){
+	// 	// Load original image
+	// 	let img = new Image()
+	// 	// To fix if "The canvas has been tainted by cross-origin data" error appears
+	// 	// img.crossOrigin = "Anonymous"
+	// 	// Insert png into source
+	// 	img.src = 'i/'+filename;
+	// 	// When png loads...
+	// 	img.addEventListener('load', () => {
+	// 		// Create temporal canvas
+	// 		let c = document.createElement('canvas')
+	// 		let ctx = c.getContext('2d');
+	// 		// Set dimensions to image size
+	// 		c.height = img.height;
+	// 		// But double the width to be able to draw hit state image later on
+	// 		c.width = img.width * 2;
+	// 		// New property on key element to save source width
+	// 		key.sWidth = img.width;
+	// 		// Draw original image
+	// 		ctx.drawImage(img, 0, 0)
+	// 		// Get pixel data
+	// 		let imgData = ctx.getImageData(0,0,c.width/2,c.height);
+	// 		// Create new arr and push modified pixel data
+	// 		let arr2 = [];
+	// 		imgData.data.forEach((n)=>{
+	// 		   if (n>0 && n<180) n += 80;
+	// 		   if (n>255) n = 255;
+	// 		   arr2.push(n)
+	// 		})
+	// 		// Create new data container and insert new arr
+	// 		let imgData2 = ctx.createImageData(img.width, img.height);
+	// 		imgData2.data.set(arr2)
+	// 		// Draw new imageData right next to original
+	// 		ctx.putImageData(imgData2, img.width, 0);
+	// 		// Finally Load new image that includes the original + a hit state
+	// 		key.src = c.toDataURL();
+	// 	})
+	// }
 	getPoolInputArr(stageNum){
         if (stageNum === 1)
 		return [
@@ -104,77 +138,62 @@ class Assets {
 		];
 	}
 	getEventsFn(stageNum) {
-		// Think of a better solution, like an object with iteration keys
-        if (stageNum === 1) return function(iteration){
-			if (iteration === 0)		   this.pool.getFreeObject('Player', 'Player');
-			// if (iteration === 0)	       this.bg.speed += 2;
-			// if (iteration === 0)	return game.iteration = 2069;
-			if (iteration === 0)	return this.bg.speed = 0.5;
-			if (iteration === 50)   return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:-1});
-			if (iteration === 60)   return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:-1});
-			if (iteration === 70)   return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:-1});
-			if (iteration === 80)   return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:-1});
-            if (iteration === 145)  return this.pool.getFreeObject('Tank', 'EnemyLand', {x:95});
-			if (iteration === 225)  return this.pool.getFreeObject('Tank', 'EnemyLand', {x:200});
-			if (iteration === 300)  return this.pool.getFreeObject('Sniper', 'EnemyAir', {x: 60});
-			if (iteration === 400)  return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:1});
-			if (iteration === 430)  return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:1});
-			if (iteration === 460)  return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:1});
-			if (iteration === 490)  return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:1});
-            if (iteration === 550)  	   this.bg.queue.push(...this.patterns['2'], ...this.patterns['3'], ...this.patterns['4']);
-			if (iteration === 550)  return this.pool.getFreeObject('Sniper', 'EnemyAir', {x: 260});
-			if (iteration === 580)  return this.pool.getFreeObject('Fatty', 'EnemyAir', {side: 1});
-			if (iteration === 660)  return this.pool.getFreeObject('Tank', 'EnemyLand', {x:95});
-			if (iteration === 750)  return this.pool.getFreeObject('Sniper', 'EnemyAir');
-			if (iteration === 820)  return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:-1});
-			if (iteration === 840)  return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:-1});
-			if (iteration === 860)  return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:-1});
-			if (iteration === 880)	return this.pool.getFreeObject('Tank', 'EnemyLand', {x:208});
-			if (iteration === 1000) return this.pool.getFreeObject('Sniper', 'EnemyAir');
-			if (iteration === 1020) return this.pool.getFreeObject('Sniper', 'EnemyAir', {x: 60});
-			if (iteration === 1040) return this.pool.getFreeObject('Sniper', 'EnemyAir', {x: 260});
-			if (iteration === 1200) 	   this.pool.getFreeObject('Fatty', 'EnemyAir', {side: 1});
-			if (iteration === 1200)        this.pool.getFreeObject('Fatty', 'EnemyAir', {side: -1});
-			if (iteration === 1200)	return this.bg.speed += 0.25;
-			if (iteration === 1300) return this.bg.speed += 0.25;
-			if (iteration === 1400) 	   this.bg.speed += 0.25;
-			if (iteration === 1400) return this.pool.getFreeObject('Assaulter', 'EnemyAir', {x: 240});
-			if (iteration === 1450) return this.bg.speed += 0.25;
-			if (iteration === 1550)        this.bg.speed += 0.25;
-			if (iteration === 1550) return this.pool.getFreeObject('Assaulter', 'EnemyAir', {x: 20});
-			if (iteration === 1650) return this.bg.speed += 0.25;
-			if (iteration === 1700) return this.pool.getFreeObject('Assaulter', 'EnemyAir');
-			if (iteration === 1750) return this.bg.speed += 0.25;
-			if (iteration === 1780) return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:-1});
-			if (iteration === 1790) return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:-1});
-			if (iteration === 1800) return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:-1});
-			if (iteration === 1810) return this.pool.getFreeObject('SinePop', 'EnemyAir', {phase:-1});
-			if (iteration === 1850) return this.bg.speed += 0.25;
-			// Row of snipers appear
-			if (iteration === 1910) return this.pool.getFreeObject('Sniper', 'EnemyAir', {x: 60});
-			if (iteration === 1920) return this.pool.getFreeObject('Sniper', 'EnemyAir', {x: 100});
-			if (iteration === 1930) return this.pool.getFreeObject('Sniper', 'EnemyAir', {x: 140});
-			if (iteration === 1940) return this.pool.getFreeObject('Sniper', 'EnemyAir', {x: 180});
-			if (iteration === 1950) return this.pool.getFreeObject('Sniper', 'EnemyAir', {x: 220});
-			if (iteration === 1960) return this.pool.getFreeObject('Sniper', 'EnemyAir', {x: 260});
-			if (iteration === 2070) return this.bg.queue.push(...this.patterns['5'], ...this.patterns['6'], ...this.patterns['7']);
-			// Tanks appear in the dessert
-			if (iteration === 2220) return this.pool.getFreeObject('Tank', 'EnemyLand', {x:210});
-			if (iteration === 2250) return this.pool.getFreeObject('Tank', 'EnemyLand', {x:265});
-			if (iteration === 2270) return this.pool.getFreeObject('Tank', 'EnemyLand', {x:175});
-			if (iteration === 2290) return this.pool.getFreeObject('Tank', 'EnemyLand', {x:235});
-			if (iteration === 2700) return this.bg.speed -= 0.25;
-			if (iteration === 2800) return this.bg.speed -= 0.25;
-			if (iteration === 2900) return this.bg.speed -= 0.25;
-			if (iteration === 3900) return this.bg.speed -= 0.25;
-        };
-        if (stageNum === 2) return function(iteration){
-            // Events here...
-        };
+		// 1=EnemyLand, 2=EnemyAir, 3=Particle, 4=Player, 5=pBullet, 6=eBullet, 7=Hud
+		let a = new Array(5**6).fill(b=>b); // 15625 empty functions
+		a[0]	=b=>{this.p.free('Player', '4');
+					 this.s.bg.speed = 0.5};
+		a[50]	=b=> this.p.free('SinePop', '2', {phase:-1});
+		a[60]	=b=> this.p.free('SinePop', '2', {phase:-1});
+		a[70]	=b=> this.p.free('SinePop', '2', {phase:-1});
+		a[80]	=b=> this.p.free('SinePop', '2', {phase:-1});
+		a[145]	=b=> this.p.free('Tank', '1', {x:95});
+		a[225]	=b=> this.p.free('Tank', '1', {x:95});
+		a[300]	=b=> this.p.free('Sniper', '2', {x: 60});
+		a[400]	=b=> this.p.free('SinePop', '2', {phase:1});
+		a[430]	=b=> this.p.free('SinePop', '2', {phase:1});
+		a[460]	=b=> this.p.free('SinePop', '2', {phase:1});
+		a[490]	=b=> this.p.free('SinePop', '2', {phase:1});
+		a[550]	=b=>{this.s.bg.queue.push(...this.s.patterns['2'], ...this.s.patterns['3'], ...this.s.patterns['4']);
+					 this.p.free('Sniper', '2', {x: 260});}
+		a[580]	=b=> this.p.free('Fatty', '2', {side: 1});
+		a[660]	=b=> this.p.free('Tank', '1', {x:95});
+		a[750]	=b=> this.p.free('Sniper', '2');
+		a[820]	=b=> this.p.free('SinePop', '2', {phase:-1});
+		a[840]	=b=> this.p.free('SinePop', '2', {phase:-1});
+		a[860]	=b=> this.p.free('SinePop', '2', {phase:-1});
+		a[880]	=b=> this.p.free('Tank', '1', {x:208});
+		a[1000]	=b=> this.p.free('Sniper', '2');
+		a[1020]	=b=> this.p.free('Sniper', '2', {x: 60});
+		a[1040]	=b=> this.p.free('Sniper', '2', {x: 260});
+		a[1200]	=b=>{this.p.free('Fatty', '2', {side: 1});
+					 this.p.free('Fatty', '2', {side: -1});
+					 this.s.bg.speed += 0.25;}
+		a[1300]	=b=> this.s.bg.speed += 0.25;
+		a[1400]	=b=>{this.s.bg.speed += 0.25;
+					 this.p.free('Assaulter', '2', {x: 240});}
+		a[1450]	=b=> this.s.bg.speed += 0.25;
+		a[1550]	=b=>{this.s.bg.speed += 0.25;
+					 this.p.free('Assaulter', '2', {x: 20});}
+		a[1650]	=b=> this.s.bg.speed += 0.25;
+		a[1700]	=b=> this.p.free('Assaulter', '2');
+		a[1750]	=b=> this.s.bg.speed += 0.25;
+		a[1780]	=b=> this.p.free('SinePop', '2', {phase:-1});
+		a[1790]	=b=> this.p.free('SinePop', '2', {phase:-1});
+		a[1800]	=b=> this.p.free('SinePop', '2', {phase:-1});
+		a[1810]	=b=> this.p.free('SinePop', '2', {phase:-1});
+		a[1850]	=b=> this.s.bg.speed += 0.25;
+		a[1910]	=b=> this.p.free('Sniper', '2', {x: 60});
+		a[1920]	=b=> this.p.free('Sniper', '2', {x: 100});
+		a[1930]	=b=> this.p.free('Sniper', '2', {x: 140});
+		a[1940]	=b=> this.p.free('Sniper', '2', {x: 180});
+		a[1950]	=b=> this.p.free('Sniper', '2', {x: 220});
+		a[1960]	=b=> this.p.free('Sniper', '2', {x: 260});
+		a[2070]	=b=> this.s.bg.queue.push(...this.s.patterns['5'], ...this.s.patterns['6'], ...this.s.patterns['7']);
+		a[2220]	=b=> this.p.free('Tank', '1', {x:210});
+		a[2250]	=b=> this.p.free('Tank', '1', {x:265});
+		a[2270]	=b=> this.p.free('Tank', '1', {x:175});
+		a[2290]	=b=> this.p.free('Tank', '1', {x:235});
+		// a[]	=b=>
+		return a
     }
-	deleteUnused(){
-		delete this._dir;
-		delete this._imageScaled
-		delete this._filenames
-	}
 };

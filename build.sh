@@ -1,5 +1,8 @@
 # Run using ./build.sh
 
+# Remove images directory (build/i) and its contents
+rm -r build/i
+
 # Concat javascript files into one file
 cat \
     js/assets.js \
@@ -18,6 +21,9 @@ cat \
 # Uglify JS
 uglifyjs build/game.js -c drop_console=true --compress --mangle -o build/game.min.js
 
+# Roadroll JS
+roadroller -Zab32 -Zdy0 -Zlr1500 -Zmd50 -S0,1,2,3,6,7,13,21,50,57,173,458 build/game.min.js -o build/game.roadrolled.js
+
 # Uglify CSS
 uglifycss style.css --output build/style.min.css
 
@@ -25,18 +31,37 @@ uglifycss style.css --output build/style.min.css
 sed -e '/CSS_SOURCE/{r build/style.min.css' -e 'd}' build/html_template.html > build/css_ready.html
 
 # Embed JS into HTML
-sed -e '/GAME_SOURCE/{r build/game.min.js' -e 'd}' build/css_ready.html > build/index.html
+sed -e '/GAME_SOURCE/{r build/game.roadrolled.js' -e 'd}' build/css_ready.html > build/index.html
 
-# Build gzip
-gzip -9 -c build/index.html > build/index.html.gz
+# Copy assets (i) folder into build
+cp -a i build/
+
+# Build gzip of tar archive containing index.html and assets (i) folder
+cd build
+tar -czf final.tar.gz index.html i
+cd ..
+
+# Get file sizes before cleaning
+uglyfied=$(ls -l build/game.min.js | awk '{print $5}')
+roadrolled=$(ls -l build/game.roadrolled.js | awk '{print $5}')
+zipped=$(ls -l build/final.tar.gz | awk '{print $5}')
 
 # Clean
 rm build/game.js
+rm build/game.min.js
+rm build/game.roadrolled.js
+rm build/style.min.css
 rm build/css_ready.html
 
-# Display output size
-unzip=$(ls -l build/index.html | awk '{print $5}')
-zipped=$(ls -l build/index.html.gz | awk '{print $5}')
-echo "Unzipped size: $unzip bytes"
-echo "GZip size: $zipped bytes"
+# Display game logic and tar.gz sizes
+echo "Game logic size (uglyfied):   $uglyfied bytes"
+echo "Game logic size (roadrolled): $roadrolled bytes"
+echo "GZip size (including images): $zipped bytes"
 
+
+# History of build sizes (in bytes):
+# 10116 (roadroller implementation)
+# 9917 (compressing most images to webp + 15 color limit)
+# 9916 (changing event function system)
+# 9777 (without firefox scrolling support)
+# 9347 ((compressing background to webp + 5 color limit)

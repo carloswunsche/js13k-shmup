@@ -4,16 +4,20 @@
 
 class Game {
     constructor(){
-        this.objects = {
-            EnemyLand    : [],
-            EnemyAir     : [],
-            Particle     : [],
-            Player       : [],
-            PlayerBullet : [],
-            EnemyBullet  : [],
-            Hud          : [],
-        };
-        this.objects = new Map(Object.entries(this.objects));
+        // Layers Guide
+        // 1=EnemyLand, 2=EnemyAir, 3=Particle, 4=Player, 5=pBullet, 6=eBullet, 7=Hud
+        // this.objects = {
+        //     EnemyLand    : [],
+        //     EnemyAir     : [],
+        //     Particle     : [],
+        //     Player       : [],
+        //     PlayerBullet : [],
+        //     EnemyBullet  : [],
+        //     Hud          : [],
+        // };
+        // this.objects = new Map(Object.entries(this.objects));
+        // Change variable name to this.layers
+        this.objects = new Map(Object.entries({1:[],2:[],3:[],4:[],5:[],6:[],7:[]}));
         this.queuedFns = [];
         this.resetCounter = 0;
     }
@@ -41,7 +45,7 @@ class Game {
         this.queuedFns.length = 0;
         this.initFade('fromBlack', 1);
     }
-    update(firefox, stepNotUsedYet) {
+    update() {
         // Update fade transparency
         this.updateFade(step);
 
@@ -51,21 +55,25 @@ class Game {
 
         // Current level events
         // Checking if integer will boost performance a little bit with 120ups
-        if (Number.isInteger(this.iteration)) this.stage.events(this.iteration);
+        if (Number.isInteger(this.iteration)) this.stage.events[this.iteration]();
+        // if (this.iteration === 0) this.stage.events[0]();
+        // if (this.iteration === 0) console.log(this.stage.events[0]);
 
         // Debug only (to prevent negative scrolling)
-        if (this.stage.bg.speed < 0) this.stage.bg.speed = 0;
+        // if (this.stage.bg.speed < 0) this.stage.bg.speed = 0;
 
         // Update Frame Counter
         this.iteration += 1 * step;
 
-        if (firefox) {
-            // Background Scrolling (A) (Fixes firefox crappy draw function)
-            this.scrollBackground(this.getFlooredSpeed());
-        } else {
-            // Background Scrolling (A) (super smooth in Chrome)
-            this.scrollBackground(this.stage.bg.speed * step);
-        }
+        // // Previous background renderer if firefox
+        // if (firefox) {
+        //     // Background Scrolling (A) (Fixes firefox crappy draw function)
+        //     this.scrollBackground(this.getFlooredSpeed());
+        // } else {
+        //     // Background Scrolling (A) (super smooth in Chrome)
+        //     this.scrollBackground(this.stage.bg.speed * step);
+        // }
+        this.scrollBackground(this.stage.bg.speed * step);
 
         // Run update function of each gameObject
         for (const [_, arr] of this.objects) arr.forEach(obj => obj.update());
@@ -89,7 +97,7 @@ class Game {
         this.audio.player.playSfx(this.audio.sfx);
 
         // Reset game if player dies
-        if (!this.objects.get('Player')[0]) {
+        if (!this.objects.get('4')[0]) {
             this.resetCounter += 1 * step;
             if (this.resetCounter === 50) this.initFade('toBlack', 1);
             if (this.resetCounter === 150) debug.gameReset();
@@ -98,21 +106,21 @@ class Game {
         // DEBUG TXT
         // display.txt = String(this.iteration)
     }
-    getFlooredSpeed(){
-        let speedTimesStep = this.stage.bg.speed * step;
-        let result = 0;
-        this.stage.bg.speedDecimalAcc += this.getDecimal(speedTimesStep);
-        if (this.stage.bg.speedDecimalAcc >= 1) {
-            result += Math.floor(this.stage.bg.speedDecimalAcc);
-            this.stage.bg.speedDecimalAcc = this.getDecimal(this.stage.bg.speedDecimalAcc);
-        }
-        result += Math.floor(speedTimesStep);
-        return result;
-    }
-    getDecimal(n){
-        if (Number.isInteger(n)) return 0;
-        return Number('0.'+ n.toString().split('.')[1].slice(0,1));
-    }
+    // getFlooredSpeed(){
+    //     let speedTimesStep = this.stage.bg.speed * step;
+    //     let result = 0;
+    //     this.stage.bg.speedDecimalAcc += this.getDecimal(speedTimesStep);
+    //     if (this.stage.bg.speedDecimalAcc >= 1) {
+    //         result += M.floor(this.stage.bg.speedDecimalAcc);
+    //         this.stage.bg.speedDecimalAcc = this.getDecimal(this.stage.bg.speedDecimalAcc);
+    //     }
+    //     result += M.floor(speedTimesStep);
+    //     return result;
+    // }
+    // getDecimal(n){
+    //     if (Number.isInteger(n)) return 0;
+    //     return Number('0.'+ n.toString().split('.')[1].slice(0,1));
+    // }
     scrollBackground(spd){
         // Scroll background: move each row, wrap around and change pattern
         this.stage.bg.rows.forEach((_,y) => {
@@ -147,8 +155,8 @@ class Game {
         });
     }
     testCollision(){
-        let pBulLayer = this.objects.get('PlayerBullet');
-        ['EnemyAir','EnemyLand'].forEach(enemyType => {
+        let pBulLayer = this.objects.get('5');
+        ['2','1'].forEach(enemyType => {
             // Collisions early test. Ejecutar solo si hay enemigos y pBullets en pantalla
             if (this.objects.get(enemyType).length > 0 && pBulLayer.length > 0) {
                 // Loopear sobre los bullets y luego sobre los enemies
@@ -163,7 +171,7 @@ class Game {
                                 // Ambos pierden HP
                                 b.hp--; e.hp--;
                                 // Enemy cambia el tile a "Hit"
-                                e.animation = 1;
+                                e.hit = 1;
                                 // Si el enemy evaluado murio...
                                 if (e.hp <= 0) {
                                     // Audio: explosion sfx flag
@@ -171,9 +179,9 @@ class Game {
                                     // Pool: Liberar particulas de la explosion
                                     for (let i = 0; i < 30; i++)
                                     this.queuedFns.push(() => {
-                                        this.pool.getFreeObject(
+                                        this.pool.free(
                                             'Particle', 
-                                            'Particle', 
+                                            '3', 
                                             {x: e.x, y: e.y}
                                         )
                                     });
@@ -189,10 +197,10 @@ class Game {
     }
     testCollisionPlayer(){
         // To speed up player collision test
-        let player = this.objects.get('Player')[0];
+        let player = this.objects.get('4')[0];
         // Collisions early test. Ejecutar solo si hay Enemy Bullets en pantalla y player existe
         // if (this.objects.get('EnemyBullet').length > 0 && player) {
-        ['EnemyBullet', 'EnemyAir'].forEach(layer => {
+        ['6', '2'].forEach(layer => {
             if (!player) return;
             this.objects.get(layer).forEach(b => {
                 if (b.hp > 0 && player.hp > 0) { 
@@ -210,11 +218,7 @@ class Game {
                         let yShallowCopy = player.y;
                         for (let i = 0; i < 40; i++)
                         this.queuedFns.push(() => {
-                            this.pool.getFreeObject(
-                                'Particle',
-                                'Particle',
-                                {x: xShallowCopy, y: yShallowCopy, speed: 4, rndRange:[1,2]}
-                            )
+                            this.pool.free('Particle','3',{x: xShallowCopy, y: yShallowCopy, speed: 4, rndRange:[1,2]})
                         });
                         player.disable();
                         return;
@@ -236,8 +240,9 @@ class Game {
             };
         }
     }
+    // Unnecesary if not going after 120hz
     ceilIteration(){
-        this.iteration = Math.ceil(this.iteration);
+        this.iteration = M.ceil(this.iteration);
     }
     runQueued(){
         this.queuedFns.forEach(fn => fn());

@@ -2,13 +2,15 @@
 // ENTITIES
 //////////////////////////
 
+// Layers Guide
+// 1=EnemyLand, 2=EnemyAir, 3=Particle, 4=Player, 5=pBullet, 6=eBullet, 7=Hud
 class Entity {
     constructor(image) {
         this.free = true;
         this.image = image;
         this.width = image.sWidth;
         this.height = image.height;
-        this.animation = 0;
+        this.hit = 0;
         this.opacity = 100;
         this.rotation = 0;
         this.x = 50;
@@ -25,7 +27,7 @@ class Entity {
     }
     update() {
         // General updates for all entities
-        this.animation = 0;
+        this.hit = 0;
         // Particular updateData
         this.updateData?.();
         // Update position
@@ -56,6 +58,7 @@ class Entity {
         ];
     }
     killIfOutOfBounds(where){
+        // Reduce strings
         // Player bullets
         if (where === 'top') {
             if (this.y <= 0) this.hp = 0;
@@ -88,10 +91,10 @@ class Entity {
     }
     // General calculation functions
     toRadians(degrees) {
-        return degrees * Math.PI / 180
+        return degrees * M.PI / 180
     }
     randomBetween(min, max) {
-        return Math.floor(Math.random() * (max - min + 1) + min)
+        return M.floor(M.random() * (max - min + 1) + min)
     }
 }
 
@@ -118,8 +121,8 @@ class Player extends Entity {
         // Shot: If button pressed & buffer empty...
         if (this.buttons[4] > 0 && this.shotBuffer <= 0) {
             // Queue 2 bullets
-            this.queue.push(() => { this.pool.getFreeObject('PlayerBullet', 'PlayerBullet', { x: this.x, y: this.y, offset: 5 }) });
-            this.queue.push(() => { this.pool.getFreeObject('PlayerBullet', 'PlayerBullet', { x: this.x, y: this.y, offset: -4 }) });
+            this.queue.push(() => { this.pool.free('PlayerBullet', '5', { x: this.x, y: this.y, offset: 5 }) });
+            this.queue.push(() => { this.pool.free('PlayerBullet', '5', { x: this.x, y: this.y, offset: -4 }) });
             // Sound
             this.sfx.sfx_playerShot = true;
             // Reset buffer
@@ -152,7 +155,7 @@ class Player extends Entity {
         return this.buttons[0] && this.buttons[1] ||
             this.buttons[1] && this.buttons[2] ||
             this.buttons[2] && this.buttons[3] ||
-            this.buttons[3] && this.buttons[0] ? 0.707 : 1;
+            this.buttons[3] && this.buttons[0] ? .707 : 1;
     }
     fixOutOfBounds() {
         if (this.hitbox[2] < 0) this.y = this.yMargin - this.yOffset;
@@ -219,16 +222,16 @@ class Enemy extends Entity {
         return this;
     }
     easeOutCubic(xy, startPos, goTo, timeInFrames, timerUsed = 0) {
-        this[xy] = (goTo - startPos) * (1 - Math.pow(1 - this.timers[timerUsed] / timeInFrames, 3)) + startPos;
+        this[xy] = (goTo - startPos) * (1 - M.pow(1 - this.timers[timerUsed] / timeInFrames, 3)) + startPos;
     }
     easeInOutSine(xy, startPos, goTo, timeInFrames, timerUsed = 0) {
-        this[xy] = (goTo - startPos) * (-(Math.cos(Math.PI * this.timers[timerUsed] / timeInFrames) - 1) / 2) + startPos;
+        this[xy] = (goTo - startPos) * (-(M.cos(M.PI * this.timers[timerUsed] / timeInFrames) - 1) / 2) + startPos;
     }
     sin(xy, halfCycle, freq, centerPoint, timerUsed = 0) {
-        this[xy] = halfCycle * Math.sin(this.timers[timerUsed] / 32 * freq) + centerPoint;
+        this[xy] = halfCycle * M.sin(this.timers[timerUsed] / 32 * freq) + centerPoint;
     }
     cos(xy, phase, cycle, freq, centerPoint, timerUsed = 0) {
-        this[xy] = cycle / 2 * phase * Math.cos(this.timers[timerUsed] / 32 * freq) + centerPoint;
+        this[xy] = cycle / 2 * phase * M.cos(this.timers[timerUsed] / 32 * freq) + centerPoint;
     }
     timerCount(timeInFrames = 999, timerUsed = 0) {
         // Para que no se pueda usar un timer inexistente
@@ -237,17 +240,18 @@ class Enemy extends Entity {
         if (this.timers[timerUsed] < timeInFrames) this.timers[timerUsed] += 1 * step;
     }
     shot(howMany = 1, spd, angle, add, offX = 0, offY = 0) {
+        // Reduce layer name
         for(let i = 0; i < howMany; i++)
-            this.pool.getFreeObject(
+            this.pool.free(
                 'EnemyBullet', 
-                'EnemyBullet', 
+                '6', 
                 {x: this.x + offX, 
                 y: this.y + offY, 
                 speed: spd, 
                 // This angle parameter can be the string 'toPlayer'
                 angle: angle || 270 + i * (360 / howMany),
                 // Multiply add to spread, if any
-                add: add * (i - Math.floor(howMany/2)) || 0,
+                add: add * (i - M.floor(howMany/2)) || 0,
             });
             // Sound
             this.sfx.sfx_enemyShot = true;
@@ -258,12 +262,13 @@ class EnemyBullet extends Enemy {
     constructor(image) {
         super(image);
         this.r__hitbox = this.setHitbox(this.width / 2 - 1, this.height / 2 - 1);
+        // Reduce string
         this.deadBound = 'any';
     }
     reset2(custom) {
         // Check between mode 'auto' (towards Player) and regular degrees
         if (custom?.angle === 'auto') {
-            this.angle = Math.atan2(this.y - this.player.y, this.player.x - this.x);
+            this.angle = M.atan2(this.y - this.player.y, this.player.x - this.x);
         } else {
             this.angle = this.toRadians(custom?.angle || 0);
         }
@@ -271,6 +276,7 @@ class EnemyBullet extends Enemy {
         this.angle += this.toRadians(custom?.add) || 0;
     }
     updateData() {
+        this.rotation += this.toRadians(9)
         // Destroy if out of bounds
         if (this.x <= 0 - this.width / 2) return this.hp = 0;
         if (this.x >= this.displayWidth + this.width / 2) return this.hp = 0;
@@ -279,8 +285,8 @@ class EnemyBullet extends Enemy {
     }
     updatePos() {
         // Move in the direction of player
-        this.x = this.x + Math.cos(this.angle) * this.speed * step;
-        this.y = this.y - Math.sin(this.angle) * this.speed * step;
+        this.x = this.x + M.cos(this.angle) * this.speed * step;
+        this.y = this.y - M.sin(this.angle) * this.speed * step;
     };
 }
 class SinePop extends Enemy {
@@ -289,17 +295,14 @@ class SinePop extends Enemy {
         // Used by Enemy class reset
         this.r__hitbox = this.setHitbox(this.width / 2 - 1, this.height / 2 - 2);
         this.r__hp = 2;
+        // Reduce string
         this.deadBound = 'bottom';
-    }
-    updateData() {
-        // Destroy if out of bounds (bottom)
-        if (this.y > this.displayHeight + this.height / 2) this.hp = 0;
     }
     updatePos() {
         // Cosine movement
-        this.cos('x', this.phase, 260, 1, 160);
+        this.cos('x', this.phase, 130, 1, 80);
         this.timerCount(999);
-        this.y += 1 * step
+        this.y += 0.5 * step
     }
 }
 class Sniper extends Enemy {
@@ -307,17 +310,16 @@ class Sniper extends Enemy {
         super(image)
         // Used by Enemy class reset
         this.r__hitbox = this.setHitbox(this.width / 2 - 2, this.height / 2 - 2);
-        this.r__speed = 3;
+        this.r__speed = 1.5;
         this.r__hp = 3;
+        // Reduce string
         this.deadBound = 'bottom';
     }
     updateData() {
         this.timerCount(100);
-        if (this.timers[0] < 50) this.speed -= 0.05 * step;
-        if (this.timers[0] === 60) this.shot(1, 2, 'auto', 0, -2, 4);
-        if (this.timers[0] === 100) this.speed += 0.04 * step;
-        // Destroy if out of bounds (bottom)
-        if (this.y > this.displayHeight + this.height / 2) this.hp = 0;
+        if (this.timers[0] < 50) this.speed -= .025 * step;
+        if (this.timers[0] === 60) this.shot(1, 1, 'auto', 0, -2, 4);
+        if (this.timers[0] === 100) this.speed += .02 * step;
     }
     updatePos() {
         // Go down adding (variable) speed
@@ -334,18 +336,20 @@ class Fatty extends Enemy {
     }
     reset2(custom) {
         // Set x starting position based on side
-        this.x = this.displayWidth / 2 - (this.displayWidth / 2 + 40) * this.side;
+        this.x = this.displayWidth / 2 - (this.displayWidth / 2 + this.width/2) * this.side;
         // Set this.deadBound based on this.side
+        // Reduce strings
         this.deadBound = custom?.side === 1 ? 'right' : 'left';
     }
     updateData() {
         this.timerCount(300);
-        if (this.timers[0] === 80) this.shot(3, 2.5, 'auto', 20);
+        // Reduce string to number
+        if (this.timers[0] === 80) this.shot(3, 1.3, 'auto', 20);
     }
     updatePos() {
         // Go down adding (variable) speed
-        this.x += (this.speed * 1.5) * this.side * step;
-        this.y += (this.speed * 0.5) * step;
+        this.x += (this.speed * .75) * this.side * step;
+        this.y += (this.speed * .25) * step;
     }
 }
 class Tank extends Enemy {
@@ -354,6 +358,7 @@ class Tank extends Enemy {
         // Used by Enemy class reset
         this.r__hitbox = this.setHitbox(this.width / 2 - 2, this.height / 2 - 2, 0, -1);
         this.r__hp = 6;
+        // Reduce string
         this.deadBound = 'bottom';
     }
     updatePos() {
@@ -368,22 +373,22 @@ class Assaulter extends Enemy {
         // Used by Enemy class reset
         this.r__hitbox = this.setHitbox(this.width / 2 - 5, this.height / 2 - 5);
         this.r__hp = 30;
-        this.r__speed = 5;
+        this.r__speed = 2.5;
     }
     reset2() {
-        this.angle = Math.atan2(this.y - this.player.y, this.player.x - this.x);
+        this.angle = M.atan2(this.y - this.player.y, this.player.x - this.x);
     }
     updateData() {
         this.timerCount(100);
-        if (this.timers[0] < 25) this.speed -= 0.2 * step;
-        if (this.timers[0] === 40)  this.shot(10, 2);
-        if (this.timers[0] === 80)  this.angle = Math.atan2(this.y - this.player.y, this.player.x - this.x);
-        if (this.timers[0] > 80)    this.speed += 0.04 * step;
-        if (this.timers[0] === 99)  this.shot(3, 2, 'auto', 20);
+        if (this.timers[0] < 25) this.speed -= .1 * step;
+        if (this.timers[0] === 40)  this.shot(10, 1);
+        if (this.timers[0] === 80)  this.angle = M.atan2(this.y - this.player.y, this.player.x - this.x);
+        if (this.timers[0] > 80)    this.speed += .02 * step;
+        if (this.timers[0] === 99)  this.shot(3, 1, 'auto', 20);
     }
     updatePos() {
-        this.x = this.x + Math.cos(this.angle) * this.speed * step;
-        this.y = this.y - Math.sin(this.angle) * this.speed * step;
+        this.x = this.x + M.cos(this.angle) * this.speed * step;
+        this.y = this.y - M.sin(this.angle) * this.speed * step;
     }
 }
 
@@ -406,13 +411,14 @@ class Particle extends Entity {
         this.angle = this.toRadians(this.randomBetween(0, 359));
     }
     updateData() {
+        this.rotation += this.toRadians(this.randomBetween(1,5))
         // Subtract speed until bye
         this.speed -= this.randomBetween(...this.rndRange) / 20 * step
         if (this.speed <= 1) this.hp = 0;
     }
     updatePos() {
-        this.x = this.x + Math.cos(this.angle) * this.speed * step;
-        this.y = this.y - Math.sin(this.angle) * this.speed * step;
+        this.x = this.x + M.cos(this.angle) * this.speed * step;
+        this.y = this.y - M.sin(this.angle) * this.speed * step;
         this.y = this.y + 1 * step;
     }
 }

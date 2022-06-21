@@ -4,6 +4,7 @@
 
 class AudioPlayer {
     constructor(){
+        // Taken from global
         this.zzfx = zzfx;
     }
     playSfx(obj){
@@ -13,7 +14,7 @@ class AudioPlayer {
                 // Reproducir
                 this[key]();
                 // Y mutar el flag a false
-                obj[key] = false;
+                obj[key] = 0;
             }
         }
     }

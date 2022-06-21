@@ -7,7 +7,7 @@
 // canvasTxt.vAlign = 'top';
 
 class Display {
-    constructor(width, height, tileSize, scanlines = false, hitboxes = false) {
+    constructor(width, height, tileSize, scanlines=0, hitboxes=0) {
         this.width = width;
         this.height = height;
         this.canvas = document.querySelector('canvas');
@@ -23,7 +23,7 @@ class Display {
         window.addEventListener('resize', ()=>{
             this.setScaleAndResize();
             this.pixelatedLook();
-            // Deactivate the next one for best performance
+            // Unnecesary Also deactivate for best performance
             this.render(stage.bg, game.objects);
         });
         // this.txt = '';
@@ -31,9 +31,10 @@ class Display {
 
     setScaleAndResize(forced) {
         // Set scale
-        this.scale = Math.min(
-            Math.trunc(window.innerWidth / this.width),
-            Math.trunc(window.innerHeight / this.height));
+        this.scale = M.min(
+            M.trunc(window.innerWidth / this.width),
+            M.trunc(window.innerHeight / this.height));
+        // Unnecesary remove forced scaling
         if (forced) this.scale = forced;
         // Resize
         this.canvas.width = this.scale * this.width;
@@ -89,30 +90,31 @@ class Display {
     }
 
     drawBg(bg, x, p__destY){
-        // Determine rotation state
-        typeof this.currentTile === 'string' ? this.r = 1 : this.r = 0;
-        // If rotation is on... get angle and more stuff
-        if (this.r) {
-            let a;
-            switch (this.currentTile.slice(-1)) {
-                case 'a': a = 1.5708; break; // 90 degree
-                case 'b': a = 3.1415; break; // 180 degree
-                case 'c': a = 4.7123; break; // 270 degree
-            }
-            // Save context before rotating
-            this.ctx.save();
-            // Translate canvas to render position
-            this.ctx.translate((x + (this.tileSize/2)) * this.scale, p__destY + ((this.tileSize/2) * this.scale));
-            // Rotate
-            this.ctx.rotate(a);
-        }
+        // // Determine rotation state
+        // typeof this.currentTile === 'string' ? this.r = 1 : this.r = 0;
+        // // If rotation is on... get angle and more stuff
+        // if (this.r) {
+        //     let a;
+        //     switch (this.currentTile.slice(-1)) {
+        //         case 'a': a = 1.5708; break; // 90 degree
+        //         case 'b': a = 3.1415; break; // 180 degree
+        //         case 'c': a = 4.7123; break; // 270 degree
+        //     }
+        //     // Save context before rotating
+        //     this.ctx.save();
+        //     // Translate canvas to render position
+        //     this.ctx.translate((x + (this.tileSize/2)) * this.scale, p__destY + ((this.tileSize/2) * this.scale));
+        //     // Rotate
+        //     this.ctx.rotate(a);
+        // }
 
         this.ctx.drawImage(
             // Img
             bg.image,
             // Source X
             // (this.tileCode % bg.imageCols) * this.tileSize,
-            parseInt(this.currentTile) * this.tileSize,
+            // parseInt(this.currentTile) * this.tileSize,
+            this.currentTile * this.tileSize,
             // Source Y
             // Math.floor((this.tileCode / bg.imageCols)) * this.tileSize,
             0,
@@ -121,22 +123,23 @@ class Display {
             // Source Height
             this.tileSize,
             // Destination X
-            this.r ? (-this.tileSize/2) * this.scale : x * this.scale,
+            // this.r ? (-this.tileSize/2) * this.scale : x * this.scale,
+            x * this.scale,
             // Destination Y
-            this.r ? (-this.tileSize/2) * this.scale : p__destY,
+            // this.r ? (-this.tileSize/2) * this.scale : p__destY,
+            p__destY,
             // Destination Width
             this.p__tileTimesScaledCanvas,
             // Destination height
             this.p__tileTimesScaledCanvas 
         );
 
-        // Finally, if rotation was activated, restore context
-        if (this.r) this.ctx.restore();
+        // // If rotation was activated, restore context
+        // if (this.r) this.ctx.restore();
     }
 
     renderGameObjects (gameObjects) {
         for (const [_, arr] of gameObjects){
-        // loopOver(gameObjects, (_,arr) => { // delete dis
             arr.forEach(obj => {
                 // Save canvas' context state
                 this.ctx.save();
@@ -147,13 +150,13 @@ class Display {
                 this.ctx.translate(obj.x * this.scale, obj.y * this.scale);
 
                 // Rotate
-                if (obj.rotation) this.ctx.rotate(toRadians(obj.rotation));
+                if (obj.rotation) this.ctx.rotate(obj.rotation);
                 // Draw
                 this.ctx.drawImage(
                     // Img
                     obj.image,
                     // Source x
-                    obj.image.sWidth * obj.animation,
+                    obj.image.sWidth * obj.hit,
                     // Source y
                     0,
                     // Source width
@@ -173,7 +176,6 @@ class Display {
                 // Undo opacity, translation and rotation 
                 this.ctx.restore();
             })
-        // }) // delete dis
         }
     }
 

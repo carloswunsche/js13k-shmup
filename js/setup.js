@@ -3,6 +3,7 @@
 //////////////////////////
 'use strict';
 
+let M = Math;
 const input 	  = new Input();
 const display 	  = new Display(160, 120, 8);
 const audioPlayer = new AudioPlayer();
@@ -10,7 +11,7 @@ const pool 		  = new Pool();
 const stage 	  = new Stage(8);
 const engine 	  = new Engine();
 const game 		  = new Game();
-const assets 	  = new Assets('assets/').loadAnd(setupAndRun);
+const assets 	  = new Assets().loadAnd(setupAndRun);
 
 function setDependencies() {
 	// 1) Pool Dependencies
@@ -23,6 +24,9 @@ function setDependencies() {
 	const update = (firefox, step) => {game.update(firefox, step)};
 	const render = () => {display.render(stage.bg, game.objects)};
 	engine.needs(update, render);
+
+	// 4) Assets dependencies
+	assets.needs(pool, stage)
 
 	// 4) Game Dependencies
 	const initFade   = (a,b)  => display.initFade(a, b);
@@ -37,11 +41,10 @@ function initialize(){
 function setupAndRun() {
 	setDependencies();
 	initialize();
-	// clean();
 	engine.start();
 }
 
-
+// Unnecesary remove all debug related stuff
 //////////////////////////
 // DEBUGGER
 //////////////////////////

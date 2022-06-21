@@ -9,7 +9,7 @@ class Stage {
     needs(assets, pool, displayW, displayH){
         // To get the pool input array for the current level
         this._assets = assets;
-        // To pool objects from assets' input array and to get free ones from stage events
+        // // To pool objects from assets' input array AND to get free ones from stage events
         this.pool = pool;
         // To set bg number of columns
         this._displayW = displayW;
@@ -18,14 +18,16 @@ class Stage {
     }
     init(stageNum){
         // Get tile quantity
+        // Reduce to literal
         this._tileQty = this.getTileQty();
+        // Unnecesary
         // Get stage number from comfy string
         this.stageNum = parseInt(stageNum);
         // Take raw pattern from assets, then make a patterns object
         this._rawPattern = this._assets.patterns[this.stageNum];
         this.patterns = this.createPatternsObj(this._rawPattern);
         // Pool stage objects
-        this._assets.getPoolInputArr(this.stageNum).forEach(el => this.pool.fillWith(el[0], el[1]))
+        this._assets.getPoolInputArr(this.stageNum).forEach(entityArr => this.pool.fillWith(entityArr))
         // Get events function
         this.events = this._assets.getEventsFn(this.stageNum);
         // Setup background
@@ -36,10 +38,13 @@ class Stage {
     setupBackground() {
         this.bg = {};
         this.bg.queue = [];
+        // Reduce a little
         this.bg.pattern = [...this.patterns['1']];
+        // Reduce
         this.bg.image = this._assets['Stage'+this.stageNum];
         this.bg.imageCols = this.bg.image.width / this._tileSize;
-        this.bg.rows = this._setRowsArr();
+        // Reduce to array literal
+        this.bg.rows = [-8, 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112]
         this.bg.tileSize = this._tileSize;
         this.bg.numCols = this._displayW / this._tileSize;
         this.bg.tileQty = this._tileQty;
@@ -63,6 +68,8 @@ class Stage {
         return arr;
         // With a tileSize of 16px, this function will return:
         // [-16, 0, 16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224]
+        // With a tileSize of 8px, this function will return:
+        // [-8,, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112]
     }
     getTileQty() {
         let heightPlusOneRow = this._displayH + this._tileSize;
