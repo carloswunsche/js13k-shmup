@@ -121,7 +121,7 @@ class Player extends Entity {
         // Shot: If button pressed & buffer empty...
         if (this.buttons[4] > 0 && this.shotBuffer <= 0) {
             // Queue 2 bullets
-            this.queue.push(() => { this.pool.free('PlayerBullet', '5', { x: this.x, y: this.y, offset: 5 }) });
+            this.queue.push(() => { this.pool.free('PlayerBullet', '5', { x: this.x, y: this.y, offset:  4 }) });
             this.queue.push(() => { this.pool.free('PlayerBullet', '5', { x: this.x, y: this.y, offset: -4 }) });
             // Sound
             this.sfx.sfx_playerShot = true;
@@ -235,6 +235,7 @@ class Enemy extends Entity {
     }
     timerCount(timeInFrames = 999, timerUsed = 0) {
         // Para que no se pueda usar un timer inexistente
+        // Unnecesary
         if (timerUsed >= this.timers.length) timerUsed = this.timers.length - 1;
         // Count time
         if (this.timers[timerUsed] < timeInFrames) this.timers[timerUsed] += 1 * step;

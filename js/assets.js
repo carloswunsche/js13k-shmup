@@ -146,34 +146,34 @@ class Assets {
 		a[60]	=b=> this.p.free('SinePop', '2', {phase:-1});
 		a[70]	=b=> this.p.free('SinePop', '2', {phase:-1});
 		a[80]	=b=> this.p.free('SinePop', '2', {phase:-1});
-		a[145]	=b=> this.p.free('Tank', '1', {x:95});
-		a[225]	=b=> this.p.free('Tank', '1', {x:95});
-		a[300]	=b=> this.p.free('Sniper', '2', {x: 60});
+		a[145]	=b=> this.p.free('Tank', '1', {x:55});
+		a[270]	=b=> this.p.free('Tank', '1', {x:105});
+		a[300]	=b=> this.p.free('Sniper', '2', {x: 40});
 		a[400]	=b=> this.p.free('SinePop', '2', {phase:1});
 		a[430]	=b=> this.p.free('SinePop', '2', {phase:1});
 		a[460]	=b=> this.p.free('SinePop', '2', {phase:1});
 		a[490]	=b=> this.p.free('SinePop', '2', {phase:1});
 		a[550]	=b=>{this.s.bg.queue.push(...this.s.patterns['2'], ...this.s.patterns['3'], ...this.s.patterns['4']);
-					 this.p.free('Sniper', '2', {x: 260});}
+					 this.p.free('Sniper', '2', {x: 120});}
 		a[580]	=b=> this.p.free('Fatty', '2', {side: 1});
-		a[660]	=b=> this.p.free('Tank', '1', {x:95});
+		a[660]	=b=> this.p.free('Tank', '1', {x:52});
 		a[750]	=b=> this.p.free('Sniper', '2');
 		a[820]	=b=> this.p.free('SinePop', '2', {phase:-1});
 		a[840]	=b=> this.p.free('SinePop', '2', {phase:-1});
 		a[860]	=b=> this.p.free('SinePop', '2', {phase:-1});
-		a[880]	=b=> this.p.free('Tank', '1', {x:208});
+		a[880]	=b=> this.p.free('Tank', '1', {x:112});
 		a[1000]	=b=> this.p.free('Sniper', '2');
-		a[1020]	=b=> this.p.free('Sniper', '2', {x: 60});
-		a[1040]	=b=> this.p.free('Sniper', '2', {x: 260});
+		a[1020]	=b=> this.p.free('Sniper', '2', {x: 30});
+		a[1040]	=b=> this.p.free('Sniper', '2', {x: 130});
 		a[1200]	=b=>{this.p.free('Fatty', '2', {side: 1});
 					 this.p.free('Fatty', '2', {side: -1});
 					 this.s.bg.speed += 0.25;}
 		a[1300]	=b=> this.s.bg.speed += 0.25;
 		a[1400]	=b=>{this.s.bg.speed += 0.25;
-					 this.p.free('Assaulter', '2', {x: 240});}
+					 this.p.free('Assaulter', '2', {x: 130});}
 		a[1450]	=b=> this.s.bg.speed += 0.25;
 		a[1550]	=b=>{this.s.bg.speed += 0.25;
-					 this.p.free('Assaulter', '2', {x: 20});}
+					 this.p.free('Assaulter', '2', {x: 30});}
 		a[1650]	=b=> this.s.bg.speed += 0.25;
 		a[1700]	=b=> this.p.free('Assaulter', '2');
 		a[1750]	=b=> this.s.bg.speed += 0.25;
