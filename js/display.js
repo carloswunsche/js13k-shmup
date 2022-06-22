@@ -152,6 +152,16 @@ class Display {
 
                 // Rotate
                 if (entity.rotation) this.ctx.rotate(entity.rotation);
+                if (entity instanceof Particle) {
+                    this.ctx.fillStyle = entity.rndColor;
+                    this.ctx.fillRect(
+                        -(entity.scale * this.scale) / 2, 
+                        -(entity.scale * this.scale) / 2,
+                        entity.scale * this.scale,
+                        entity.scale * this.scale
+                    );
+                    this.ctx.restore();
+                } else {
                 // Draw
                 this.ctx.drawImage(
                     // Img
@@ -176,6 +186,7 @@ class Display {
 
                 // Undo opacity, translation and rotation 
                 this.ctx.restore();
+            }
             })
         }
     }

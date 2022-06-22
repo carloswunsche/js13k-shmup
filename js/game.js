@@ -174,7 +174,7 @@ class Game {
                                 // Audio: explosion sfx flag
                                 this.audio.sfx.xplos = true;
                                 // Pool: Liberar 30 particulas (explosion)
-                                for (let i = 0; i < 30; i++)
+                                for (let i = 0; i < 20; i++)
                                 this.queuedFns.push(z=>this.pool.free('Particle','3',{x: enemy.x, y: enemy.y}));
                             }
                             // Salir del forEach de los enemigos ya que el bullet actual murió
@@ -205,9 +205,8 @@ class Game {
                         let xShallowCopy = player.x;
                         let yShallowCopy = player.y;
                         for (let i = 0; i < 40; i++)
-                        this.queuedFns.push(() => {
-                            this.pool.free('Particle','3',{x: xShallowCopy, y: yShallowCopy, speed: 4, rndRange:[1,2]})
-                        });
+                            this.queuedFns.push(z=>this.pool.free('Particle','3',{x: xShallowCopy, y: yShallowCopy})
+                        );
 
                         player.disable();
                         return;

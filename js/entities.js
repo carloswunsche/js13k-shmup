@@ -8,8 +8,8 @@ class Entity {
     constructor(image) {
         this.free = true;
         this.image = image;
-        this.width = image.width;
-        this.height = image.height;
+        this.width = image?.width;
+        this.height = image?.height;
         this.hit = 0;
         // Unnecesary?
         this.opacity = 100;
@@ -30,8 +30,6 @@ class Entity {
         this.sfx = game.audio.sfx;
     }
     update() {
-        // General updates for all entities
-        this.hit = 0;
         // Particular updateData
         this.updateData?.();
         // Update position
@@ -45,6 +43,9 @@ class Entity {
             this.fixOutOfBounds();
             this.hitbox = this.setHitbox();
         };
+        // General updates for all entities
+        this.hit = 0;
+        if (this.opacity < 0) this.opacity = 0;
     }
     setHitbox(xMargin = 2, yMargin = 2, xOffset = 0, yOffset = 0) {
         // Necessary for first time execution
@@ -261,7 +262,6 @@ class Enemy extends Entity {
         this[xy] = cycle / 2 * phase * M.cos(this.timers[timerUsed] / 32 * freq) + centerPoint;
     }
 }
-
 class EnemyBullet extends Enemy {
     constructor(image) {
         super(image);
@@ -408,26 +408,33 @@ class Particle extends Entity {
         super(image)
     }
     reset(custom) {
-        this.speed = custom?.speed || 2.5;
+        this.speed = custom?.speed || 3;
         this.x = custom?.x || 0;
         this.y = custom?.y || 0;
         this.rndRange = custom?.rndRange || [1, 2];
         this.hp = 1;
-        // Unnecesary?
-        // Set random angle:
-        this.angle = this.toRadians(this.randomBetween(0, 359));
+        this.scale = 4;
+        // Set random direction:
+        this.angle = this.toRadians(this.randomBetween(1, 360));
+        // Make object visible
+        this.opacity = 100;
+        // Randomize rotation direction
+        this.rndDir = this.randomBetween(0,1)?-1:1;
+        this.rndColor = ['#ffe066','#ffec99','#fff3bf','#fff9db'][this.randomBetween(0,3)];
     }
     updateData() {
-        // Unnecesary?
-        this.rotation += this.toRadians(this.randomBetween(1,5))
-        // Subtract speed until bye
+        // this.scale-=this.randomBetween(1,2);
+        this.scale-=.2;
+        this.opacity-= 1;
+        this.rotation += .08 * this.rndDir; // 5 degree in a random orientation
         this.speed -= this.randomBetween(...this.rndRange) / 10
-        if (this.speed <= 1) this.hp = 0;
+        // If invisible, bye
+        if (this.scale <= 0) this.hp = 0;
     }
     updatePos() {
         this.x = this.x + M.cos(this.angle) * this.speed;
         this.y = this.y - M.sin(this.angle) * this.speed;
         // Unnecesary?
-        this.y = this.y + 1;
+        // this.y = this.y + 1;
     }
 }
