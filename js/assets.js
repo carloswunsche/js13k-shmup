@@ -160,7 +160,7 @@ class Assets {
 		a[0]	=e=>{this.p.free('Player', '4');
 					 this.s.bg.speed = .5};
 		// Testing
-		a[1]	=e=> this.p.free('Sniper', '2', {x: 40});
+		// a[1]	=e=> this.p.free('Sniper', '2', {x: 40});
 
 		a[50]	=e=> this.p.free('SinePop', '2', {phase:-1});
 		a[60]	=e=> this.p.free('SinePop', '2', {phase:-1});
