@@ -76,7 +76,7 @@ class Display {
             for (let x = 0; x < this.width; x += this.tileSize) {
                 // Para no renderizar al pedo el row que queda out of bounds (arriba)
                 if (bg.rows[y] <= -this.tileSize) {i++; continue;}
-                // Update scanned tile if not undefined (void 0 === undefined)
+                // Update scanned tile if not undefined (void 0 === undefined but less characters lol)
                 if(bg.pattern[i] != void 0) this.currentTile = bg.pattern[i];
                 // Draw
                 // this.drawBg(bg, x, p__destY);
@@ -137,41 +137,41 @@ class Display {
     //     // if (this.r) this.ctx.restore();
     // }
 
-    renderGameObjects (gameObjects) {
-        for (const [_, arr] of gameObjects){
-            arr.forEach(obj => {
+    renderGameObjects (layers) {
+        for (const [_, arr] of layers){
+            arr.forEach(entity => {
                 // Save canvas' context state
                 this.ctx.save();
 
                 // Unnecesary ?
                 // Set object's opacity
-                if (obj.opacity < 100) this.ctx.globalAlpha = obj.opacity / 100;
+                if (entity.opacity < 100) this.ctx.globalAlpha = entity.opacity / 100;
 
                 // Translate canvas to render position
-                this.ctx.translate(obj.x * this.scale, obj.y * this.scale);
+                this.ctx.translate(entity.x * this.scale, entity.y * this.scale);
 
                 // Rotate
-                if (obj.rotation) this.ctx.rotate(obj.rotation);
+                if (entity.rotation) this.ctx.rotate(entity.rotation);
                 // Draw
                 this.ctx.drawImage(
                     // Img
-                    obj.image,
+                    entity.image,
                     // Source x
-                    obj.image.sWidth * obj.hit,
+                    entity.image.width * entity.hit,
                     // Source y
                     0,
                     // Source width
-                    obj.image.sWidth,
+                    entity.image.width,
                     // Source height
-                    obj.image.height,
+                    entity.image.height,
                     // Destination x (translate -50%)
-                    -(obj.image.sWidth * this.scale) / 2,
+                    -(entity.image.width * entity.scale * this.scale) / 2,
                     // Destination y (translate -50%)
-                    -(obj.image.height * this.scale) / 2,
+                    -(entity.image.height * entity.scale * this.scale) / 2,
                     // Destination width
-                    obj.image.sWidth * this.scale,
+                    entity.image.width * entity.scale * this.scale,
                     // Destination height
-                    obj.image.height * this.scale
+                    entity.image.height * entity.scale * this.scale
                 );
 
                 // Undo opacity, translation and rotation 

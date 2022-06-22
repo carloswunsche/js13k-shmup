@@ -7,31 +7,23 @@
 // Built game's size after mirrored sprites: 10277 bytes
 
 class Assets {
-	constructor() {
-		// All .webp have been compressed using whoosh with pallete limitation of 15 colors 
-		// With exception of the background which has a limitation of 5 colors
-		this._filenames = {
-			// Backgrounds
-			Stage1: 		'stage-1.webp',
-			// Player
-			Player: 		'player.webp',
-			PlayerBullet: 	'pBullet.webp',
-			// Enemies
-			SinePop: 		'enemy.webp',
-			Sniper: 		'enemy2.webp',
-			Fatty: 			'pop_3.webp',
-			Tank: 			'tank1.webp',
-			Assaulter: 		'assault.webp',
-			EnemyBullet: 	'eBullet.webp',
-			// Particles
-			// Particle: 		'part.png',
-			Particle: 		'part.webp',
-			// Particle: 		0,
-		}
-		this.patterns = {};
-		this.patterns[1] = [0,,,,,,,,,,,,,,,,1,0,,,1,0,,,2,0,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,,,2,0,0,,,,,,,,,,1,0,,,,,,,,,0,,,,,,,,,,,,,,,,,,,,0,2,0,,,1,0,,,,,,,,,,,,,,0,,,,,,,,,,,,2,0,,,,,,,0,,,,,,,,,,,,,,,,,,1,0,0,,,,,,,,,,,,,,,,,,,,0,1,0,,,,,,1,0,,,,,,,,,,,0,,,,,,,,,,,,,,,,2,0,,,0,,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,,,,,0,,,,,,,2,0,,,,,,1,0,,,,,0,,,,,,,,,,,,,,,,,,,,2,0,1,0,,,,,,,,,,,,,,,,,0,3,,,,,0,,,1,0,,,,,,,,,,4,5,,,,,6,3,0,,,,,,,,,,,,5,7,8,9,10,5,,,6,0,,,,,,,1,0,,,5,11,12,13,14,5,,15,5,16,0,,,,,,,,,,5,17,18,19,20,5,,,,6,0,1,0,,,,,,,,5,,21,22,5,,,,,,16,0,,,,,,,,,5,,,,7,8,9,10,5,,16,0,,,,,,,,,5,15,5,,11,12,13,14,5,,16,0,,,,,,,,,5,,,,17,18,19,20,5,23,0,,,,1,0,,,,1,5,,,,,21,22,5,,16,0,,,,,,,,,,5,,,,,,,,23,0,,,,,,,,,,,7,8,9,10,5,15,5,,16,0,,,,,,,,,,,11,12,13,14,5,,,23,0,,1,0,,,,,,,,,17,18,19,20,5,,23,0,,,,,,,,,,,,,5,21,22,5,,,16,0,,,,,,,,1,0,,,,5,,,,,23,0,1,0,,,,,3,,,,,,,24,,5,,,6,3,0,,,,3,4,5,,,,,,24,25,26,27,24,5,,,6,3,0,28,5,,,,,,,29,30,31,,25,26,27,5,,,,16,28,15,5,,,,,29,30,31,31,,,,26,27,24,5,,6,0,32,5,,,,29,30,31,,31,,,,,25,26,27,5,,6,0,32,5,,29,30,31,,,31,,,,,,,26,33,5,,6,4,5,29,30,31,,,,31,,,,,,,,27,15,5,,,34,30,35,31,,,,31,,,,,,,,26,27,5,,,34,36,31,,,,,31,35,31,,,,,,,26,27,5,,,37,36,31,,,,31,,,,,,,,,,26,27,38,24,5,37,36,31,,,31,,,,,,,,,,,25,39,26,33,34,36,31,,,31,,,,,,,,,,,,39,40,27,5,37,36,31,,31,,,,,,,,,,,,39,31,26,27,29,36,31,,31,,,35,31,,,,,,,,39,31,,25,,31,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,35,31,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,41,,,,,,,,,,,,39,41,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,35,31,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,35,31,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,,,,,,,,,,39,31,,,,,,,31,,,35,31,,,,,,,,39,31,,,,,,,31,,,,,,,,,,42,43,,37,31,,,,,,31,,,,,,,,,,27,5,,34,31,,,,,42,43,,37,31,,,,,,,26,27,24,29,31,,,,42,5,44,45,5,37,31,,,,,,,25,,,31,,,,33,5,24,5,,29,31,,,,,,,,,,,,,,27,5,26,27,29,30,31,,,,,,,,,,,,,,26,27,31,25,,31,,,,,,,,,,,,,,,,25,31,,,,,,,,,,,,,42,37,31,,,,,31,,,,,,,,,,,,42,5,,43,37,31,,,31,,,,,,,,,,,,33,46,5,,34,31,,,31,,,,,,,,,,,,27,24,38,24,29,31,,,31,,,,,,,,,,,,25,,39,25,,31,,,31,,42,43,,,37,31,,,,,,,39,31,,,,,31,,27,5,47,5,34,31,,,,,,,39,31,,,,,31,,26,27,24,,29,31,,,,,,,39,31,,,,,31,,,25,,,,31,,,,,,,39,31,,,,,31,,,,,,,,,,,,48,,39,48,31,,,,31,,,,,,,,,,,40,42,43,49,37,50,31,,,31,,,,,,,,,,,51,33,5,49,5,37,36,31,,31,,,,,,,,,,40,42,5,,49,5,34,36,31,,31,,,,,,,,,,51,33,5,,49,5,34,36,31,,31,,,,,,,,,51,42,5,,,49,5,34,50,31,,31,,,,,,,,51,42,15,5,,23,28,5,,37,36,31,31,,,,,,,51,42,5,,,,16,28,5,,34,36,31,31,,,,,,51,42,5,,,,,16,28,5,,34,36,31,31,,,,,51,42,5,,,,,,16,28,5,,34,36,31,31,,,,40,42,15,5,,,,,,16,28,5,,34,36,31,31,,,,51,33,5,,,,,,,16,28,5,,34,50,31,31,,,51,42,5,,,,,,,,16,28,5,,,37,36,31,,51,42,5,,,,,,,,23,0,28,5,,46,34,36,31,40,42,5,15,5,,,,,,23,0,,,32,5,,34,36,31,51,33,5,,,,,,,,16,0,,,28,5,,34,36,40,42,5,,,,,,,,,16,0,,,4,5,,29,36,40,33,15,5,,,,,,,23,0,1,0,4,5,,29,52,31,40,27,5,,,,,,,23,0,,,4,5,,34,52,31,,31,53,27,47,5,,,,23,0,,,4,5,,,34,50,31,,31,,40,33,5,,23,54,0,,,4,5,,,,,37,50,31,31,40,42,5,,23,0,,,,4,5,,,,,,,37,36,31,51,33,5,23,1,0,,3,4,5,,,,15,5,,,29,36,40,42,5,,6,0,,28,5,,,,,,,,,29,52,31,51,33,5,,,16,0,,32,5,,,,,,,34,52,31,,42,5,,,,6,0,,,32,5,,,,,,34,50,31,,33,5,,,,,6,0,,,32,5,,,,,,37,50,31,27,5,,,,,,16,0,,,32,5,,,,,,37,36,53,27,5,,,,,6,3,0,,,32,5,,,,,34,36,31,53,33,5,,,,,,6,0,,,32,5,,47,5,34,36,31,40,33,5,15,5,,,,,6,0,1,0,32,5,,,34,36,31,51,33,5,,,,,,,,6,0,,28,5,,,34,36];
+	constructor(runGameFn) {
+		this.runGameFn = runGameFn;
+		this.gfx = [
+			{n: 'Assaulter',	w:8, h:16},
+			{n: 'EnemyBullet',	w:2, h:4 },
+			{n: 'SinePop',		w:6, h:8 },
+			{n: 'Sniper',		w:7, h:11},
+			{n: 'Particle',		w:1, h:1 },
+			{n: 'PlayerBullet',	w:1, h:7 },
+			{n: 'Player',		w:6, h:13},
+			{n: 'Fatty',		w:7, h:13},
+			{n: 'Tank',			w:6, h:15}
+		];
+		// this.patterns = {};
+		this.bigPattern = [0,,,,,,,,,,,,,,,,1,0,,,1,0,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,1,0,,,,,,,,,0,,,,,,,,,,,,,,,,,,,,0,,,,,1,0,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,,,1,0,0,,,,,,,,,,,,,,,,,,,,0,1,0,,,,,,1,0,,,,,,,,,,,0,,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,,,,,,,0,,,,,,,,,,,,,,1,0,,,,,0,,,,,,,,,,,,,,,,,,,,0,,1,0,,,,,,,,,,,,,,,,,0,2,,,,,0,,,,,,,,,,,,,,3,4,,,,,5,2,0,,,,,,,,,,,,4,6,7,8,9,4,,,5,0,,,,,,,,,,,4,10,11,12,13,4,,,,14,0,,,,,,,,,,4,15,16,17,18,4,,,,5,0,,,,,,,,,,4,,19,20,4,,,,,,14,0,,,,,,,,,4,,,,6,7,8,9,4,,14,0,,,,,,,,,4,,,,10,11,12,13,4,,14,0,,,,,,,,,4,,,,15,16,17,18,4,21,0,,,,,,,,,,4,,,,,19,20,4,,14,0,,,,,,,,,,4,,,,,,,,21,0,,,,,,,,,,,6,7,8,9,4,,,,14,0,,,,,,,,,,,10,11,12,13,4,,,21,0,,,,,,,,,,,,15,16,17,18,4,,21,0,,,,,,,,,,,,,4,19,20,4,,,14,0,,,,,,,,,,,,,4,,,,,21,0,,,,,,,2,,,,,,,22,,4,,,5,2,0,,,,2,3,4,,,,,,22,23,,24,22,4,,,5,2,0,25,4,,,,,,,26,23,27,,23,,24,4,,,,14,25,4,,,,,,26,23,27,27,,,,23,24,22,4,,5,0,28,4,,,,26,23,27,,27,,,,,23,,24,4,,5,0,28,4,,26,23,27,,,27,,,,,,,23,29,4,,5,3,4,26,23,27,,,,27,,,,,,,,24,4,,,,30,23,31,27,,,,27,,,,,,,,23,24,4,,,30,27,,,,,,27,31,27,,,,,,,23,24,4,,,32,27,,,,,27,,,,,,,,,,23,24,33,22,4,32,27,,,,27,,,,,,,,,,,23,34,23,29,30,27,,,,27,,,,,,,,,,,,34,27,24,4,32,27,,,27,,,,,,,,,,,,34,27,23,24,26,27,,,27,,,31,27,,,,,,,,34,27,,23,,27,,,27,,,,,,,,,,,,34,27,,,,,,,27,,,,,,,,,,,,34,27,,,,,,,27,,,,,,,,,,31,27,34,27,,,,,,,27,,,,,,,,,,,,34,27,,,,,,,27,,,,,,,,,,,,34,27,,,,,,,31,,,,,,,,,,,,34,31,,,,,,,27,,,,,,,,,,,,34,27,,,,,,,27,,,,,,,,,,,,34,27,,,,,,,27,,,,,,31,27,,,,,34,27,,,,,,,27,,,,,,,,,,,,34,27,,,,,,,27,,,,,,,,,,,,34,27,,,31,27,,,27,,,,,,,,,,,,34,27,,,,,,,27,,,,,,,,,,,,34,27,,,,,,,27,,,,,,,,,,,,34,27,,,,,,,27,,,,,,,,,,,,34,27,,,,,,,27,,,,,,,,,,,,34,27,,,,,,,27,,,,,,,,,,,,34,27,,,,,,,27,,,31,27,,,,,,,,34,27,,,,,,,27,,,,,,,,,,35,36,,32,27,,,,,,27,,,,,,,,,,24,4,,30,27,,,,,35,36,,32,27,,,,,,,23,24,22,26,27,,,,35,4,4,,,32,27,,,,,,,23,,,27,,,,29,4,22,4,,26,27,,,,,,,,,,,,,,24,4,23,24,26,23,27,,,,,,,,,,,,,,23,24,27,23,,27,,,,,,,,,,,,,,,,23,27,,,,,,,,,,,,,35,32,27,,,,,27,,,,,,,,,,,,35,4,,36,32,27,,,27,,,,,,,,,,,,29,4,,,30,27,,,27,,,,,,,,,,,,24,22,33,22,26,27,,,27,,,,,,,,,,,,23,,34,23,,27,,,27,,35,36,,,32,27,,,,,,,34,27,,,,,27,,24,4,,,30,27,,,,,,,34,27,,,,,27,,23,24,22,,26,27,,,,,,,34,27,,,,,27,,,23,,,,27,,,,,,,34,27,,,,,27,,,,,,,,,,,,,,34,27,,,,,27,,,,,,,,,,,,35,14,25,32,27,,,,27,,,,,,,,,,,,29,14,25,4,32,27,,,27,,,,,,,,,,,35,4,14,25,4,30,27,,,27,,,,,,,,,,,29,4,14,25,4,30,27,,,27,,,,,,,,,,35,4,,14,25,4,30,27,,,27,,,,,,,,,35,4,,,14,25,4,,32,27,,27,,,,,,,,35,4,,,,14,25,4,,30,27,,27,,,,,,,35,4,,,,,14,25,4,,30,27,,27,,,,,,35,4,,,,,,14,25,4,,30,27,,27,,,,,35,4,,,,,,,14,25,4,,30,27,,27,,,,,29,4,,,,,,,14,25,4,,30,27,,27,,,,35,4,,,,,,,,14,25,4,,,32,27,27,,,35,4,,,,,,,,21,0,25,4,,,30,27,27,,35,4,,,,,,,,21,0,,,28,4,,30,27,27,,29,4,,,,,,,,14,0,,,25,4,,30,27,27,35,4,,,,,,,,,14,0,,,3,4,,26,27,27,29,4,,,,,,,,21,0,,,3,4,,26,27,,27,24,4,,,,,,,21,0,,,3,4,,30,27,,,27,,24,4,,,,,21,0,,,3,4,,,30,27,,,27,,,29,4,,21,37,0,,,3,4,,,,,32,27,,27,,35,4,,21,0,,,,3,4,,,,,,,32,27,27,,29,4,21,0,,,2,3,4,,,,,,,,26,27,27,35,4,,5,0,,25,4,,,,,,,,,26,27,,27,29,4,,,14,0,,28,4,,,,,,,30,27,,,35,4,,,,5,0,,,28,4,,,,,,30,27,,,29,4,,,,,5,0,,,28,4,,,,,,32,27,,24,4,,,,,,14,0,,,28,4,,,,,,32,27,27,24,4,,,,,5,2,0,,,28,4,,,,,30,27,27,,29,4,,,,,,5,0,,,28,4,,,,30,27,27,,29,4,,,,,,,5,0,,,28,4,,,30,27,27,,29,4,,,,,,,,5,0,,25,4,,,30,27];
 
-		// Decompressor for "repeat function" arrays
+		// Decompressor for "repeat function" arrays (not used)
 		// let r = this.patterns[1];
 		// for(let i=r.length;i>0;i--)r[i]<0?r.splice(i,1,...new Array(M.abs(r[i]))):0
 	}
@@ -40,45 +32,76 @@ class Assets {
 		this.p = pool;
 		this.s = stage;
 	}
-	loadAnd(runSetupFn) {
-		// Get number of remaining images to be loaded
-		// Reduce to literal
-		let remaining = Object.keys(this._filenames).length;
+	loadAndRun() {
+		// Length of this.gfx + background
+		this.remaining = this.gfx.length + 1;
 
-		for (const key in this._filenames) {
-			// Create a new property for each image
-			this[key] = new Image();
+		// Load background
+		this.bg = new Image();
+		this.bg.src = 'i/bg.webp';
+		this.bg.onload = z => this.countDown();
 
-			// Set source image with hit state
-			this.setSrcwithMirroredImg(this[key], this._filenames[key])
+		// Load sprites
+		this.gfx.forEach((entity, xPos)=>{
+			// Set up canvas
+			let c=document.createElement('canvas'),x=c.getContext('2d');
+			// About canvas width: It has to be double the size to allow mirroring, but a pixel less
+			// to avoid repetition of the middle column. You'll also see this as a +1 on the drawImage fn.
+			c.width = (entity.w * 2)-1; 
+			c.height = entity.h;
 
-			// When image has loaded...
-			this[key].onload = () => {remaining--;if(!remaining) runSetupFn()};
-		};
+			// Load sprites.webp
+			let i = new Image();
+			i.src = 'i/sprites.webp';
+			i.onload = () => {
+				// Draw regular and mirrored image
+				[0,1].forEach(side=>{
+				x.scale(side?-1:1, 1);
+				x.drawImage(
+					i, 							// sprites.webp
+					xPos*8,						// X source
+					0,							// Y source
+					entity.w,					// Source width
+					entity.h,					// Source height
+					side?-entity.w+1:0,			// Destination X
+					0, 							// Destination Y
+					side?-entity.w:entity.w, 	// Destination width
+					entity.h					// Destination height
+					);
+				})
+				// Create final image and set source
+				this[entity.n] = new Image();
+				this[entity.n].src = c.toDataURL();
+				this[entity.n].onload = () => this.countDown();
+			}
+		})
 		return this;
 	}
-	setSrcwithMirroredImg(key, filename){
-		let c=document.createElement('canvas'),x=c.getContext('2d');
-		// Single pixel drawing for particles
-		// if (!filename) {
-		// 	c.width, c.height = 1;
-		// 	x.fillStyle='ivory';
-		// 	x.fillRect(0,0,1,1);
-		// 	key.sWidth = 1;
-		// 	return key.src = c.toDataURL();
-		// }
-		let i = new Image();
-		i.src = 'i/'+filename;
-		i.onload = () => {
-			c.height = i.height;
-			c.width = i.width * 2;
-			key.sWidth = i.width * 2;
-			x.drawImage(i, 0,0);
-			x.scale(-1, 1);
-			x.drawImage(i, -i.width+1, 0, -i.width, i.height);
-			key.src = c.toDataURL();
-		}
+	countDown(){
+		this.remaining--;
+		if(!this.remaining) this.runGameFn();
 	}
+	// setSrcwithMirroredImg(key, filename){
+	// 	let c=document.createElement('canvas'),x=c.getContext('2d');
+	// 	// Single pixel drawing for particles
+	// 	// if (!filename) {
+	// 	// 	c.width, c.height = 1;
+	// 	// 	x.fillStyle='ivory';
+	// 	// 	x.fillRect(0,0,1,1);
+	// 	// 	key.sWidth = 1;
+	// 	// 	return key.src = c.toDataURL();
+	// 	// }
+	// 	let i = new Image();
+	// 	i.src = 'i/'+filename;
+	// 	i.onload = () => {
+	// 		c.height = i.height;
+	// 		c.width = i.width * 2;
+	// 		x.drawImage(i, 0,0);
+	// 		x.scale(-1, 1);
+	// 		x.drawImage(i, -i.width+1, 0, -i.width, i.height);
+	// 		key.src = c.toDataURL();
+	// 	}
+	// }
 	// setSrcWithHitState(key, filename){
 	// 	// Load original image
 	// 	let img = new Image()
@@ -117,8 +140,8 @@ class Assets {
 	// 		key.src = c.toDataURL();
 	// 	})
 	// }
-	getPoolInputArr(stageNum){
-        if (stageNum === 1)
+	getPoolInputArr(){
+        // if (stageNum === 1)
 		return [
 			[1,		Player],
 			[12,	PlayerBullet],
@@ -131,62 +154,62 @@ class Assets {
 			[120,	Particle],
 		];
 	}
-	getEventsFn(stageNum) {
+	getEventsFn() {
 		// 1=EnemyLand, 2=EnemyAir, 3=Particle, 4=Player, 5=pBullet, 6=eBullet, 7=Hud
-		let a = new Array(5**6).fill(b=>b); // 15625 empty functions
-		a[0]	=b=>{this.p.free('Player', '4');
+		let a = new Array(5**6).fill(f=>f); // 15625 empty functions
+		a[0]	=e=>{this.p.free('Player', '4');
 					 this.s.bg.speed = .5};
-		a[50]	=b=> this.p.free('SinePop', '2', {phase:-1});
-		a[60]	=b=> this.p.free('SinePop', '2', {phase:-1});
-		a[70]	=b=> this.p.free('SinePop', '2', {phase:-1});
-		a[80]	=b=> this.p.free('SinePop', '2', {phase:-1});
-		a[145]	=b=> this.p.free('Tank', '1', {x:55});
-		a[270]	=b=> this.p.free('Tank', '1', {x:105});
-		a[300]	=b=> this.p.free('Sniper', '2', {x: 40});
-		a[400]	=b=> this.p.free('SinePop', '2', {phase:1});
-		a[430]	=b=> this.p.free('SinePop', '2', {phase:1});
-		a[460]	=b=> this.p.free('SinePop', '2', {phase:1});
-		a[490]	=b=> this.p.free('SinePop', '2', {phase:1});
-		a[550]	=b=>{this.s.bg.queue.push(...this.s.patterns['2'], ...this.s.patterns['3'], ...this.s.patterns['4']);
+		a[50]	=e=> this.p.free('SinePop', '2', {phase:-1});
+		a[60]	=e=> this.p.free('SinePop', '2', {phase:-1});
+		a[70]	=e=> this.p.free('SinePop', '2', {phase:-1});
+		a[80]	=e=> this.p.free('SinePop', '2', {phase:-1});
+		a[145]	=e=> this.p.free('Tank', '1', {x:55});
+		a[270]	=e=> this.p.free('Tank', '1', {x:105});
+		a[300]	=e=> this.p.free('Sniper', '2', {x: 40});
+		a[400]	=e=> this.p.free('SinePop', '2', {phase:1});
+		a[430]	=e=> this.p.free('SinePop', '2', {phase:1});
+		a[460]	=e=> this.p.free('SinePop', '2', {phase:1});
+		a[490]	=e=> this.p.free('SinePop', '2', {phase:1});
+		a[550]	=e=>{this.s.bg.queue.push(...this.s.patterns['2'], ...this.s.patterns['3'], ...this.s.patterns['4']);
 					 this.p.free('Sniper', '2', {x: 120});}
-		a[580]	=b=> this.p.free('Fatty', '2', {side: 1});
-		a[660]	=b=> this.p.free('Tank', '1', {x:52});
-		a[750]	=b=> this.p.free('Sniper', '2');
-		a[820]	=b=> this.p.free('SinePop', '2', {phase:-1});
-		a[840]	=b=> this.p.free('SinePop', '2', {phase:-1});
-		a[860]	=b=> this.p.free('SinePop', '2', {phase:-1});
-		a[880]	=b=> this.p.free('Tank', '1', {x:112});
-		a[1000]	=b=> this.p.free('Sniper', '2');
-		a[1020]	=b=> this.p.free('Sniper', '2', {x: 30});
-		a[1040]	=b=> this.p.free('Sniper', '2', {x: 130});
-		a[1200]	=b=>{this.p.free('Fatty', '2', {side: 1});
+		a[580]	=e=> this.p.free('Fatty', '2', {side: 1});
+		a[660]	=e=> this.p.free('Tank', '1', {x:52});
+		a[750]	=e=> this.p.free('Sniper', '2');
+		a[820]	=e=> this.p.free('SinePop', '2', {phase:-1});
+		a[840]	=e=> this.p.free('SinePop', '2', {phase:-1});
+		a[860]	=e=> this.p.free('SinePop', '2', {phase:-1});
+		a[880]	=e=> this.p.free('Tank', '1', {x:112});
+		a[1000]	=e=> this.p.free('Sniper', '2');
+		a[1020]	=e=> this.p.free('Sniper', '2', {x: 30});
+		a[1040]	=e=> this.p.free('Sniper', '2', {x: 130});
+		a[1200]	=e=>{this.p.free('Fatty', '2', {side: 1});
 					 this.p.free('Fatty', '2', {side: -1});
 					 this.s.bg.speed += .25;}
-		a[1300]	=b=> this.s.bg.speed += .25;
-		a[1400]	=b=>{this.s.bg.speed += .25;
+		a[1300]	=e=> this.s.bg.speed += .25;
+		a[1400]	=e=>{this.s.bg.speed += .25;
 					 this.p.free('Assaulter', '2', {x: 130});}
-		a[1450]	=b=> this.s.bg.speed += .25;
-		a[1550]	=b=>{this.s.bg.speed += .25;
+		a[1450]	=e=> this.s.bg.speed += .25;
+		a[1550]	=e=>{this.s.bg.speed += .25;
 					 this.p.free('Assaulter', '2', {x: 30});}
-		a[1650]	=b=> this.s.bg.speed += .25;
-		a[1700]	=b=> this.p.free('Assaulter', '2');
-		a[1750]	=b=> this.s.bg.speed += .25;
-		a[1780]	=b=> this.p.free('SinePop', '2', {phase:-1});
-		a[1790]	=b=> this.p.free('SinePop', '2', {phase:-1});
-		a[1800]	=b=> this.p.free('SinePop', '2', {phase:-1});
-		a[1810]	=b=> this.p.free('SinePop', '2', {phase:-1});
-		a[1850]	=b=> this.s.bg.speed += .25;
-		a[1910]	=b=> this.p.free('Sniper', '2', {x: 30});
-		a[1920]	=b=> this.p.free('Sniper', '2', {x: 50});
-		a[1930]	=b=> this.p.free('Sniper', '2', {x: 70});
-		a[1940]	=b=> this.p.free('Sniper', '2', {x: 90});
-		a[1950]	=b=> this.p.free('Sniper', '2', {x: 110});
-		a[1960]	=b=> this.p.free('Sniper', '2', {x: 130});
-		a[2070]	=b=> this.s.bg.queue.push(...this.s.patterns['5'], ...this.s.patterns['6'], ...this.s.patterns['7']);
-		a[2120]	=b=> this.p.free('Tank', '1', {x:105});
-		a[2150]	=b=> this.p.free('Tank', '1', {x:132});
-		a[2170]	=b=> this.p.free('Tank', '1', {x:95});
-		a[2190]	=b=> this.p.free('Tank', '1', {x:117});
+		a[1650]	=e=> this.s.bg.speed += .25;
+		a[1700]	=e=> this.p.free('Assaulter', '2');
+		a[1750]	=e=> this.s.bg.speed += .25;
+		a[1780]	=e=> this.p.free('SinePop', '2', {phase:-1});
+		a[1790]	=e=> this.p.free('SinePop', '2', {phase:-1});
+		a[1800]	=e=> this.p.free('SinePop', '2', {phase:-1});
+		a[1810]	=e=> this.p.free('SinePop', '2', {phase:-1});
+		a[1850]	=e=> this.s.bg.speed += .25;
+		a[1910]	=e=> this.p.free('Sniper', '2', {x: 30});
+		a[1920]	=e=> this.p.free('Sniper', '2', {x: 50});
+		a[1930]	=e=> this.p.free('Sniper', '2', {x: 70});
+		a[1940]	=e=> this.p.free('Sniper', '2', {x: 90});
+		a[1950]	=e=> this.p.free('Sniper', '2', {x: 110});
+		a[1960]	=e=> this.p.free('Sniper', '2', {x: 130});
+		a[2070]	=e=> this.s.bg.queue.push(...this.s.patterns['5'], ...this.s.patterns['6'], ...this.s.patterns['7']);
+		a[2120]	=e=> this.p.free('Tank', '1', {x:105});
+		a[2150]	=e=> this.p.free('Tank', '1', {x:132});
+		a[2170]	=e=> this.p.free('Tank', '1', {x:95});
+		a[2190]	=e=> this.p.free('Tank', '1', {x:117});
 		// a[]	=b=>
 		return a
     }

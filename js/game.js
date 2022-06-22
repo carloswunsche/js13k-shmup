@@ -135,7 +135,7 @@ class Game {
                 // If i === last row AND if queue is full, activate changePattern flag
                 // changePattern will remain true until all rows has been replaced in array
                 if (y === this.stage.bg.rows.length-1 && this.stage.bg.queue.length >= this.stage.bg.tileQty) {
-                    this.stage.bg.changePattern = true;
+                    this.stage.bg.changePattern = 1;
                 }
 
                 // If changePattern is true, change each next row for next pattern's row
@@ -146,8 +146,8 @@ class Game {
                 };
 
                 // If changePattern is true but i === 0, deactivate changePattern flag
-                if (this.stage.bg.changePattern && y === 0) {
-                    this.stage.bg.changePattern = false;
+                if (this.stage.bg.changePattern && !y) {
+                    this.stage.bg.changePattern = 0;
                     // Also delete 1 full pattern from queue
                     this.stage.bg.queue.splice(0, this.stage.bg.numCols * this.stage.bg.rows.length);
                 };
@@ -155,51 +155,39 @@ class Game {
         });
     }
     testCollision(){
-        let pBulLayer = this.objects.get('5');
+        // Evaluar si cada pBullet colisiona con cada enemy. Hacer esto por ambos layers de enemies.
         ['2','1'].forEach(enemyType => {
-            // Collisions early test. Ejecutar solo si hay enemigos y pBullets en pantalla
-            if (this.objects.get(enemyType).length > 0 && pBulLayer.length > 0) {
-                // Loopear sobre los bullets y luego sobre los enemies
-                pBulLayer.forEach(b => {
-                    this.objects.get(enemyType).forEach(e => {
-                        if (b.hp > 0 && e.hp > 0) { 
-                            // Condicion de la colision
-                            if (b.hitbox[0] < e.hitbox[1] &&
-                                e.hitbox[0] < b.hitbox[1] &&
-                                b.hitbox[2] < e.hitbox[3] &&
-                                e.hitbox[2] < b.hitbox[3]) {
-                                // Ambos pierden HP
-                                b.hp--; e.hp--;
-                                // Enemy cambia el tile a "Hit"
-                                e.hit = 1;
-                                // Si el enemy evaluado murio...
-                                if (e.hp <= 0) {
-                                    // Audio: explosion sfx flag
-                                    this.audio.sfx.sfx_explosion = true;
-                                    // Pool: Liberar particulas de la explosion
-                                    for (let i = 0; i < 30; i++)
-                                    this.queuedFns.push(() => {
-                                        this.pool.free(
-                                            'Particle', 
-                                            '3', 
-                                            {x: e.x, y: e.y}
-                                        )
-                                    });
-                                }
-                                // Salir del forEach de los enemigos ya que el bullet actual murió
-                                return;
+            this.objects.get('5').forEach(pBullet => {
+                this.objects.get(enemyType).forEach(enemy => {
+                    if (pBullet.hp > 0 && enemy.hp > 0) { 
+                        // Condicion de la colision
+                        if (pBullet.hitbox[0] < enemy.hitbox[1] &&
+                            enemy.hitbox[0] < pBullet.hitbox[1] &&
+                            pBullet.hitbox[2] < enemy.hitbox[3] &&
+                            enemy.hitbox[2] < pBullet.hitbox[3]) {
+                            // Ambos pierden HP
+                            pBullet.hp--; enemy.hp--;
+                            // Enemy activa el tile hit ("transparente" / not found)
+                            enemy.hit = 1;
+                            // Si el enemy evaluado murio...
+                            if (enemy.hp <= 0) {
+                                // Audio: explosion sfx flag
+                                this.audio.sfx.xplos = true;
+                                // Pool: Liberar 30 particulas (explosion)
+                                for (let i = 0; i < 30; i++)
+                                this.queuedFns.push(z=>this.pool.free('Particle','3',{x: enemy.x, y: enemy.y}));
                             }
+                            // Salir del forEach de los enemigos ya que el bullet actual murió
+                            // Fix this: este bullet muerto va a ser evaluado con los enemies del proximo layer
+                            return;
                         }
-                    })
+                    }
                 })
-            }
+            })
         })
     }
     testCollisionPlayer(){
-        // To speed up player collision test
         let player = this.objects.get('4')[0];
-        // Collisions early test. Ejecutar solo si hay Enemy Bullets en pantalla y player existe
-        // if (this.objects.get('EnemyBullet').length > 0 && player) {
         ['6', '2'].forEach(layer => {
             if (!player) return;
             this.objects.get(layer).forEach(b => {
@@ -212,7 +200,7 @@ class Game {
                         // HP: Ambos mueren
                         b.hp = 0; player.hp = 0;
                         // Audio: Explosion sfx flag
-                        this.audio.sfx.sfx_explosionPlayer = true;
+                        this.audio.sfx.die = true;
                         // Free objects: Explosion particles
                         let xShallowCopy = player.x;
                         let yShallowCopy = player.y;
@@ -220,6 +208,7 @@ class Game {
                         this.queuedFns.push(() => {
                             this.pool.free('Particle','3',{x: xShallowCopy, y: yShallowCopy, speed: 4, rndRange:[1,2]})
                         });
+
                         player.disable();
                         return;
                     }
@@ -241,9 +230,9 @@ class Game {
         }
     }
     // Unnecesary if not going after 120hz
-    ceilIteration(){
-        this.iteration = M.ceil(this.iteration);
-    }
+    // ceilIteration(){
+    //     this.iteration = M.ceil(this.iteration);
+    // }
     runQueued(){
         this.queuedFns.forEach(fn => fn());
         this.queuedFns.length = 0;

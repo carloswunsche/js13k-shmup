@@ -11,9 +11,9 @@ const pool 		  = new Pool();
 const stage 	  = new Stage(8);
 const engine 	  = new Engine();
 const game 		  = new Game();
-const assets 	  = new Assets().loadAnd(setupAndRun);
+const assets 	  = new Assets(runGame).loadAndRun();
 
-function setDependencies() {
+function runGame() {
 	// 1) Pool Dependencies
 	pool.needs(assets, game.objects);
 
@@ -21,33 +21,34 @@ function setDependencies() {
 	stage.needs(assets, pool, display.width, display.height);
 
 	// 3) Engine Dependencies
-	const update = (firefox, step) => {game.update(firefox, step)};
-	const render = () => {display.render(stage.bg, game.objects)};
-	engine.needs(update, render);
+	engine.needs(
+		z => game.update(), 
+		z => display.render(stage.bg, game.objects
+	));
 
 	// 4) Assets dependencies
 	assets.needs(pool, stage)
 
-	// 4) Game Dependencies
-	const initFade   = (a,b)  => display.initFade(a, b);
-	const updateFade = (step) => display.updateFade(step);
-	game.needs(stage, pool, input, display.height, audioPlayer, initFade, updateFade);
-}
-function initialize(){
-	stage.init('1st-stage');
-	// engine.init(60, 60);
+	// 5) Game Dependencies
+	game.needs(
+		stage, 
+		pool, 
+		input, 
+		display.height, 
+		audioPlayer, 
+		(a,b) => display.initFade(a, b), 
+		z => display.updateFade()
+	);
+
+	// 6) Initialize
+	stage.init();
 	game.init();
-}
-function setupAndRun() {
-	setDependencies();
-	initialize();
+
+	// 7) Start engine
 	engine.start();
 }
 
-// Unnecesary remove all debug related stuff
-//////////////////////////
-// DEBUGGER
-//////////////////////////
+// Debug
 const debug = {
 	gameReset() {
 		// Pool: Liberar todos los objetos del los pools
@@ -56,8 +57,8 @@ const debug = {
 		stage.bg.pattern = [...stage.patterns['1']];
 		stage.bg.queue.length = 0
 		stage.bg.changePattern = false;
-		stage.bg.speedDecimalAcc = 0;
-		stage.bg.rows = stage._setRowsArr();;
+		// stage.bg.speedDecimalAcc = 0;
+		stage.bg.rows = stage.r_rows
 		stage.bg.speed = 0;
 		// Game: 
 		// Vaciar mapa game.objects
@@ -70,9 +71,10 @@ const debug = {
 		game.resetCounter = 0;
 		// Set fade in
 		game.initFade('fromBlack', 1);
-		// Engine: (Re)start
-		engine.start();
-		// console.log('Game reset');
+		// Engine: Pause (so that window.requestAnimationFrame stops)
+		engine.pause()
+		// Wait 100ms and restart to allow window.requestAnimationFrame to stop
+		setTimeout(a=>engine.start(), 100)
 	},
 	// changeFps(ups, fps) {
 	// 	engine.init(ups, fps);
@@ -120,40 +122,3 @@ window.addEventListener('keydown', key => {
 	// 	localStorage.setItem('savedInputs', JSON.stringify(input.history));
 	// }
 });
-
-
-// // Opera 8.0+
-// var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-
-// // Firefox 1.0+
-// var isFirefox = typeof InstallTrigger !== 'undefined';
-
-// // Safari 3.0+ "[object HTMLElementConstructor]" 
-// var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && window['safari'].pushNotification));
-
-// // Internet Explorer 6-11
-// var isIE = /*@cc_on!@*/false || !!document.documentMode;
-
-// // Edge 20+
-// var isEdge = !isIE && !!window.StyleMedia;
-
-// // Chrome 1 - 79
-// var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-
-// // Edge (based on chromium) detection
-// var isEdgeChromium = isChrome && (navigator.userAgent.indexOf("Edg") != -1);
-
-// // Blink engine detection
-// var isBlink = (isChrome || isOpera) && !!window.CSS;
-
-
-// var output = 'Detecting browsers by ducktyping:<hr>';
-// output += 'isFirefox: ' + isFirefox + '<br>';
-// output += 'isChrome: ' + isChrome + '<br>';
-// output += 'isSafari: ' + isSafari + '<br>';
-// output += 'isOpera: ' + isOpera + '<br>';
-// output += 'isIE: ' + isIE + '<br>';
-// output += 'isEdge: ' + isEdge + '<br>';
-// output += 'isEdgeChromium: ' + isEdgeChromium + '<br>';
-// output += 'isBlink: ' + isBlink + '<br>';
-// document.body.innerHTML = output;

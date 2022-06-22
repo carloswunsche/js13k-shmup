@@ -8,13 +8,17 @@ class Entity {
     constructor(image) {
         this.free = true;
         this.image = image;
-        this.width = image.sWidth;
+        this.width = image.width;
         this.height = image.height;
         this.hit = 0;
+        // Unnecesary?
         this.opacity = 100;
         this.rotation = 0;
         this.x = 50;
         this.y = 50;
+        // For scaling entities
+        this.scale = 1;
+
         // Taken from global: Used for bullet shooting
         this.pool = pool;
         // Taken from global: Used for queue spawning bullets after objects updateData
@@ -113,7 +117,7 @@ class Player extends Entity {
         this.y = 95;
         this.shotBuffer = 0;
         this.hp = 1;
-        this.hitbox = this.setHitbox(3, 3, 0, 2);
+        this.hitbox = this.setHitbox(2, 2, 0, 2);
         // Useful if chaining methods
         return this;
     }
@@ -124,7 +128,7 @@ class Player extends Entity {
             this.queue.push(() => { this.pool.free('PlayerBullet', '5', { x: this.x, y: this.y, offset:  4 }) });
             this.queue.push(() => { this.pool.free('PlayerBullet', '5', { x: this.x, y: this.y, offset: -4 }) });
             // Sound
-            this.sfx.sfx_playerShot = true;
+            this.sfx.pShot = true;
             // Reset buffer
             this.shotBuffer = this.shotBufferInit;
         }
@@ -198,7 +202,7 @@ class PlayerBullet extends Entity {
 class Enemy extends Entity {
     constructor(image) {
         super(image)
-        this.timers = new Array(10).fill(0);
+        this.timers = new Array(9).fill(0);
         // Taken from global: Used for Enemy and EnemyBullet to follow player
         // NOTE: NO sirve llamar a X y a Y individualmente. Hay que tener acceso
         // al objeto entero para que no se haga shallow copy de sus propiedades.
@@ -221,25 +225,6 @@ class Enemy extends Entity {
         // Useful if chaining methods
         return this;
     }
-    easeOutCubic(xy, startPos, goTo, timeInFrames, timerUsed = 0) {
-        this[xy] = (goTo - startPos) * (1 - M.pow(1 - this.timers[timerUsed] / timeInFrames, 3)) + startPos;
-    }
-    easeInOutSine(xy, startPos, goTo, timeInFrames, timerUsed = 0) {
-        this[xy] = (goTo - startPos) * (-(M.cos(M.PI * this.timers[timerUsed] / timeInFrames) - 1) / 2) + startPos;
-    }
-    sin(xy, halfCycle, freq, centerPoint, timerUsed = 0) {
-        this[xy] = halfCycle * M.sin(this.timers[timerUsed] / 32 * freq) + centerPoint;
-    }
-    cos(xy, phase, cycle, freq, centerPoint, timerUsed = 0) {
-        this[xy] = cycle / 2 * phase * M.cos(this.timers[timerUsed] / 32 * freq) + centerPoint;
-    }
-    timerCount(timeInFrames = 999, timerUsed = 0) {
-        // Para que no se pueda usar un timer inexistente
-        // Unnecesary
-        if (timerUsed >= this.timers.length) timerUsed = this.timers.length - 1;
-        // Count time
-        if (this.timers[timerUsed] < timeInFrames) this.timers[timerUsed] += 1;
-    }
     shot(howMany = 1, spd, angle, add, offX = 0, offY = 0) {
         // Reduce layer name
         for(let i = 0; i < howMany; i++)
@@ -253,7 +238,27 @@ class Enemy extends Entity {
                 add: add * (i - M.floor(howMany/2)) || 0,
             });
             // Sound
-            this.sfx.sfx_enemyShot = true;
+            this.sfx.eShot = true;
+    }
+    timerCount(timeInFrames = 999, timerUsed = 0) {
+        // Para que no se pueda usar un timer inexistente
+        // Unnecesary
+        if (timerUsed >= this.timers.length) timerUsed = this.timers.length - 1;
+        // Count time
+        if (this.timers[timerUsed] < timeInFrames) this.timers[timerUsed] += 1;
+    }
+    // Reduce all moving functions that are not used
+    easeOutCubic(xy, startPos, goTo, timeInFrames, timerUsed = 0) {
+        this[xy] = (goTo - startPos) * (1 - M.pow(1 - this.timers[timerUsed] / timeInFrames, 3)) + startPos;
+    }
+    easeInOutSine(xy, startPos, goTo, timeInFrames, timerUsed = 0) {
+        this[xy] = (goTo - startPos) * (-(M.cos(M.PI * this.timers[timerUsed] / timeInFrames) - 1) / 2) + startPos;
+    }
+    sin(xy, halfCycle, freq, centerPoint, timerUsed = 0) {
+        this[xy] = halfCycle * M.sin(this.timers[timerUsed] / 32 * freq) + centerPoint;
+    }
+    cos(xy, phase, cycle, freq, centerPoint, timerUsed = 0) {
+        this[xy] = cycle / 2 * phase * M.cos(this.timers[timerUsed] / 32 * freq) + centerPoint;
     }
 }
 
@@ -293,14 +298,14 @@ class SinePop extends Enemy {
         super(image)
         // Used by Enemy class reset
         this.r__hitbox = this.setHitbox(this.width / 2 - 1, this.height / 2 - 2);
-        this.r__hp = 1;
+        // this.r__hp = 1;
         // Reduce string
         this.deadBound = 'bottom';
     }
     updatePos() {
         // Cosine movement
         this.cos('x', this.phase, 130, 1, 80);
-        this.timerCount(999);
+        this.timerCount();
         this.y += 0.5
     }
 }
@@ -356,7 +361,7 @@ class Tank extends Enemy {
         super(image)
         // Used by Enemy class reset
         this.r__hitbox = this.setHitbox(this.width / 2 - 2, this.height / 2 - 2, 0, -1);
-        this.r__hp = 4;
+        this.r__hp = 3;
         // Reduce string
         this.deadBound = 'bottom';
     }
@@ -370,9 +375,11 @@ class Assaulter extends Enemy {
         super(image)
         this.deadBound = 'any';
         // Used by Enemy class reset
-        this.r__hitbox = this.setHitbox(this.width / 2 - 5, this.height / 2 - 5);
+        this.r__hitbox = this.setHitbox(12, 12);
         this.r__hp = 22;
         this.r__speed = 2.5;
+        // Sprite scaling
+        this.scale = 1.5;
     }
     reset2() {
         this.angle = M.atan2(this.y - this.player.y, this.player.x - this.x);
@@ -395,7 +402,7 @@ class Assaulter extends Enemy {
 // PARTICLES
 //////////////////////////
 
-
+// Particle capabilities needs to be expanded for multiple uses❗
 class Particle extends Entity {
     constructor(image) {
         super(image)
