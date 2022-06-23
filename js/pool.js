@@ -23,7 +23,7 @@ class Pool {
 		for (let i = 0; i < arrSize; i++) {
 			if (this.type[entity][i].free) {
 				this.type[entity][i].free = false;
-				this.type[entity][i].reset(parametersObj);
+				this.type[entity][i].parentReset(parametersObj);
 				this.gameObjects.get(location).push(this.type[entity][i]);
 				return;
 			};

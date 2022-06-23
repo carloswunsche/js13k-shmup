@@ -123,7 +123,7 @@ class Assets {
         // if (stageNum === 1)
 		return [
 			[1,		Player],
-			[12,	PlayerBullet],
+			[18,	PlayerBullet],
 			[35,	EnemyBullet],
 			[4, 	SinePop],
 			[6, 	Sniper],
@@ -136,7 +136,7 @@ class Assets {
 	getEventsFn() {
 		// 1=EnemyLand, 2=EnemyAir, 3=Particle, 4=Player, 5=pBullet, 6=eBullet, 7=Hud
 		let a = new Array(5**6).fill(f=>f); // 15625 empty functions
-		a[0]	=()=>{this.p.free('Player', '4');
+		a[0]	=()=>{this.p.free('Player', '5');
 					 this.s.bg.speed = .5};
 		// Testing
 		a[1]	=()=> this.p.free('Assaulter', '2', {x: 30});

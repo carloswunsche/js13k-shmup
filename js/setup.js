@@ -3,7 +3,7 @@
 //////////////////////////
 'use strict';
 
-let M = Math;
+const customMath  = new CustomMath();
 const input 	  = new Input();
 const display 	  = new Display(160, 120, 8);
 const audioPlayer = new AudioPlayer();
@@ -14,37 +14,38 @@ const game 		  = new Game();
 const assets 	  = new Assets(runGame).loadAndRun();
 
 function runGame() {
-	// 1) Pool Dependencies
+	// Pool Dependencies
 	pool.needs(assets, game.objects);
 
-	// 2) Stage Dependencies
+	// Stage Dependencies
 	stage.needs(assets, pool, display.width, display.height);
 
-	// 3) Engine Dependencies
+	// Engine Dependencies
 	engine.needs(
-		z => game.update(), 
-		z => display.render(stage.bg, game.objects
-	));
+		() => game.update(), 
+		() => display.render(stage.bg, game.objects)
+	);
 
-	// 4) Assets dependencies
+	// Assets dependencies
 	assets.needs(pool, stage)
 
-	// 5) Game Dependencies
+	// Game Dependencies
 	game.needs(
+		customMath,
 		stage, 
 		pool, 
 		input, 
 		display.height, 
 		audioPlayer,
 		(a,b) => display.initFade(a, b), 
-		z => display.updateFade()
+		() => display.updateFade()
 	);
 
-	// 6) Initialize
+	// Initialize
 	stage.init();
 	game.init();
 
-	// 7) Start engine
+	// Start engine
 	engine.start();
 }
 
@@ -78,19 +79,8 @@ const debug = {
 		// Custom...
 		// engine.ups = 20;
 		// Wait 100ms and restart to allow window.requestAnimationFrame to stop
-		setTimeout(a=>engine.start(), 100)
+		setTimeout(() => engine.start(), 100)
 	},
-	// changeFps(ups, fps) {
-	// 	engine.init(ups, fps);
-	// 	game.ceilIteration()
-	// 	engine.start();
-	// 	console.log(`Now rendering at ${fps}fps`);
-	// },
-	// toggleScanlines(){
-	// 	display.scanlines = display.scanlines ? undefined : 'scanlines';
-	// 	display.intensity = 50;
-	// 	display.render(stage.bg, game.objects);
-	// },
 	toggleHitboxes(){
 		display.hitboxes = display.hitboxes ? undefined : 'hitboxes';
 		display.render(stage.bg, game.objects);
@@ -100,29 +90,11 @@ const debug = {
 	},
 	engineStart(){
 		engine.start();
-	},
-	// bgSpeedAdd(n){
-	// 	game.stage.bg.speed += n;
-	// },
-	// bgSpeedSub(n){
-	// 	game.stage.bg.speed -= n;
-	// },
-	// spawnEnemy(){
-	// 	pool.getFreeObject('EnemyPop1', 'EnemyAir', {phase:-1});
-	// },
+	}
 }
 window.addEventListener('keydown', key => {
 	if (key.code === 'KeyK') debug.enginePause();
 	if (key.code === 'KeyP') debug.engineStart();
 	if (key.code === 'KeyH') debug.toggleHitboxes();
 	if (key.code === 'KeyR') debug.gameReset();
-	// if (key.code === 'Minus')debug.bgSpeedSub(0.25);
-	// if (key.code === 'Equal')debug.bgSpeedAdd(0.25);
-	// if (key.code === 'Plus') debug.bgSpeedAdd(0.25);
-	// if (key.code === 'KeyE') debug.spawnEnemy();
-	// if (key.code === 'KeyS') debug.toggleScanlines();
-	// if (key.code === 'Digit1') {
-	// 	localStorage.clear();
-	// 	localStorage.setItem('savedInputs', JSON.stringify(input.history));
-	// }
 });

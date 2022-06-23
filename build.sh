@@ -6,6 +6,7 @@ mkdir build/i
 
 # Concat javascript files into one file
 cat \
+    js/customMath.js \
     js/assets.js \
     js/audio.js \
     js/display.js \
@@ -84,3 +85,9 @@ echo "GZip size: $zippedsize bytes"
 # -7798 (some optimizations)
 # +8049 (new explosion system + sound fixed)
 # +8084 (further polishing of particle system)
+# -8075 (before changing the architecture)
+# +8129 (after changing architecture...)
+# +8145 (after improving architecture...)
+# -8111 (cleaning entities.js)
+# -8087 (using timers for player shot)
+# +8118 (standarizing vector movement)
