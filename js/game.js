@@ -20,6 +20,7 @@ class Game {
         this.objects = new Map(Object.entries({1:[],2:[],3:[],4:[],5:[],6:[],7:[]}));
         this.queuedFns = [];
         this.resetCounter = 0;
+        this.sfxFlags = {};
     }
     needs(stage, pool, input, displayHeight, audioPlayer, initFade, updateFade){
         // To call level events and scroll background
@@ -33,10 +34,7 @@ class Game {
         // To initialize display fades
         this.initFade = initFade;
         // To play sounds
-        this.audio = {
-            player: audioPlayer,
-            sfx: {},
-        }
+        this.audioPlayer = audioPlayer;
         // To update fade state
         this.updateFade = updateFade;
     }
@@ -87,14 +85,15 @@ class Game {
         // Test for collisions between Player and EnemyBullet
         this.testCollisionPlayer();
 
-        // Release objects if hp <= 0
-        this.gameObjectsRelease();
+        // Remove entities from layer if hp <= 0 and call kill method on them
+        this.removeDeadEntities();
 
         // Call functions inside queue again (usually particle creation)
         this.runQueued();
 
-        // Play sounds if any
-        this.audio.player.playSfx(this.audio.sfx);
+        // Play sounds passing flags, then set all flags to false
+        this.audioPlayer.playSfx(this.sfxFlags);
+        for(const soundName in this.sfxFlags) this.sfxFlags[soundName] = 0;
 
         // Reset game if player dies
         if (!this.objects.get('4')[0]) {
@@ -167,16 +166,10 @@ class Game {
                             enemy.hitbox[2] < pBullet.hitbox[3]) {
                             // Ambos pierden HP
                             pBullet.hp--; enemy.hp--;
-                            // Enemy activa el tile hit ("transparente" / not found)
-                            enemy.hit = 1;
-                            // Si el enemy evaluado murio...
-                            if (enemy.hp <= 0) {
-                                // Audio: explosion sfx flag
-                                this.audio.sfx.xplos = true;
-                                // Pool: Liberar 30 particulas (explosion)
-                                for (let i = 0; i < 20; i++)
-                                this.queuedFns.push(z=>this.pool.free('Particle','3',{x: enemy.x, y: enemy.y}));
-                            }
+                            // Enemy activa el tile hit ("transparente" / not found) solo si no murio
+                            if (enemy.hp > 0) enemy.hit = 1;
+                            // Si el enemy evaluado murio por colision, activar flag de explosion
+                            if (enemy.hp <= 0) enemy.explode = true;
                             // Salir del forEach de los enemigos ya que el bullet actual murió
                             // Fix this: este bullet muerto va a ser evaluado con los enemies del proximo layer
                             return;
@@ -189,42 +182,30 @@ class Game {
     testCollisionPlayer(){
         let player = this.objects.get('4')[0];
         ['6', '2'].forEach(layer => {
-            if (!player) return;
-            this.objects.get(layer).forEach(b => {
-                if (b.hp > 0 && player.hp > 0) { 
+            this.objects.get(layer).forEach(foe => {
+                if (foe.hp > 0 && player?.hp > 0) { 
                     // Si hay colision...
-                    if (b.hitbox[0] < player.hitbox[1] &&
-                        player.hitbox[0] < b.hitbox[1] &&
-                        b.hitbox[2] < player.hitbox[3] &&
-                        player.hitbox[2] < b.hitbox[3]) {
-                        // HP: Ambos mueren
-                        b.hp = 0; player.hp = 0;
-                        // Audio: Explosion sfx flag
-                        this.audio.sfx.die = true;
-                        // Free objects: Explosion particles
-                        let xShallowCopy = player.x;
-                        let yShallowCopy = player.y;
-                        for (let i = 0; i < 40; i++)
-                            this.queuedFns.push(z=>this.pool.free('Particle','3',{x: xShallowCopy, y: yShallowCopy})
-                        );
-
-                        player.disable();
+                    if (foe.hitbox[0] < player.hitbox[1] &&
+                        player.hitbox[0] < foe.hitbox[1] &&
+                        foe.hitbox[2] < player.hitbox[3] &&
+                        player.hitbox[2] < foe.hitbox[3]) {
+                        // Both will be killed
+                        foe.hp = 0; player.hp = 0;
+                        // Explosion flag for both
+                        foe.explode = true; player.explode = true;
                         return;
                     }
                 }
             })
         })
     }
-    gameObjectsRelease(){
+    removeDeadEntities(){
         for (const [_, arr] of this.objects){
-            for (let i = 0; i < arr.length; i++) {
-                // Checks if there's any dead entity
-                if (arr[i].hp <= 0) {
-                    // Remove from array and set free
-                    arr.splice(i,1)[0].free = true;
-                    // Shift loop index
-                    i--;
-                };
+            for (let i = arr.length-1; i >= 0; i--) {
+                // Si no tiene hp y no tiene flag dying activada, kill.
+                if (arr[i].hp <= 0 && !arr[i].dying) arr[i].kill();
+                // Tras eso, todos los que hayan quedado free, sacarlos del array.
+                if (arr[i].free) arr.splice(i,1);
             };
         }
     }

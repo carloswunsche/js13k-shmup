@@ -2,6 +2,7 @@
 
 # Remove images directory (build/i) and its contents
 rm -r build/i
+mkdir build/i
 
 # Concat javascript files into one file
 cat \
@@ -34,7 +35,9 @@ sed -e '/CSS_SOURCE/{r build/style.min.css' -e 'd}' build/html_template.html > b
 sed -e '/GAME_SOURCE/{r build/game.roadrolled.js' -e 'd}' build/css_ready.html > build/index.html
 
 # Copy assets (i) folder into build
-cp -a i build/
+# cp -a i build/
+cp i/sprites.webp build/i
+cp i/bg.webp build/i
 
 # Build gzip of tar archive containing index.html and assets (i) folder
 cd build
@@ -76,4 +79,8 @@ echo "GZip size: $zippedsize bytes"
 # -7853 (simplified code on setup.js)
 # -7795 (I can't remember...)
 # -7764 (Some more shrinking here and there)
-# +7821 (new particle system)
+# +7816 (new particle system)
+# -7802 (some optimizations)
+# -7798 (some optimizations)
+# +8049 (new explosion system + sound fixed)
+# +8084 (further polishing of particle system)

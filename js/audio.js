@@ -6,40 +6,24 @@ class AudioPlayer {
     constructor(){
         // Taken from global
         this.zzfx = zzfx;
+        this.enable = true;
     }
-    playSfx(obj){
-        for (const key in obj) {
-            switch (obj[key]) {
-                case 'pShot': this.zzfx(...[.1,,1450,,.01,0,2,.37,-42,,-18,.19,,,-0.8,,,.63,.01,.81]);  break;
-                case 'xplos': this.zzfx(...[.5,,914,.01,.12,.12,4,2.49,,.5,,,,.3,,.5,.18,.44,.14]);     break;
-                case 'eShot': this.zzfx(...[.1,,346,,,.01,,1.64,-4.1,,,,,.9,,,.04,.95,.08]);            break;
-                case 'die':   this.zzfx(...[,,843,.01,.13,.58,2,5,1,,,,,1.4,,.5,.49,.47,.12,.29]);      break;
-            }
-            // Apagar flags
-            obj[key]=0;
+    playSfx(flags){
+        // First of all, if audioPlayer is disabled, don't play anything.
+        if (!this.enable) return;
+
+        // Die sound also disables the audioPlayer and has priority over other sounds (they will not play)
+        if (flags.die) {
+            this.enable = false;
+            this.zzfx(...[,,843,.01,.13,.58,2,5,1,,,,,1.4,,.5,.49,.47,.12,.29]);
+            return
         }
+
+        // All other sounds go here
+        if (flags.pShot) this.zzfx(...[.1,,1450,,.01,0,2,.37,-42,,-18,.19,,,-0.8,,,.63,.01,.81]);
+        if (flags.xplos)   this.zzfx(...[.5,,894,,.05,.35,1,3.68,.7,.8,,,.04,1.3,,.6,,.1,.05]);
+        if (flags.xplos_L) this.zzfx(...[.5,,894,,.05,.35,1,3.68,.7,.8,,,.04,1.3,,.6,,.1,.05]);
+        if (flags.xplos_S) this.zzfx(...[.1,,79,.02,.05,.13,4,.16,.2,.8,,,,.1,,.1,,.5,,.27]);
+        if (flags.eShot) this.zzfx(...[.05,,346,,,.01,,1.64,-4.1,,,,,.9,,,.04,.95,.08]);
     }
-    // playSfx(obj){
-    //     for (const key in obj) {
-    //         // Si un sonido es true y su metodo existe...
-    //         if (this[key] && obj[key]) {
-    //             // Reproducir
-    //             this[key]();
-    //             // Y mutar el flag a false
-    //             obj[key] = 0;
-    //         }
-    //     }
-    // }
-    // sfx_playerShot(){
-    //     this.zzfx(...[.1,,1450,,.01,0,2,.37,-42,,-18,.19,,,-0.8,,,.63,.01,.81]);
-    // }
-    // sfx_explosion(){
-    //     this.zzfx(...[.5,,914,.01,.12,.12,4,2.49,,.5,,,,.3,,.5,.18,.44,.14]);
-    // }
-    // sfx_enemyShot(){
-    //     this.zzfx(...[.1,,346,,,.01,,1.64,-4.1,,,,,.9,,,.04,.95,.08]);
-    // }
-    // sfx_explosionPlayer(){
-    //     this.zzfx(...[,,843,.01,.13,.58,2,5,1,,,,,1.4,,.5,.49,.47,.12,.29]);
-    // }
 }

@@ -19,7 +19,7 @@ class Input {
 		window.addEventListener('keyup', key => {
 			this.updateRaw(key.code, this.raw, 0);
 		})
-		// Unnecesary
+		// Unnecesary ?
 		window.addEventListener('visibilitychange', e => {
 			if (e.target.visibilityState === 'hidden') {
 				this.raw.fill(0);

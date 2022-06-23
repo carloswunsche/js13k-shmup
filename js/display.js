@@ -152,6 +152,8 @@ class Display {
 
                 // Rotate
                 if (entity.rotation) this.ctx.rotate(entity.rotation);
+
+
                 if (entity instanceof Particle) {
                     this.ctx.fillStyle = entity.rndColor;
                     this.ctx.fillRect(
@@ -174,14 +176,11 @@ class Display {
                     entity.image.width,
                     // Source height
                     entity.image.height,
-                    // Destination x (translate -50%)
-                    -(entity.image.width * entity.scale * this.scale) / 2,
-                    // Destination y (translate -50%)
-                    -(entity.image.height * entity.scale * this.scale) / 2,
-                    // Destination width
-                    entity.image.width * entity.scale * this.scale,
-                    // Destination height
-                    entity.image.height * entity.scale * this.scale
+                    // DestX (translate -50%), DestY (translate -50%), DestW, DestH
+                    -(entity.image?.width * entity.scale * this.scale) / 2, 
+                    -(entity.image?.height * entity.scale * this.scale) / 2,
+                    entity.image?.width * entity.scale * this.scale,
+                    entity.image?.height * entity.scale * this.scale
                 );
 
                 // Undo opacity, translation and rotation 

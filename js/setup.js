@@ -9,7 +9,7 @@ const display 	  = new Display(160, 120, 8);
 const audioPlayer = new AudioPlayer();
 const pool 		  = new Pool();
 const stage 	  = new Stage(8);
-const engine 	  = new Engine();
+const engine 	  = new Engine(60);
 const game 		  = new Game();
 const assets 	  = new Assets(runGame).loadAndRun();
 
@@ -35,7 +35,7 @@ function runGame() {
 		pool, 
 		input, 
 		display.height, 
-		audioPlayer, 
+		audioPlayer,
 		(a,b) => display.initFade(a, b), 
 		z => display.updateFade()
 	);
@@ -51,6 +51,8 @@ function runGame() {
 // Debug
 const debug = {
 	gameReset() {
+		// Audio: enable again
+		audioPlayer.enable = true;
 		// Pool: Liberar todos los objetos del los pools
 		for(const key in pool.type) pool.type[key].forEach(el => el.free = true);
 		// Stage: Reset values
@@ -58,7 +60,7 @@ const debug = {
 		stage.bg.queue.length = 0
 		stage.bg.changePattern = false;
 		// stage.bg.speedDecimalAcc = 0;
-		stage.bg.rows = stage.r_rows
+		stage.bg.rows = [...stage.r__rows];
 		stage.bg.speed = 0;
 		// Game: 
 		// Vaciar mapa game.objects
@@ -73,6 +75,8 @@ const debug = {
 		game.initFade('fromBlack', 1);
 		// Engine: Pause (so that window.requestAnimationFrame stops)
 		engine.pause()
+		// Custom...
+		// engine.ups = 20;
 		// Wait 100ms and restart to allow window.requestAnimationFrame to stop
 		setTimeout(a=>engine.start(), 100)
 	},

@@ -3,6 +3,9 @@
 //////////////////////////
 
 class Engine {
+    constructor(ups){
+        this.ups = ups;
+    }
     needs(updateFn, renderFn){
         this.callUpdate = updateFn;
         this.callRender = renderFn;
@@ -26,7 +29,7 @@ class Engine {
     // }
     start () {
         // Updates/Renders array
-        this.iterations = [0,0];
+        // this.iterations = [0,0];
         // Pause flag
         this.paused = false;
         // Time accumulator
@@ -34,7 +37,7 @@ class Engine {
         // Render Acc t
         this.renderAcc = 0;
         // Time slice
-        this.s = 1000 / 60;
+        this.s = 1000 / this.ups;
         // Fps
         this.oneFrameInMs = 1000 / 60;
         // Difference between this.lastStamp and newStamp

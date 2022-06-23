@@ -11,12 +11,10 @@ class Entity {
         this.width = image?.width;
         this.height = image?.height;
         this.hit = 0;
-        // Unnecesary?
         this.opacity = 100;
         this.rotation = 0;
-        this.x = 50;
-        this.y = 50;
-        // For scaling entities
+        this.x = 0;
+        this.y = 0;
         this.scale = 1;
 
         // Taken from global: Used for bullet shooting
@@ -26,15 +24,24 @@ class Entity {
         // Taken from global: Used for positioning relative to display
         this.displayWidth = display.width;
         this.displayHeight = display.height;
-        // Taken from global: To flag sounds
-        this.sfx = game.audio.sfx;
+        // Taken from global: To activate sounds
+        this.sfxFlags = game.sfxFlags;
     }
     update() {
-        // Particular updateData
-        this.updateData?.();
-        // Update position
-        this.updatePos?.();
-        // Kill if out of bounds flag
+        if(!this.dying) { 
+            // General updates for all entities
+            this.hit = 0;
+            // Particular updateData
+            this.updateData?.();
+            // Update position
+            this.updatePos?.();
+        } else {
+            // Only dying enemies
+            this.flickerAndDie();
+        }
+        // Anything besides the player must be killed if out of bounds.
+        // These entities has a deadBound string that specifies on which bound must be killed
+        // I think this will be better suited if called on game.js, where removeDeadEntities is
         if(this.deadBound) this.killIfOutOfBounds(this.deadBound);
         // Non-particles get their hitbox updated
         if (this.hitbox) this.hitbox = this.setHitbox();
@@ -43,8 +50,8 @@ class Entity {
             this.fixOutOfBounds();
             this.hitbox = this.setHitbox();
         };
-        // General updates for all entities
-        this.hit = 0;
+        // // General updates for all entities
+        // this.hit = 0;
         if (this.opacity < 0) this.opacity = 0;
     }
     setHitbox(xMargin = 2, yMargin = 2, xOffset = 0, yOffset = 0) {
@@ -62,6 +69,7 @@ class Entity {
             this.y + this.yMargin + this.yOffset,  //y2 (down)
         ];
     }
+    // Could it be that most of these functions are better suited inside game.js update function ?
     killIfOutOfBounds(where){
         // Reduce strings
         // Player bullets
@@ -94,6 +102,86 @@ class Entity {
         // Some enemies (also this has no guard clause because end of function)
         if (where === 'right' && this.x >= this.displayWidth + this.width / 2) this.hp = 0;
     }
+    kill(){
+        // Enemies with flag delayKill which want an explosion will not die/explode instantly...
+        if (this.explode && this.delayKill) {
+            // Start dying process now
+            this.flickerAndDie();
+            // Activating this flag will call flickerAndDie() instead of the regular update fns every frame
+            this.dying = true;
+            // Reset flag to false
+            this.explode = false;
+            // Return here
+            return
+        }
+
+        // Para los demas: Si ha sido matado por colision y tiene data de la explosion, generar particulas
+        if (this.explode) {
+            // Queue particles passing current entity data
+            this.spawnParticles(this.explosionData());
+            // Reset flag to false
+            this.explode = false;
+            // Audio: explosion sfx flag
+            this.sfxFlags.xplos = true;
+        }
+
+        // Player will also be positioned far so that eBullets will always go down
+        if (this instanceof Player) {
+            this.positionFar();
+            this.sfxFlags.die = true; // Audio: Die sfx flag
+        }
+
+        // Finally, all entities EXCEPT those with delayKill flag will be free NOW
+        this.free = 1;
+    }
+    flickerAndDie(){
+        // (use timer 8 for explosions and stuff) Will adjust this later on
+        // Set randomness
+        let rndX = this.randomBetween(-this.width/2,this.width/2);
+        let rndY = this.randomBetween(-this.height/2,this.height/2);
+
+        // If timer is 0, 10, 20..etc
+        if (this.timers[8]%10 === 0) {
+            // Little smoke with added random position
+            this.spawnParticles({
+                qty: 4,  
+                options: {
+                    x: this.x+rndX, 
+                    y:this.y+rndY, 
+                    speed: 1, 
+                    subSpdRange:[0.5,1],
+                    colors:['#eee','#ddd','#ccc','#bbb']
+                }
+            })
+            // Sound
+            this.sfxFlags.xplos_S = true;
+        }
+        // Hit state (dissappear) when timer is NOT 0, 4, 8..etc
+        this.hit = this.timers[8]%4 ? 1 : 0;
+        // Start counting at this moment. Up until now timer was always 0.
+        this.timerCount(60, 8)
+        // More: Also fall...
+        this.y+=0.2;
+        // More: Also shrink a bit
+        this.scale-=0.005
+
+        // When timer ends
+        if (this.timers[8] === 60) {
+            // Big explosion at the end
+            this.spawnParticles({qty: 20, options: {x: this.x, y:this.y}})
+            // Sound
+            this.sfxFlags.xplos_L = true;
+            // Free entity for reuse
+            this.free = true;
+        }
+    }
+    spawnParticles(data){
+        // If no data received, don't spawn any particles
+        if (!data) return;
+    
+        for (let i = 0; i < data.qty; i++)
+        this.queue.push(()=>this.pool.free('Particle','3',data.options));
+    }
     // General calculation functions
     toRadians(degrees) {
         return degrees * M.PI / 180
@@ -109,6 +197,7 @@ class Player extends Entity {
         super(image);
         this.speed = 1.5;
         this.shotBufferInit = 5;
+        this.explosionData = function() {return {qty: 40, options: {x:this.x, y:this.y,speed: 4}}};
         // Taken from global: Used for moving and shooting
         this.buttons = input.buttons;
     }
@@ -129,7 +218,7 @@ class Player extends Entity {
             this.queue.push(() => { this.pool.free('PlayerBullet', '5', { x: this.x, y: this.y, offset:  4 }) });
             this.queue.push(() => { this.pool.free('PlayerBullet', '5', { x: this.x, y: this.y, offset: -4 }) });
             // Sound
-            this.sfx.pShot = true;
+            this.sfxFlags.pShot = true;
             // Reset buffer
             this.shotBuffer = this.shotBufferInit;
         }
@@ -168,7 +257,7 @@ class Player extends Entity {
         if (this.hitbox[3] > this.displayHeight) this.y = this.displayHeight - this.yMargin - this.yOffset;
         if (this.hitbox[0] < 0) this.x = this.xMargin - this.xOffset;
     }
-    disable() {
+    positionFar() {
         this.x = this.displayWidth / 2;
         this.y = this.displayHeight + 99;
     }
@@ -204,6 +293,7 @@ class Enemy extends Entity {
     constructor(image) {
         super(image)
         this.timers = new Array(9).fill(0);
+        this.explosionData = function() {return {qty: 9, options: {x:this.x, y:this.y}}};
         // Taken from global: Used for Enemy and EnemyBullet to follow player
         // NOTE: NO sirve llamar a X y a Y individualmente. Hay que tener acceso
         // al objeto entero para que no se haga shallow copy de sus propiedades.
@@ -212,6 +302,8 @@ class Enemy extends Entity {
         this.stage = stage;
     }
     reset(custom) {
+        this.scale = 1;
+        this.dying = false;
         this.hp = this.r__hp || 1;
         this.hitbox = this.r__hitbox;
         this.side = custom?.side || 1;
@@ -239,12 +331,12 @@ class Enemy extends Entity {
                 add: add * (i - M.floor(howMany/2)) || 0,
             });
             // Sound
-            this.sfx.eShot = true;
+            this.sfxFlags.eShot = true;
     }
     timerCount(timeInFrames = 999, timerUsed = 0) {
         // Para que no se pueda usar un timer inexistente
-        // Unnecesary
-        if (timerUsed >= this.timers.length) timerUsed = this.timers.length - 1;
+        // // Unnecesary
+        // if (timerUsed >= this.timers.length) timerUsed = this.timers.length - 1;
         // Count time
         if (this.timers[timerUsed] < timeInFrames) this.timers[timerUsed] += 1;
     }
@@ -265,9 +357,11 @@ class Enemy extends Entity {
 class EnemyBullet extends Enemy {
     constructor(image) {
         super(image);
-        this.r__hitbox = this.setHitbox(this.width / 2 - 1, this.height / 2 - 1);
+        this.r__hitbox = this.setHitbox(1, 1);
         // Reduce string
         this.deadBound = 'any';
+        // Enemy bullets apply for collision but they don't want to explode.
+        this.explosionData = () => false;
     }
     reset2(custom) {
         // Check between mode 'auto' (towards Player) and regular degrees
@@ -297,7 +391,7 @@ class SinePop extends Enemy {
     constructor(image) {
         super(image)
         // Used by Enemy class reset
-        this.r__hitbox = this.setHitbox(this.width / 2 - 1, this.height / 2 - 2);
+        this.r__hitbox = this.setHitbox(this.width/2, this.height/2-1,0,-1);
         // this.r__hp = 1;
         // Reduce string
         this.deadBound = 'bottom';
@@ -313,7 +407,7 @@ class Sniper extends Enemy {
     constructor(image) {
         super(image)
         // Used by Enemy class reset
-        this.r__hitbox = this.setHitbox(this.width / 2 - 2, this.height / 2 - 2);
+        this.r__hitbox = this.setHitbox(this.width/2-1, this.height/2-1);
         this.r__speed = 1.5;
         this.r__hp = 3;
         // Reduce string
@@ -334,7 +428,7 @@ class Fatty extends Enemy {
     constructor(image) {
         super(image)
         // Used by Enemy class reset
-        this.r__hitbox = this.setHitbox(this.width / 2 - 2, this.height / 2 - 2);
+        this.r__hitbox = this.setHitbox(5, 5);
         this.r__hp = 4;
         this.r__y = 10;
     }
@@ -360,7 +454,7 @@ class Tank extends Enemy {
     constructor(image) {
         super(image)
         // Used by Enemy class reset
-        this.r__hitbox = this.setHitbox(this.width / 2 - 2, this.height / 2 - 2, 0, -1);
+        this.r__hitbox = this.setHitbox(this.width / 2, this.height / 2-2);
         this.r__hp = 3;
         // Reduce string
         this.deadBound = 'bottom';
@@ -373,16 +467,18 @@ class Tank extends Enemy {
 class Assaulter extends Enemy {
     constructor(image) {
         super(image)
+        // Flags (these DOESNT mutate)
         this.deadBound = 'any';
+        this.delayKill = true;
         // Used by Enemy class reset
-        this.r__hitbox = this.setHitbox(12, 12);
+        this.r__hitbox = this.setHitbox(10, 10);
         this.r__hp = 22;
         this.r__speed = 2.5;
-        // Sprite scaling
-        this.scale = 1.5;
     }
     reset2() {
         this.angle = M.atan2(this.y - this.player.y, this.player.x - this.x);
+        // Sprite scaling
+        this.scale = 1.5;
     }
     updateData() {
         this.timerCount(100);
@@ -390,7 +486,7 @@ class Assaulter extends Enemy {
         if (this.timers[0] === 40)  this.shot(10, 1);
         if (this.timers[0] === 80)  this.angle = M.atan2(this.y - this.player.y, this.player.x - this.x);
         if (this.timers[0] > 80)    this.speed += .02;
-        if (this.timers[0] === 99)  this.shot(3, 1, 'auto', 20);
+        if (this.timers[0] === 99)  this.shot(3, 1.5, 'auto', 20);
     }
     updatePos() {
         this.x = this.x + M.cos(this.angle) * this.speed;
@@ -411,7 +507,7 @@ class Particle extends Entity {
         this.speed = custom?.speed || 3;
         this.x = custom?.x || 0;
         this.y = custom?.y || 0;
-        this.rndRange = custom?.rndRange || [1, 2];
+        this.subSpdRange = custom?.subSpdRange || [1, 2];
         this.hp = 1;
         this.scale = 4;
         // Set random direction:
@@ -420,14 +516,17 @@ class Particle extends Entity {
         this.opacity = 100;
         // Randomize rotation direction
         this.rndDir = this.randomBetween(0,1)?-1:1;
-        this.rndColor = ['#ffe066','#ffec99','#fff3bf','#fff9db'][this.randomBetween(0,3)];
+        this.colors = custom?.colors || ['#ff9','#feb','#ffc','#ffe']
+        // This kind of syntax actually weighs more after roadrolling! Beware
+        // this.rndColor = '#f'+['f9','eb','fc','fe'][this.randomBetween(0,3)];
+        this.rndColor = this.colors[this.randomBetween(0,this.colors.length-1)];
     }
     updateData() {
         // this.scale-=this.randomBetween(1,2);
         this.scale-=.2;
-        this.opacity-= 1;
+        this.opacity-= 5;
         this.rotation += .08 * this.rndDir; // 5 degree in a random orientation
-        this.speed -= this.randomBetween(...this.rndRange) / 10
+        this.speed -= this.randomBetween(...this.subSpdRange) / 10
         // If invisible, bye
         if (this.scale <= 0) this.hp = 0;
     }
