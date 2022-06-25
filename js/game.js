@@ -170,7 +170,7 @@ class Game {
 
         let player = this.objects.get('5')[0];
         this.objects.get('goodies').forEach(item => {
-            if (item.hp > 0) {
+            if (item.hp > 0 && player) {
                 if (item.hitbox[0] < player.hitbox[1] &&
                     player.hitbox[0] < item.hitbox[1] &&
                     item.hitbox[2] < player.hitbox[3] &&

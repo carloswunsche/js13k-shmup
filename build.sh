@@ -17,6 +17,8 @@ cd i
 # Color quantization (+dither means NO dithering)
 magick sprites.png  +dither -colors 9 sprites.png
 magick bg.png       +dither -colors 5 bg.png
+# magick sprites.png  +dither -colorspace gray -posterize 4 sprites.png
+# magick bg.png       +dither -colorspace gray -posterize 2 bg.png
 # Convert from png to webp
 cwebp -lossless -z 9 -quiet sprites.png  -o sprites.webp
 cwebp -lossless -z 9 -quiet bg.png       -o bg.webp
