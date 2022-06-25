@@ -18,7 +18,7 @@ function runGame() {
 	pool.needs(assets, game.objects);
 
 	// Stage Dependencies
-	stage.needs(assets, pool, display.width, display.height);
+	stage.needs(assets, display.width, display.height);
 
 	// Engine Dependencies
 	engine.needs(
@@ -62,7 +62,6 @@ const debug = {
 		stage.bg.changePattern = false;
 		// stage.bg.speedDecimalAcc = 0;
 		stage.bg.rows = [...stage.r__rows];
-		stage.bg.speed = 0;
 		// Game: 
 		// Vaciar mapa game.objects
 		for (const [_, arr] of game.objects) arr.length = 0;
@@ -78,6 +77,8 @@ const debug = {
 		engine.pause()
 		// Custom...
 		// engine.ups = 20;
+
+		//BUGGY
 		// Wait 100ms and restart to allow window.requestAnimationFrame to stop
 		setTimeout(() => engine.start(), 100)
 	},

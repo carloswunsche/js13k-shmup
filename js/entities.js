@@ -36,6 +36,7 @@ class Entity {
         this.timers.fill(0);
         // Flags
         this.dying = false;
+        this.carryItem = custom?.carryItem || false;
         // Custom resets if any
         this.reset1?.(custom);
         this.reset2?.(custom);
@@ -69,13 +70,18 @@ class Entity {
     }
     // Parent movement functions
     vectorMovement(custom){
-        this.x += 
-        custom?.xAng !== void 0 ? custom.xAng : M.cos(this.angle) 
-        * this.speed;
+        // this.x += 
+        // custom?.xAng !== void 0 ? custom.xAng : M.cos(this.angle) 
+        // * this.speed;
 
-        this.y -= 
-        custom?.yAng !== void 0 ? custom.yAng : M.sin(this.angle) 
-        * this.speed;
+        // this.y -= 
+        // custom?.yAng !== void 0 ? custom.yAng : M.sin(this.angle) 
+        // * this.speed;
+
+
+        // Less space:
+        this.x += M.cos(custom || this.angle) * this.speed;
+        this.y -= M.sin(custom || this.angle) * this.speed;
     }
 }
 
@@ -84,8 +90,7 @@ class Player extends Entity {
         super(image);
         this.setupHitbox(2, 2, 0, 2);
         this.explosionData = function() {return {qty: 40, options: {x:this.x, y:this.y,speed: 4}}};
-        this.speed = 1.5;
-        // this.r__shotBuffer = 5;
+        // this.r__speed = 1.5;
         // Taken from global: Used for moving and shooting
         this.buttons = input.buttons;
     }
@@ -100,11 +105,21 @@ class Player extends Entity {
         ///////////
         // If button pressed & timer has reached destination
         if (this.buttons[4] > 0 && this.timers[0] === 6) {
-            // Queue 2 bullets
-            this.queue.push(() => { this.pool.free('PlayerBullet', '4', { x: this.x, y: this.y-6, offset:  4 }) });
-            this.queue.push(() => { this.pool.free('PlayerBullet', '4', { x: this.x, y: this.y-6, offset: -4 }) });
-            this.queue.push(() => { this.pool.free('PlayerBullet', '4', { x: this.x+7, y: this.y-4, angle: 1.0472, rotation: 2.0944,}) });
-            this.queue.push(() => { this.pool.free('PlayerBullet', '4', { x: this.x-7, y: this.y-4, angle: 2.0944, rotation: 1.0472,}) });
+            // Queue bullets
+            // this.queue.push(() => {this.pool.free('PlayerBullet', '4', {x: this.x, y: this.y-6, offset:  4 })});
+            // this.queue.push(() => {this.pool.free('PlayerBullet', '4', {x: this.x, y: this.y-6, offset: -4 })});
+            // this.queue.push(() => {this.pool.free('PlayerBullet', '4', {x: this.x+7, y: this.y-4, angle: 1.0472, rotation: 2.0944, hitbox: [1,2]})});
+            // this.queue.push(() => {this.pool.free('PlayerBullet', '4', {x: this.x-7, y: this.y-4, angle: 2.0944, rotation: 1.0472, hitbox: [1,2]})});
+
+            // Queue bullets version 2
+            let parms = [
+                {x: this.x, y: this.y-6, offset:  4 },
+                {x: this.x, y: this.y-6, offset: -4 },
+                {x: this.x+7, y: this.y-4, angle: 1.0472, rotation: 2.0944, hitbox: [1,2]},
+                {x: this.x-7, y: this.y-4, angle: 2.0944, rotation: 1.0472, hitbox: [1,2]}
+            ];
+            for(let i = 0; i < 4; i++)this.queue.push(() => this.pool.free('PlayerBullet', '4', parms[i]));
+            
             // Sound
             this.sfxFlags.pShot = true;
             // Reset timer
@@ -113,37 +128,57 @@ class Player extends Entity {
         // Shot timer always counting up
         this.timerCount(6);
     }
+    gotHit(){}
     updatePos() {
-        // Start from no-movement
-        this.xDir = 0; this.yDir = 0;
-        // Un-press button if out of bounds
-        if (this.hitbox[2] <= 0) this.buttons[0] = 0;
-        if (this.hitbox[1] >= this.displayWidth) this.buttons[1] = 0;
-        if (this.hitbox[3] >= this.displayHeight) this.buttons[2] = 0;
-        if (this.hitbox[0] <= 0) this.buttons[3] = 0;
-        // Set direction based on pressed buttons
-        if (this.buttons[0]) this.yDir++
-        if (this.buttons[1]) this.xDir++
-        if (this.buttons[2]) this.yDir--
-        if (this.buttons[3]) this.xDir--
-        // Set correct vector amplitude
-        this.vectorAmp = this.setVectorAmplitude(); // 1 or 0.707
-        // Update position using parent vector movement
+        // // Start from no-movement
+        // this.xDir = 0; this.yDir = 0;
+        // // Un-press button if out of bounds
+        // if (this.hitbox[2] <= 0) this.buttons[0] = 0;
+        // if (this.hitbox[1] >= this.displayWidth) this.buttons[1] = 0;
+        // if (this.hitbox[3] >= this.displayHeight) this.buttons[2] = 0;
+        // if (this.hitbox[0] <= 0) this.buttons[3] = 0;
+        // // Set direction based on pressed buttons
+        // if (this.buttons[0]) this.yDir++
+        // if (this.buttons[1]) this.xDir++
+        // if (this.buttons[2]) this.yDir--
+        // if (this.buttons[3]) this.xDir--
+        // // Set correct vector amplitude
+        // this.vectorAmp = this.setVectorAmplitude(); // 1 or 0.707
+        // // Update position from here
+        // this.x += (this.xDir * this.vectorAmp) * this.speed;
+        // this.y -= (this.yDir * this.vectorAmp) * this.speed;
+
+        // Update position using parent vector movement (old)
         // this.vectorMovement({
         //     xAng: this.xDir * this.vectorAmp,
         //     yAng: this.yDir * this.vectorAmp
         // })
-        // Update position from here
-        this.x += (this.xDir * this.vectorAmp) * this.speed;
-        this.y -= (this.yDir * this.vectorAmp) * this.speed;
+
+        // Always start with no angle
+        this.angle = 0;
+        // Evaluate directions
+        if (this.buttons[0]) this.angle = 1.570;
+        if (this.buttons[1]) this.angle = 6.283;
+        if (this.buttons[2]) this.angle = 4.712;
+        if (this.buttons[3]) this.angle = 3.141;
+        if (this.buttons[0] && this.buttons[1]) this.angle = .785;
+        if (this.buttons[1] && this.buttons[2]) this.angle = 5.497;
+        if (this.buttons[2] && this.buttons[3]) this.angle = 3.926;
+        if (this.buttons[0] && this.buttons[3]) this.angle = 2.356;
+        // This is just to stop moving if opposite directions are pressed (Can be omitted if space needed)
+        if (this.buttons[0] && this.buttons[2] || this.buttons[1] && this.buttons[3]) this.angle = 0;
+        // Set speed
+        this.speed = !this.angle ? 0 : 1.5;
+        // Move
+        this.vectorMovement(this.angle)
     }
-    setVectorAmplitude() {
-        // If diagonals then return 0.707, if not return 1
-        return this.buttons[0] && this.buttons[1] ||
-            this.buttons[1] && this.buttons[2] ||
-            this.buttons[2] && this.buttons[3] ||
-            this.buttons[3] && this.buttons[0] ? .707 : 1;
-    }
+    // setVectorAmplitude() {
+    //     // If diagonals then return 0.707, if not return 1
+    //     return this.buttons[0] && this.buttons[1] ||
+    //         this.buttons[1] && this.buttons[2] ||
+    //         this.buttons[2] && this.buttons[3] ||
+    //         this.buttons[3] && this.buttons[0] ? .707 : 1;
+    // }
     fixOutOfBounds() {
         if (this.hitbox[2] < 0) this.y = this.yMargin - this.yOffset;
         if (this.hitbox[1] > this.displayWidth) this.x = this.displayWidth - this.xMargin - this.xOffset;
@@ -160,15 +195,16 @@ class Player extends Entity {
 class PlayerBullet extends Entity {
     constructor(image) {
         super(image);
-        this.setupHitbox();
+        // this.setupHitbox(); // Omitted because it has to be called on reset
         this.speed = 6;
         this.deadBound = 'top';
     }
     reset1(custom) {
+        this.setupHitbox();
+        if (custom?.hitbox) this.setupHitbox(...custom.hitbox);
         this.x = custom.x + (custom.offset || 0);
         this.y = custom.y;
         this.rotation = (custom.rotation + 1.5708) || 0;
-        // By default they move up
         this.angle = custom.angle || 1.5708;
     }
     updateData() {
@@ -182,14 +218,20 @@ class PlayerBullet extends Entity {
 // ENEMIES
 //////////////////////////
 
-class Enemy extends Entity {
-    constructor(image) {
+class AccessToPlayer extends Entity {
+    constructor(image){
         super(image)
-        this.explosionData = function() {return {qty: 9, options: {x:this.x, y:this.y}}};
         // Taken from global: Used for Enemy and EnemyBullet to follow player
         // NOTE: NO sirve llamar a X y a Y individualmente. Hay que tener acceso
         // al objeto entero para que no se haga shallow copy de sus propiedades.
         this.player = pool.type.Player[0];
+    }
+}
+
+class Enemy extends AccessToPlayer {
+    constructor(image) {
+        super(image)
+        this.explosionData = function() {return {qty: 9, options: {x:this.x, y:this.y}}};
         // Taken from global: For accurate movement of land enemies by using bg's speed
         this.stage = stage;
     }
@@ -269,7 +311,6 @@ class SinePop extends Enemy {
         this.y += 0.5
     }
 }
-// MAYBE CAN SHARE MOVEMENT
 class Sniper extends Enemy {
     constructor(image) {
         super(image)
@@ -346,9 +387,11 @@ class Assaulter extends Enemy {
         this.timerCount(100);
         if (this.timers[0] < 25)    this.speed -= .1;
         if (this.timers[0] === 40)  this.shot(10, 1);
-        if (this.timers[0] === 80)  this.angle = M.atan2(this.y - this.player.y, this.player.x - this.x);
+        if (this.timers[0] === 80)  {
+            this.shot(3, 1.5, 'auto', 20);
+            this.angle = M.atan2(this.y - this.player.y, this.player.x - this.x);
+        }
         if (this.timers[0] > 80)    this.speed += .02;
-        if (this.timers[0] === 99)  this.shot(3, 1.5, 'auto', 20);
     }
     updatePos() {this.vectorMovement()}
 }
@@ -358,32 +401,96 @@ class Assaulter extends Enemy {
 //////////////////////////
 
 // Particles doesn't have a hitbox
-class Particle extends Entity {
-    constructor(image) {
-        super(image)
-    }
+class Particle extends AccessToPlayer {
+    // constructor(){
+    //     super()
+    //     this.deadBound = 'bottom';
+    // }
     reset1(custom) {
         this.x = custom?.x;
         this.y = custom?.y;
-        this.scale = 4;
+        this.scale = custom?.scale || 4;
         this.speed = custom?.speed || 3;
         this.subSpdRange = custom?.subSpdRange || [1, 2];
-        // Set random direction:
-        this.angle = this.math.toRadians(this.math.randomBetween(1, 360));
+        // Set random angle:
+        this.angle = custom?.angle || this.math.toRadians(this.math.randomBetween(1, 360));
         // Randomize rotation direction
         this.rndDir = this.math.randomBetween(0,1)?-1:1;
         // Random color
         this.colors = custom?.colors || ['#f61','#fd7','#ff9','#feb','#ffc','#ffe'];
         this.rndColor = this.colors[this.math.randomBetween(0,this.colors.length-1)];
+        this.beheavior = custom?.beheavior || 1;
     }
     updateData() {
-        // this.scale-=this.math.randomBetween(1,2);
-        this.scale-=.2;
-        this.opacity-= 5;
         this.rotation += .08 * this.rndDir; // 5 degree in a random orientation
+        this.opacity-= 5;
+        // Call different beheaviors at the end
+        this[`beheavior${this.beheavior}`]()
+    }
+    beheavior1(){
+        this.scale-=.2;
         this.speed -= this.math.randomBetween(...this.subSpdRange) / 10
-        // If invisible, bye
+        // If small enough, bye
         if (this.scale <= 0) this.hp = 0;
     }
+    beheavior2(){
+        // Follow player continuosly
+        this.x = this.player.x;
+        this.y = this.player.y;
+        this.scale+=4
+        // If invisible, bye
+        if (this.opacity <= 0) this.hp = 0;
+    }
     updatePos() {this.vectorMovement()}
+}
+
+class Item extends Entity {
+    constructor(image) {
+        super(image)
+        this.setupHitbox();
+        this.colors = ['#9ff','#aff','#bff','#dff','#eff'];
+        this.explosionData = function() {
+            return {
+                qty: 30, 
+                options: {
+                    x:this.x, 
+                    y:this.y,
+                    colors: this.colors,
+                }
+            }
+        };
+        this.deadBound = 'bottom';
+        this.speed = 1;
+        this.angle = this.math.toRadians(-90);
+    }
+    reset1(custom) {
+        this.x = custom?.x || this.displayWidth / 2;
+        this.y = custom?.y || -this.height / 2;
+        this.ySpd = 3;
+        this.scale = 0;
+    }
+    updateData(){
+        if (this.scale < 1) this.scale+= 10/100;
+        // One every other iteration will spawn a particle
+        if (this.timers[0]%2 === 0)
+        this.spawnParticles({
+            qty: 1, 
+            options: {
+                x:this.x, 
+                y:this.y,
+                colors: this.colors,
+                speed: 2.5,
+                scale: 3.5,
+                angle: this.math.toRadians(this.math.randomBetween(0, 180))
+            }
+        })
+        // Use this timer yez yez
+        this.timerCount(999)
+    }
+    updatePos() {
+        this.y -= this.ySpd;
+        if (this.ySpd >= 0) this.ySpd -= 0.1
+        if (this.ySpd < 0) this.ySpd -= 0.02
+        this.vectorMovement();
+    }
 }

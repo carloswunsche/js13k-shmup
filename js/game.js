@@ -7,10 +7,11 @@ class Game {
         // Layers Guide
         // 1=EnemyLand, 2=EnemyAir, 3=Particle, 4=pBullet, 5=Player, 6=eBullet, 7=Hud
         // Change variable name to this.layers
-        this.objects = new Map(Object.entries({1:[],2:[],3:[],4:[],5:[],6:[],7:[]}));
+        this.objects = new Map(Object.entries({1:[],2:[],goodies:[],3:[],4:[],5:[],6:[],7:[]}));
         this.queuedFns = [];
         this.resetCounter = 0;
         this.sfxFlags = {};
+        this.stopFlag;
     }
     needs(customMath, stage, pool, input, displayHeight, audioPlayer, initFade, updateFade){
         // Custom math functions
@@ -43,7 +44,9 @@ class Game {
         this.input.updateButtons();
 
         // Current level events
-        this.stage.events[this.iteration]();
+        this.stopFlag = this.stage.events[this.iteration]();
+        // If an events returns a reset flag, abort update (fixes bug of player dying)
+        if (this.stopFlag == 'stopGameUpdate') {this.stopFlag = 0; return}
 
         // Update Frame Counter
         this.iteration++;
@@ -62,6 +65,9 @@ class Game {
 
         // Test for collisions between Player and EnemyBullet
         this.testCollisionPlayer();
+
+        // Test for collisions between Player and Items
+        this.testCollisionItem();
 
         // Remove entities from layer if hp <= 0 and call kill method on them
         this.removeDeadEntities();
@@ -143,20 +149,46 @@ class Game {
         let player = this.objects.get('5')[0];
         ['6', '2'].forEach(layer => {
             this.objects.get(layer).forEach(foe => {
-                if (foe.hp > 0 && player?.hp > 0) { 
+                if (foe.hp > 0 && player?.hp > 0 && !player?.invul) { 
                     // Si hay colision...
                     if (foe.hitbox[0] < player.hitbox[1] &&
                         player.hitbox[0] < foe.hitbox[1] &&
                         foe.hitbox[2] < player.hitbox[3] &&
                         player.hitbox[2] < foe.hitbox[3]) {
-                        // Both will be killed
-                        foe.hp = 0; player.hp = 0;
+                        // Both lose all hp
+                        foe.hp=0; player.hp=0;
                         // Explosion flag for both
                         foe.explode = true; player.explode = true;
                         return;
                     }
                 }
             })
+        })
+    }
+    testCollisionItem(){
+        if (!this.objects.get('goodies')[0]) return;
+
+        let player = this.objects.get('5')[0];
+        this.objects.get('goodies').forEach(item => {
+            if (item.hp > 0) {
+                if (item.hitbox[0] < player.hitbox[1] &&
+                    player.hitbox[0] < item.hitbox[1] &&
+                    item.hitbox[2] < player.hitbox[3] &&
+                    player.hitbox[2] < item.hitbox[3]) {
+                        // Item dies and asks for an explosion
+                        item.hp = 0; item.explode = true;
+                        // Create a single particle with beheavior 2
+                        item.pool.free('Particle','3',{
+                            x:player.x, 
+                            y:player.y,
+                            colors: item.colors,
+                            beheavior: 2
+                        });
+                        // Sound on touch
+                        this.sfxFlags.item = true;
+                        return;
+                }
+            }
         })
     }
     // Entities update function
@@ -180,6 +212,7 @@ class Game {
         // Test for out of bounds (Player only)
         if (entity instanceof Player) {
             entity.fixOutOfBounds();
+            // Next can be disabled if performance or space needed
             entity.updateHitbox();
         };
         // Fix opacity if under 0
@@ -187,50 +220,87 @@ class Game {
     }
     killIfOutOfBounds(entity){
         let where = entity.deadBound;
-
-        // Player bullets
-        if (where === 'top') {
-            if (entity.y <= 0) entity.hp = 0;
-            return;
+        switch (where) {
+            // Player bullets
+            case 'top': 
+                if (entity.y <= 0) entity.hp = 0; 
+                break;
+            // Most enemies
+            case 'bottom':
+                if (entity.y >= entity.displayHeight + entity.height / 2) entity.hp = 0;
+                break;
+            // Enemy Bullets
+            case 'any':
+                if (entity.y >= entity.displayHeight + entity.height / 2 ||
+                    entity.y <= 0 - entity.height / 2                    ||
+                    entity.x >= entity.displayWidth + entity.width / 2   ||
+                    entity.x <= 0 - entity.width / 2) {
+                        entity.hp = 0;
+                }
+                break;
+            // Some enemies
+            case 'left':
+                if (entity.x <= 0 - entity.width / 2) entity.hp = 0;
+                break;
+            // Some enemies
+            case 'right':
+                if (entity.x >= entity.displayWidth + entity.width / 2) entity.hp = 0;
+                break;
         }
-
-        // Most enemies
-        if (where === 'bottom'){
-            if (entity.y >= entity.displayHeight + entity.height / 2) entity.hp = 0;
-            return;
-        } 
-            
-        // Enemy Bullets
-        if (where === 'any') {
-            if (entity.y >= entity.displayHeight + entity.height / 2 ||
-                entity.y <= 0 - entity.height / 2                    ||
-                entity.x >= entity.displayWidth + entity.width / 2   ||
-                entity.x <= 0 - entity.width / 2) {
-                    entity.hp = 0;
-            }
-            return;
-        }
-        // Some enemies
-        if (where === 'left') {
-            if (entity.x <= 0 - entity.width / 2) entity.hp = 0; 
-            return;
-        }
-        // Some enemies (also this has no guard clause because end of function)
-        if (where === 'right' && entity.x >= entity.displayWidth + entity.width / 2) entity.hp = 0;
+        // // Player bullets
+        // if (where === 'top') {
+        //     if (entity.y <= 0) entity.hp = 0;
+        //     return;
+        // }
+        // // Most enemies
+        // if (where === 'bottom'){
+        //     if (entity.y >= entity.displayHeight + entity.height / 2) entity.hp = 0;
+        //     return;
+        // } 
+        // // Enemy Bullets
+        // if (where === 'any') {
+        //     if (entity.y >= entity.displayHeight + entity.height / 2 ||
+        //         entity.y <= 0 - entity.height / 2                    ||
+        //         entity.x >= entity.displayWidth + entity.width / 2   ||
+        //         entity.x <= 0 - entity.width / 2) {
+        //             entity.hp = 0;
+        //     }
+        //     return;
+        // }
+        // // Some enemies
+        // if (where === 'left') {
+        //     if (entity.x <= 0 - entity.width / 2) entity.hp = 0; 
+        //     return;
+        // }
+        // // Some enemies (also this has no guard clause because end of function)
+        // if (where === 'right' && entity.x >= entity.displayWidth + entity.width / 2) entity.hp = 0;
     }
     // Killing entities
     removeDeadEntities(){
         for (const [_, arr] of this.objects){
             for (let i = arr.length-1; i >= 0; i--) {
                 // Si no tiene hp y no tiene flag dying activada, kill.
-                // if (arr[i].hp <= 0 && !arr[i].dying) arr[i].kill();
                 if (arr[i].hp <= 0 && !arr[i].dying) this.explodeAndFree(arr[i]);
                 // Tras eso, todos los que hayan quedado free, sacarlos del array.
-                if (arr[i].free) arr.splice(i,1);
+                // Si tenian un item, liberarlo justo antes sacarlo del array
+                if (arr[i].free) {
+                    this.giveItem(arr[i]);
+                    arr.splice(i,1);
+                }
+
+
             };
         }
     }
+    giveItem(entity){
+        if (!entity.carryItem) return;
+        // If enemy was carrying an item then spawn it
+        entity.pool.free('Item', 'goodies', {x: entity.x, y: entity.y});
+    }
     explodeAndFree(entity){
+        // If it has any last words... this is the time before saying goodbye
+        // if (entity.beforeDying) entity.beforeDying();
+
         // Enemies with flag delayFree which want an explosion will not die/explode instantly...
         if (entity.explode && entity.delayedFree) {
             // Start dying process right away

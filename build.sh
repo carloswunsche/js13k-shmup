@@ -1,8 +1,29 @@
 # Run using ./build.sh
 
-# Remove images directory (build/i) and its contents
+# Remove build images directory (build/i) and its contents
 rm -r build/i
 mkdir build/i
+
+# Copy source png's from /source_images into /i
+cp source_images/sprites.png i/
+cp source_images/bg.png i/
+
+# Compress webp images from /source_images and save them into /i
+# cwebp -lossless -z 9 -quiet sprites.webp  -o sprites.webp
+# cwebp -lossless -z 9 -quiet bg.webp       -o bg.webp
+
+
+cd i
+# Color quantization (+dither means NO dithering)
+magick sprites.png  +dither -colors 9 sprites.png
+magick bg.png       +dither -colors 5 bg.png
+# Convert from png to webp
+cwebp -lossless -z 9 -quiet sprites.png  -o sprites.webp
+cwebp -lossless -z 9 -quiet bg.png       -o bg.webp
+# Remove png's
+rm sprites.png
+rm bg.png
+cd ..
 
 # Concat javascript files into one file
 cat \
@@ -48,6 +69,7 @@ cd ..
 # Get file sizes before cleaning
 gamesize=$(ls -l build/index.html | awk '{print $5}')
 imagessize=$(du -sb build/i | awk '{print $1}')
+sprites=$(ls -l build/i/sprites.webp | awk '{print $5}')
 zippedsize=$(ls -l build/final.tar.gz | awk '{print $5}')
 
 # Clean
@@ -60,6 +82,7 @@ rm build/css_ready.html
 # Display game logic and tar.gz sizes
 echo "Game size: $gamesize bytes"
 echo "Images size: $imagessize bytes"
+echo "Sprites only size: $sprites bytes"
 echo "GZip size: $zippedsize bytes"
 
 
@@ -78,7 +101,7 @@ echo "GZip size: $zippedsize bytes"
 # -7890 (simplified sintax on collisions a bit)
 # -7861 (unused functions on stage.js)
 # -7853 (simplified code on setup.js)
-# -7795 (I can't remember...)
+# -7795
 # -7764 (Some more shrinking here and there)
 # +7816 (new particle system)
 # -7802 (some optimizations)
@@ -91,3 +114,8 @@ echo "GZip size: $zippedsize bytes"
 # -8111 (cleaning entities.js)
 # -8087 (using timers for player shot)
 # +8118 (standarizing vector movement)
+# +8147
+# +8226
+# +8291 (better pattern 1, comfortable method of reducing image color, and lighter player movement) 
+
+# (using cwebp to compress images from the command line)

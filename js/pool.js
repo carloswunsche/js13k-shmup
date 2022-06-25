@@ -6,12 +6,26 @@ class Pool {
 	constructor(){
 		// Where all pools will be stored:
 		this.type = {};
+		this.resources = [
+			[1,		Player],
+			[18,	PlayerBullet],
+			[35,	EnemyBullet],
+			[4, 	SinePop],
+			[6, 	Sniper],
+			[2, 	Fatty],
+			[4, 	Tank],
+			[2, 	Assaulter],
+			[1, 	Item],
+			[120,	Particle]
+		]
 	}
 	needs(assets, gameObjects){
 		// Used only when filling pools
 		this._assets = assets;
 		// Used to push free objects into game.objects
 		this.gameObjects = gameObjects;
+		// Fill pools
+		this.resources.forEach(entityArr => this.fillWith(entityArr))
 	}
 	fillWith([size, objClass]){
 		this.type[objClass.name] = new Array(size).fill(0).map(() => 
