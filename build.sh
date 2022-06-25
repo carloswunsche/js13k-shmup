@@ -117,5 +117,4 @@ echo "GZip size: $zippedsize bytes"
 # +8147
 # +8226
 # +8291 (better pattern 1, comfortable method of reducing image color, and lighter player movement) 
-
-# (using cwebp to compress images from the command line)
+# +8549 (more particles logic and item/power up system)
