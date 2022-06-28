@@ -41,12 +41,12 @@ class Game {
         this.enemiesGroup       = [this.objects.get('E_Air'), this.objects.get('E_Land')];
 
         // Fade stuff
-        this.fade = {opacity: 100, color: '#000', dir: 'fadeOut', speed: 1};
+        this.fade = {opacity: 100, color: '#000', dir: 'fadeOut', speed: 1, layer:'top'};
     }
     updateFade(fade){
         switch (fade.dir) {
-            case 'fadeOut': if(fade.opacity > -1) fade.opacity-=fade.speed;break;
-            case 'fadeIn': if(fade.opacity < 101) fade.opacity+=fade.speed;break;
+            case 'fadeOut': if(fade.opacity >= 0) fade.opacity-=fade.speed;break;
+            case 'fadeIn': if(fade.opacity <= 100) fade.opacity+=fade.speed;break;
         }
         if (fade.opacity == 101 || fade.opacity == -1) fade.dir = 'none';
     }

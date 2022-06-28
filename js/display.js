@@ -45,12 +45,15 @@ class Display {
         // Render Background
         this.renderBackground(bg);
 
-        // Render Game Objects
-        this.renderGameObjects(gameObjects);
-
-        // Fade
-        if (fade.opacity > -1 && fade.opacity < 101) this.renderFade(fade);
-
+        if (fade.layer === 'top') {
+            this.renderGameObjects(gameObjects);
+            this.renderFade(fade);
+        } else {
+            // Reverse order
+            this.renderFade(fade);
+            this.renderGameObjects(gameObjects);
+        }
+document.get
         // Hitboxes
         if (this.hitboxes) this.renderHitboxes(gameObjects);
     }
@@ -141,6 +144,9 @@ class Display {
     //     if (this.fade.value === 0 || this.fade.value === 100) this.initFade('none', 0)
     // }
     renderFade (fade) {
+        // Immediate return if opacity is outside range
+        if (fade.opacity < 0 || fade.opacity > 100) return;
+
         this.ctx.globalAlpha = fade.opacity / 100; // 1.0 ~ 0.0
         this.ctx.fillStyle = fade.color;
         this.ctx.fillRect(0, 0, this.c.width, this.c.height);

@@ -130,9 +130,9 @@ class Stage {
 		a[2200]	=()=> this.p.free('Tank', 	{x:95, carryItem: true});
 		a[2220]	=()=> this.p.free('Tank', 	{x:117});
 
-		a[2300]	=()=> {game.fade.dir = 'fadeIn'; game.fade.speed = 2;}
+		a[2300]	=()=> {game.fade.dir='fadeIn'; game.fade.speed=2; game.fade.layer=0;}
 		a[2350]	=()=> {this.bg.palette = 11; game.fade.dir = 'fadeOut';}
-		a[2400]	=()=> game.fade.speed = 1;
+		a[2400]	=()=> {game.fade.speed = 1; game.fade.layer='top';}
 		
 		// a[]	=()=>
 
