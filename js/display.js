@@ -21,7 +21,7 @@ class Display {
             this.setScaleAndResize();
             this.pixelatedLook(this.ctx);
             // Unnecesary Also deactivate for best performance
-            this.render(stage.bg, game.objects);
+            this.render(stage.bg, game.objects, game.fade);
         });
         // this.txt = '';
     }
@@ -46,6 +46,7 @@ class Display {
         this.renderBackground(bg);
 
         if (fade.layer === 'top') {
+            // Regular order
             this.renderGameObjects(gameObjects);
             this.renderFade(fade);
         } else {
@@ -97,8 +98,8 @@ document.get
                 this.ctx.rotate(entity.rotation);
 
 
-                if (entity instanceof Particle) {
-                    this.ctx.fillStyle = entity.rndColor;
+                if (entity instanceof Particle || entity instanceof EnemyBullet) {
+                    this.ctx.fillStyle = entity.currentColor || '#fff';
                     this.ctx.fillRect(
                         -(entity.scale * this.scale) / 2, 
                         -(entity.scale * this.scale) / 2,

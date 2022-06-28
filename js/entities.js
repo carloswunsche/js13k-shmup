@@ -7,8 +7,8 @@ class Entity {
     constructor(image) {
         this.free = true;
         this.image = image;
-        this.width = image?.sWidth;
-        this.height = image?.height;
+        this.width = image?.sWidth || 1;
+        this.height = image?.height || 1;
         this.hitbox = new Array(4);
         this.timers = new Array(9);
         // Taken from global: Math object
@@ -97,7 +97,7 @@ class Entity {
 class Player extends Entity {
     constructor(image) {
         super(image);
-        this.palette = 9;
+        this.palette = 7;
         this.layer = 'Players'
         this.setupHitbox(2, 2, 0, 2);
         this.explosionData = function() {return {qty: 40, options: {x:this.x, y:this.y,speed: 4}}};
@@ -169,11 +169,11 @@ class Player extends Entity {
 class PlayerBullet extends Entity {
     constructor(image) {
         super(image);
+        this.palette = 1;
         this.layer = 'pBullets'
         // this.setupHitbox(); // Omitted because it has to be called on reset
         this.speed = 6;
         this.deadBound = 'top';
-        this.palette = 3;
     }
     reset1(custom) {
         this.setupHitbox();
@@ -247,14 +247,18 @@ class Enemy extends AccessToPlayer {
     }
 }
 class EnemyBullet extends Enemy {
-    constructor(image) {
-        super(image);
+    constructor() {
+        super()
         this.layer = 'eBullets'
         this.setupHitbox(1, 1);
         this.explosionData = () => false;
         this.deadBound = 'any';
+        this.currentColor = '#ff7';
     }
     reset2(custom) {
+        // Necessary because it's using particle drawing system now
+        this.scale = 3;
+
         // Check between mode 'auto' (towards Player) and regular degrees
         if (custom?.angle === 'auto')
              this.angle = M.atan2(this.y - this.player.y, this.player.x - this.x);
@@ -263,18 +267,16 @@ class EnemyBullet extends Enemy {
         this.angle += this.math.toRadians(custom?.add) || 0;
     }
     updateData() {
-        // Randomize palette
-        this.palette = this.math.randomBetween(0,2)
         // Rotate
-        this.rotation += this.math.toRadians(9)
+        this.rotation += this.math.toRadians(10)
     }
 }
 class SinePop extends Enemy {
     constructor(image) {
         super(image)
+        this.palette = 6
         this.setupHitbox(this.height/2,this.height/2-1,0,-1);
         this.deadBound = 'bottom';
-        this.palette = 8
     }
     updatePos() {
         // Cosine movement
@@ -286,7 +288,7 @@ class SinePop extends Enemy {
 class Sniper extends Enemy {
     constructor(image) {
         super(image)
-        this.palette = 2;
+        this.palette = 0;
         this.setupHitbox(this.width/2-1, this.height/2-1);
         this.deadBound = 'bottom';
     }
@@ -315,8 +317,8 @@ class Sniper extends Enemy {
 class Fatty extends Enemy {
     constructor(image) {
         super(image)
+        this.palette = 5;
         this.setupHitbox(5, 5);
-        this.palette = 7;
     }
     reset2(custom) {
         this.hp = 4;
@@ -341,10 +343,10 @@ class Fatty extends Enemy {
 class Tank extends Enemy {
     constructor(image) {
         super(image)
-        this.layer = 'E_Land'
-        this.palette = 8;
+        this.palette = 6;
         this.setupHitbox(this.width / 2, this.height / 2-2);
         this.deadBound = 'bottom';
+        this.layer = 'E_Land'
     }
     reset2(){
         this.hp = 3;
@@ -354,7 +356,7 @@ class Tank extends Enemy {
 class Assaulter extends Enemy {
     constructor(image) {
         super(image)
-        this.palette = 6;
+        this.palette = 4;
         this.setupHitbox(10, 10);
         this.deadBound = 'any';
         this.delayedFree = true;
@@ -379,7 +381,7 @@ class Assaulter extends Enemy {
 class Boat extends Enemy {
     constructor(image) {
         super(image)
-        this.palette = 3;
+        this.palette = 1;
         this.setupHitbox();
         this.deadBound = 'bottom';
     }
@@ -403,11 +405,8 @@ class Boat extends Enemy {
 class Particle extends AccessToPlayer {
     constructor(){
         super()
-        this.layer = 'Parts'
-        // Necessary for deadBound to work properly:
-        this.width = this.height = 1;
         this.deadBound = 'any';
-
+        this.layer = 'Parts'
     }
     reset1(custom) {
         this.x = custom?.x;
@@ -421,7 +420,7 @@ class Particle extends AccessToPlayer {
         this.rndDir = this.math.randomBetween(0,1)?-1:1;
         // Random color
         this.colors = custom?.colors || ['#f61','#fd7','#ff9','#feb','#ffc','#ffe'];
-        this.rndColor = this.colors[this.math.randomBetween(0,this.colors.length-1)];
+        this.currentColor = this.colors[this.math.randomBetween(0,this.colors.length-1)];
         this.beheavior = custom?.beheavior || 1;
     }
     updateData() {
@@ -450,8 +449,9 @@ class Particle extends AccessToPlayer {
 class Item extends Entity {
     constructor(image) {
         super(image)
-        this.layer = 'Pickups';
         this.setupHitbox();
+        this.deadBound = 'bottom';
+        this.layer = 'Pickups';
         this.colors = ['#9ff','#aff','#bff','#dff','#eff'];
         this.explosionData = function() {
             return {
@@ -463,7 +463,6 @@ class Item extends Entity {
                 }
             }
         };
-        this.deadBound = 'bottom';
         this.speed = 1;
         this.angle = this.math.toRadians(-90);
     }
@@ -474,7 +473,7 @@ class Item extends Entity {
         this.scale = 0;
     }
     updateData(){
-        this.palette = this.math.randomBetween(3, 5)
+        this.palette = this.math.randomBetween(1, 3)
         if (this.scale < 1) this.scale+= 10/100;
         // One every other iteration will spawn a particle
         if (this.timers[0]%2 === 0)

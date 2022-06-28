@@ -74,7 +74,7 @@ const debug = {
 	},
 	toggleHitboxes(){
 		display.hitboxes = display.hitboxes ? undefined : 'hitboxes';
-		display.render(stage.bg, game.objects);
+		display.render(stage.bg, game.objects, game.fade);
 	},
 	enginePause(){
 		engine.pause();

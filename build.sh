@@ -8,7 +8,6 @@ mkdir build/i
 cp source_images/sprites-3shades-indexed.png  i/sprites.png
 cp source_images/bg-5colors.png      i/bg.png
 
-
 cd i
 # Convert from PNG to WEBP with loseless compression and maximum effort
 cwebp -lossless -z 9 -quiet sprites.png  -o sprites.webp
@@ -132,3 +131,6 @@ echo "GZip size: $zippedsize bytes"
 # -8547 = only 2 background palettes more...
 # +8580 = better collision system...
 # -8573 = better pool/layer comunication
+# +8742 = new and better fading system with a fair amount of options
+# -8729 = new eBullet without sprite, renders the same as particles
+# -8719 = wow y eso q no toque mucho

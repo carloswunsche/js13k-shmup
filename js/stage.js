@@ -53,10 +53,10 @@ class Stage {
     }
     getEventsFn() {
 		let a = new Array(5**6).fill(f=>f); // 15625 empty functions
-		a[0]  	=()=>{
+		a[0] =()=>{
 			this.p.free('Player', 'Players'); 
 			this.bg.speed = .5
-			this.bg.palette = 10;
+			this.bg.palette = 8;
 		}
 		// a[1]	=()=> this.p.free('Item', 'Pickups', {y: 20});
 		// a[1]	=()=> this.p.free('Assaulter', 'E_Air', {x: 30});
@@ -131,7 +131,7 @@ class Stage {
 		a[2220]	=()=> this.p.free('Tank', 	{x:117});
 
 		a[2300]	=()=> {game.fade.dir='fadeIn'; game.fade.speed=2; game.fade.layer=0;}
-		a[2350]	=()=> {this.bg.palette = 11; game.fade.dir = 'fadeOut';}
+		a[2350]	=()=> {this.bg.palette = 9; game.fade.dir = 'fadeOut';}
 		a[2400]	=()=> {game.fade.speed = 1; game.fade.layer='top';}
 		
 		// a[]	=()=>

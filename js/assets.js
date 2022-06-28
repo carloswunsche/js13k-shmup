@@ -15,70 +15,70 @@ class Assets {
 			{n: 'SinePop',		w:6, h:8 },
 			{n: 'Item',			w:4, h:8},
 			{n: 'PlayerBullet',	w:1, h:7 }, 
-			{n: 'EnemyBullet',	w:2, h:4 },
+			// {n: 'EnemyBullet',	w:2, h:3 },
 			// Always background at the end
 			{n: 'bg', 			w:176,h:8}
 		];
 
 		this.palettes = {
-			0: { // Toxic purple
-				high:	[187,0,187],
-				mid:	[127,0,239],
-				shad: 	[0,0,167],
-			},
-			1: { // Bubblegum Pink
-				high:	[250, 115, 179],
-				mid:	[227, 87, 0],
-				shad: 	[139, 0, 115]
-			},
-			2: { // Fuchsia
+			// 0: { // Toxic purple
+			// 	high:	[187,0,187],
+			// 	mid:	[127,0,239],
+			// 	shad: 	[0,0,167],
+			// },
+			// 1: { // Bubblegum Pink
+			// 	high:	[250, 115, 179],
+			// 	mid:	[227, 87, 0],
+			// 	shad: 	[139, 0, 115]
+			// },
+			0: { // Fuchsia
 				high:	[243, 119, 250],
 				mid:	[129, 0, 115],
 				shad: 	[35, 23, 139]
 			},
-			3: { // Blue
+			1: { // Blue
 				high:	[59, 187, 250],
 				mid:	[0, 127, 135],
 				shad: 	[0, 0, 167]
 			},
-			4: { // Labirynth Water
+			2: { // Labirynth Water
 				high:	[59, 187, 250],
 				mid:	[0, 127, 135],
 				shad: 	[79, 79, 79]
 			},
-			5: { // Pale green 2
+			3: { // Pale green 2
 				high:	[155, 250, 239],
 				mid:	[0, 127, 135],
 				shad: 	[0, 59, 19]
 			},
-			6: { // Sonikku mania
+			4: { // Sonikku mania
 				high:	[239,187,59],
 				mid:	[199,70,95],
 				shad: 	[31,55,235]
 			},
-			7: { // Lively Green
+			5: { // Lively Green
 				high:	[127,207,15],
 				mid:	[0,147,0],
 				shad:	[79,79,79]
 			},
-			8: { // Orange
+			6: { // Orange
 				high:	[250, 151, 55],
 				mid:	[199, 75, 11],
 				shad: 	[23, 59, 91]
 			},
-			9: { // Player palette
+			7: { // Player palette
 				high:	[254, 254, 254],
 				mid:	[250, 178, 0],
 				shad: 	[0, 78, 180]
 			},
-			10: { // BG Palette 1
+			8: { // BG Palette 1
 				xtra2:	[120,180,83],		//highlights
 				xtra1:	[72, 149, 81],		//pasto
 				high:	[180,172,172],		//barro
 				mid:	[46, 106, 189],		//agua
 				shad: 	[64, 64, 88]		//grone
 			},
-			11: { // BG Palette 2
+			9: { // BG Palette 2
 				xtra2:	[51, 74, 117],		//highlights
 				xtra1:	[53, 46, 95],		//pasto
 				high:	[64, 81, 65],		//barro
