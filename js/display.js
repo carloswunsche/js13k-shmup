@@ -1,5 +1,5 @@
 //////////////////////////
-// DISPLAY
+// DISPLAY (falta agregar los fades)
 //////////////////////////
 
 // const canvasTxt = window.canvasTxt.default
@@ -7,22 +7,19 @@
 // canvasTxt.vAlign = 'top';
 
 class Display {
-    constructor(width, height, tileSize, scanlines=0, hitboxes=0) {
+    constructor(width, height, tileSize) {
         this.width = width;
         this.height = height;
-        this.canvas = document.querySelector('canvas');
-        this.ctx = this.canvas.getContext('2d');
+        this.c = document.querySelector('canvas');
+        this.ctx = this.c.getContext('2d');
         this.tileSize = tileSize;
-        // this.scanlines = scanlines;
-        this.hitboxes = hitboxes;
-        this.fade = {value: 0, mode: 'none', speed: 1};
-        // Used for compressed pattern array
-        this.currentTile;
+        this.hitboxes = 0;
+        // this.fade = {value: 0, mode: 'none', speed: 1};
         this.setScaleAndResize();
-        this.pixelatedLook();
+        this.pixelatedLook(this.ctx);
         window.addEventListener('resize', ()=>{
             this.setScaleAndResize();
-            this.pixelatedLook();
+            this.pixelatedLook(this.ctx);
             // Unnecesary Also deactivate for best performance
             this.render(stage.bg, game.objects);
         });
@@ -36,14 +33,14 @@ class Display {
         // Unnecesary remove forced scaling
         if (forced) this.scale = forced;
         // Resize
-        this.canvas.width = this.scale * this.width;
-        this.canvas.height = this.scale * this.height;
+        this.c.width = this.scale * this.width;
+        this.c.height = this.scale * this.height;
 
-        this.p__tileTimesScaledCanvas = this.tileSize * this.scale;
+        // this.tileTimesScaledCanvas = this.tileSize * this.scale;
     }
-    render (bg, gameObjects) {
+    render (bg, gameObjects, fade) {
         // To clear the canvas
-        // this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // this.ctx.clearRect(0, 0, this.c.width, this.c.height);
 
         // Render Background
         this.renderBackground(bg);
@@ -52,23 +49,30 @@ class Display {
         this.renderGameObjects(gameObjects);
 
         // Fade
-        if (this.fade.value > 0) this.renderFade();
+        if (fade.opacity > -1 && fade.opacity < 101) this.renderFade(fade);
 
         // Hitboxes
         if (this.hitboxes) this.renderHitboxes(gameObjects);
     }
     renderBackground (bg) {
+        // Only used if decompression of bigPattern is not activated
+        // let currentTile;
         let i = 0;
         bg.rows.forEach((_, y) => {
-            let p__destY = bg.rows[y] * this.scale;
+            let destY = bg.rows[y] * this.scale;
             for (let x = 0; x < this.width; x += this.tileSize) {
                 // Para no renderizar al pedo el row que queda out of bounds (arriba)
                 if (bg.rows[y] <= -this.tileSize) {i++; continue;}
                 // Update scanned tile if not undefined (void 0 === undefined but less characters lol)
-                if(bg.pattern[i] != void 0) this.currentTile = bg.pattern[i];
+
+
+                // Draw: Only used if decompression of bigPattern is not activated
+                // if(bg.pattern[i] != void 0) currentTile = bg.pattern[i];
+                // this.ctx.drawImage(bg.image,currentTile*8+(304*0),0,8,8,x*this.scale,p__destY,8*this.scale,8*this.scale);
+
+                
                 // Draw
-                // this.drawBg(bg, x, p__destY);
-                this.ctx.drawImage(bg.image,this.currentTile*8,0,8,8,x*this.scale,p__destY,8*this.scale,8*this.scale);
+                this.ctx.drawImage(bg.image,bg.pattern[i]*8+(176*bg.palette),0,8,8,x*this.scale,destY,8*this.scale,8*this.scale);
                 // Update pattern index
                 i++;
             };
@@ -81,13 +85,13 @@ class Display {
                 this.ctx.save();
 
                 // Set object's opacity
-                if (entity.opacity < 100) this.ctx.globalAlpha = entity.opacity / 100;
+                this.ctx.globalAlpha = entity.opacity / 100;
 
                 // Translate canvas to render position
                 this.ctx.translate(entity.x * this.scale, entity.y * this.scale);
 
                 // Rotate
-                if (entity.rotation) this.ctx.rotate(entity.rotation);
+                this.ctx.rotate(entity.rotation);
 
 
                 if (entity instanceof Particle) {
@@ -105,17 +109,17 @@ class Display {
                     // Img
                     entity.image,
                     // Source x
-                    entity.image.width * entity.hitState,
+                    entity.image.sWidth * entity.palette,
                     // Source y
-                    0,
+                    entity.image.height * entity.hitState,
                     // Source width
-                    entity.image.width,
+                    entity.image.sWidth,
                     // Source height
                     entity.image.height,
                     // DestX (translate -50%), DestY (translate -50%), DestW, DestH
-                    -(entity.image?.width * entity.scale * this.scale) / 2, 
+                    -(entity.image?.sWidth * entity.scale * this.scale) / 2, 
                     -(entity.image?.height * entity.scale * this.scale) / 2,
-                    entity.image?.width * entity.scale * this.scale,
+                    entity.image?.sWidth * entity.scale * this.scale,
                     entity.image?.height * entity.scale * this.scale
                 );
 
@@ -125,20 +129,21 @@ class Display {
             })
         }
     }
-    initFade(mode, speed) {
-        this.fade.mode = mode;
-        this.fade.speed = speed;
-        if (mode === 'fromBlack') this.fade.value = 100;
-        if (mode === 'toBlack') this.fade.value = 0;
-    }
-    updateFade() {
-        if (this.fade.mode === 'fromBlack') this.fade.value -= this.fade.speed;
-        if (this.fade.mode === 'toBlack')   this.fade.value += this.fade.speed;
-        if (this.fade.value === 0 || this.fade.value === 100) this.initFade('none', 0)
-    }
-    renderFade () {
-        this.ctx.globalAlpha = this.fade.value / 100; // 1.0 ~ 0.0
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    // initFade(mode, speed) {
+    //     this.fade.mode = mode;
+    //     this.fade.speed = speed;
+    //     if (mode === 'fromBlack') this.fade.value = 100;
+    //     if (mode === 'toBlack') this.fade.value = 0;
+    // }
+    // updateFade() {
+    //     if (this.fade.mode === 'fromBlack') this.fade.value -= this.fade.speed;
+    //     if (this.fade.mode === 'toBlack')   this.fade.value += this.fade.speed;
+    //     if (this.fade.value === 0 || this.fade.value === 100) this.initFade('none', 0)
+    // }
+    renderFade (fade) {
+        this.ctx.globalAlpha = fade.opacity / 100; // 1.0 ~ 0.0
+        this.ctx.fillStyle = fade.color;
+        this.ctx.fillRect(0, 0, this.c.width, this.c.height);
         this.ctx.globalAlpha = 1; // Canvas globalAlpha fix
     }
     renderHitboxes(gameObjects) {
@@ -166,11 +171,11 @@ class Display {
         this.ctx.lineTo(x*this.scale, y*this.scale);
         this.ctx.stroke();
     }
-    pixelatedLook() {
+    pixelatedLook(x) {
         // Used if scaling is done through JS
-        this.ctx.mozImageSmoothingEnabled = 0;
-        this.ctx.webkitImageSmoothingEnabled = 0;
-        this.ctx.msImageSmoothingEnabled = 0;
-        this.ctx.imageSmoothingEnabled = 0;
+        x.mozImageSmoothingEnabled = 0;
+        x.webkitImageSmoothingEnabled = 0;
+        x.msImageSmoothingEnabled = 0;
+        x.imageSmoothingEnabled = 0;
     }
 };

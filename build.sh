@@ -5,27 +5,20 @@ rm -r build/i
 mkdir build/i
 
 # Copy source png's from /source_images into /i
-cp source_images/sprites.png i/
-cp source_images/bg.png i/
-
-# Compress webp images from /source_images and save them into /i
-# cwebp -lossless -z 9 -quiet sprites.webp  -o sprites.webp
-# cwebp -lossless -z 9 -quiet bg.webp       -o bg.webp
+cp source_images/sprites-3shades-indexed.png  i/sprites.png
+cp source_images/bg-5colors.png      i/bg.png
 
 
 cd i
-# Color quantization (+dither means NO dithering)
-magick sprites.png  +dither -colors 9 sprites.png
-magick bg.png       +dither -colors 5 bg.png
-# magick sprites.png  +dither -colorspace gray -posterize 4 sprites.png
-# magick bg.png       +dither -colorspace gray -posterize 2 bg.png
-# Convert from png to webp
+# Convert from PNG to WEBP with loseless compression and maximum effort
 cwebp -lossless -z 9 -quiet sprites.png  -o sprites.webp
 cwebp -lossless -z 9 -quiet bg.png       -o bg.webp
 # Remove png's
 rm sprites.png
 rm bg.png
 cd ..
+
+
 
 # Concat javascript files into one file
 cat \
@@ -47,7 +40,11 @@ cat \
 uglifyjs build/game.js -c drop_console=true --compress --mangle -o build/game.min.js
 
 # Roadroll JS
-roadroller -Zab32 -Zdy0 -Zlr1500 -Zmd50 -S0,1,2,3,6,7,13,21,50,57,173,458 build/game.min.js -o build/game.roadrolled.js
+# roadroller --max-memory 600 -Zab32 -Zdy0 -Zlr1500 -Zmd50 -S0,1,2,3,6,7,13,21,50,57,173,458 build/game.min.js -o build/game.roadrolled.js
+#####################################
+# Use the next one to SAVE a bit more
+#####################################
+roadroller --max-memory 600 build/game.min.js -o build/game.roadrolled.js
 
 # Uglify CSS
 uglifycss style.css --output build/style.min.css
@@ -60,8 +57,8 @@ sed -e '/GAME_SOURCE/{r build/game.roadrolled.js' -e 'd}' build/css_ready.html >
 
 # Copy assets (i) folder into build
 # cp -a i build/
-cp i/sprites.webp build/i
-cp i/bg.webp build/i
+cp i/sprites.webp   build/i/sprites.webp
+cp i/bg.webp        build/i/bg.webp
 
 # Build gzip of tar archive containing index.html and assets (i) folder
 cd build
@@ -69,9 +66,9 @@ tar -czf final.tar.gz index.html i
 cd ..
 
 # Get file sizes before cleaning
-gamesize=$(ls -l build/index.html | awk '{print $5}')
+minisize=$(ls -l build/game.min.js | awk '{print $5}')
+roadsize=$(ls -l build/game.roadrolled.js | awk '{print $5}')
 imagessize=$(du -sb build/i | awk '{print $1}')
-sprites=$(ls -l build/i/sprites.webp | awk '{print $5}')
 zippedsize=$(ls -l build/final.tar.gz | awk '{print $5}')
 
 # Clean
@@ -82,9 +79,9 @@ rm build/style.min.css
 rm build/css_ready.html
 
 # Display game logic and tar.gz sizes
-echo "Game size: $gamesize bytes"
+echo "Minified   js size: $minisize bytes"
+echo "Roadrolled js size: $roadsize bytes"
 echo "Images size: $imagessize bytes"
-echo "Sprites only size: $sprites bytes"
 echo "GZip size: $zippedsize bytes"
 
 
@@ -120,3 +117,18 @@ echo "GZip size: $zippedsize bytes"
 # +8226
 # +8291 (better pattern 1, comfortable method of reducing image color, and lighter player movement) 
 # +8549 (more particles logic and item/power up system)
+# +8706 (new palette system!)
+# +8774 (11 different palettes) (thats TOO much hahha we will lower this number eventually)
+# +8978 (more palettes, palette swap, new enemy (boat))
+# -8935 (new image that has less and less pixels from left to right)
+# -8905 (letting roadroller do its thing several times, without specifying parameters)
+# +8915 (using greyscale bg)
+# +8939 (using greyscale bg with custom background palettes also)
+# -8397 (using new limited tileset (9 tiles) of solid background image, and ligther decompression algorithm for bigPattern)
+# -8366 (same as before but greyscale bg image (needs it's own palette) Also reduce total palette number to only used ones)
+# +8499 (back to colored background (limit 5 colors)
+# +8485 = even less tiles on bg
+# +8488 = now a palette of 5 colors can be selected for bg!
+# -8547 = only 2 background palettes more...
+# +8580 = better collision system...
+# -8573 = better pool/layer comunication

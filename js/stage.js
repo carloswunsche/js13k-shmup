@@ -1,5 +1,5 @@
 //////////////////////////
-// STAGE
+// STAGE (pretty much OK)
 //////////////////////////
 
 class Stage {
@@ -15,13 +15,15 @@ class Stage {
         this._displayW = displayW;
         // To use setRowsArr function and get tile quantity
         this._displayH = displayH;
+		// For stage events
+		this.p = pool;
     }
     init(){
         // Take raw pattern from assets, then make a patterns object
         this._rawPattern = this._assets.bigPattern;
         this.patterns = this.createPatternsObj(this._rawPattern);
         // Get events function
-        this.events = this._assets.getEventsFn();
+        this.events = this.getEventsFn();
         // Setup background
         this.setupBackground();
         // Music
@@ -49,5 +51,94 @@ class Stage {
             );
         };
         return obj;
+    }
+    getEventsFn() {
+		let a = new Array(5**6).fill(f=>f); // 15625 empty functions
+		a[0]  	=()=>{
+			this.p.free('Player', 'Players'); 
+			this.bg.speed = .5
+			this.bg.palette = 10;
+		}
+		// a[1]	=()=> this.p.free('Item', 'Pickups', {y: 20});
+		// a[1]	=()=> this.p.free('Assaulter', 'E_Air', {x: 30});
+		// a[1]	=()=> this.p.free('Fatty', 'E_Air', {side: 1});
+		// a[1]	=()=> this.p.free('Sniper', 'E_Air', {x: 40});
+		// a[1]	=()=> this.p.free('SinePop', 'E_Air', {phase:-1});
+		// a[1]  	=()=>{game.iteration = 1099}
+
+		a[50] =()=> this.p.free('SinePop',{phase:1});
+		a[60] =()=> this.p.free('SinePop',{phase:1});
+		a[70] =()=> this.p.free('SinePop',{phase:1});
+		a[80] =()=> this.p.free('SinePop',{phase:1});
+
+
+		a[145]	=()=> this.p.free('Tank',  	{x:55, carryItem: true});
+		a[270]	=()=> this.p.free('Tank',  	{x:105});
+		a[300]	=()=> this.p.free('Sniper',	{x: 40, alt: true});
+
+		a[400] =()=> this.p.free('SinePop',	{phase:1});
+		a[430] =()=> this.p.free('SinePop',	{phase:1});
+		a[460] =()=> this.p.free('SinePop',	{phase:1});
+		a[490] =()=> this.p.free('SinePop',	{phase:1});
+
+		a[550]	=()=>{this.bg.queue.push(...this.patterns['2'], ...this.patterns['3'], ...this.patterns['4']);
+					  this.p.free('Sniper', {x: 120, alt: true})}
+		a[560]	=()=> this.p.free('Fatty', 	{side: 1, y: 1,  alt:true});
+		a[590]	=()=> this.p.free('Fatty', 	{side: 1, y: 21, alt:true});
+		a[620]	=()=> this.p.free('Fatty', 	{side: 1, y: 41, alt:true});
+		a[660]	=()=> this.p.free('Tank', 	{x:52});
+		a[750]	=()=> this.p.free('Sniper', {alt: true});
+
+		a[820] =()=> this.p.free('SinePop',	{phase:1});
+		a[840] =()=> this.p.free('SinePop',	{phase:1});
+		a[860] =()=> this.p.free('SinePop',	{phase:1});
+
+		a[880]	=()=> this.p.free('Tank', 	{x:112, carryItem: true});
+		a[1000]	=()=> this.p.free('Sniper');
+		a[1020]	=()=> this.p.free('Sniper',	{x: 30});
+		a[1040]	=()=> this.p.free('Sniper',	{x: 130});
+		a[1080]	=()=> this.p.free('Boat',	{x: 145, side: -1});
+		a[1140]	=()=> this.p.free('Boat',	{x: 20, side: 1});
+		a[1200]	=()=>{this.p.free('Fatty',	{side: 1});
+					  this.p.free('Fatty',	{side: -1});
+					  this.bg.speed += .25;}
+		a[1300]	=()=> this.bg.speed += .25;
+		a[1400]	=()=>{this.bg.speed += .25;
+					  this.p.free('Assaulter',{x: 130});}
+		a[1450]	=()=> this.bg.speed += .25;
+		a[1550]	=()=>{this.bg.speed += .25;
+					  this.p.free('Assaulter',{x: 30});}
+		a[1650]	=()=> this.bg.speed += .25;
+		a[1700]	=()=> this.p.free('Assaulter',{carryItem: true});
+		a[1750]	=()=> this.bg.speed += .25;
+
+		a[1780]	=()=> this.p.free('SinePop',{phase:-1});
+		a[1790]	=()=> this.p.free('SinePop',{phase:-1});
+		a[1800]	=()=> this.p.free('SinePop',{phase:-1});
+		a[1810]	=()=> this.p.free('SinePop',{phase:-1});
+		a[1850]	=()=> this.bg.speed += .25;
+
+		a[1910]	=()=> this.p.free('Sniper', {x:30});
+		a[1920]	=()=> this.p.free('Sniper', {x:50});
+		a[1930]	=()=> this.p.free('Sniper', {x:70});
+		a[1940]	=()=> this.p.free('Sniper', {x:90});
+		a[1950]	=()=> this.p.free('Sniper', {x:110});
+		a[1960]	=()=> this.p.free('Sniper', {x:130});
+
+		a[2070]	=()=> this.bg.queue.push(...this.patterns['5'], ...this.patterns['6'], ...this.patterns['7']);
+		a[2150]	=()=> this.p.free('Tank', 	{x:105});
+		a[2180]	=()=> this.p.free('Tank', 	{x:132});
+		a[2200]	=()=> this.p.free('Tank', 	{x:95, carryItem: true});
+		a[2220]	=()=> this.p.free('Tank', 	{x:117});
+
+		a[2250]	=()=> {game.fade.dir = 'fadeIn'; game.fade.speed = 2;}
+		a[2300]	=()=> {this.bg.palette = 11; game.fade.dir = 'fadeOut';}
+		a[2350]	=()=> {game.fade.speed = 1;}
+		
+		// a[]	=()=>
+
+		// Reset level at the end of array
+		a.push(()=>{debug.gameReset(); return 'stopGameUpdate'});
+		return a
     }
 };

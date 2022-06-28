@@ -1,5 +1,5 @@
 //////////////////////////
-// SET UP
+// SET UP (borrar cosas de debug)
 //////////////////////////
 'use strict';
 
@@ -11,6 +11,7 @@ const pool 		  = new Pool();
 const stage 	  = new Stage(8);
 const engine 	  = new Engine(60);
 const game 		  = new Game();
+// const assets 	  = new Assets(runGame).loadAndRun();
 const assets 	  = new Assets(runGame).loadAndRun();
 
 function runGame() {
@@ -23,11 +24,8 @@ function runGame() {
 	// Engine Dependencies
 	engine.needs(
 		() => game.update(), 
-		() => display.render(stage.bg, game.objects)
+		() => display.render(stage.bg, game.objects, game.fade)
 	);
-
-	// Assets dependencies
-	assets.needs(pool, stage)
 
 	// Game Dependencies
 	game.needs(
@@ -36,9 +34,7 @@ function runGame() {
 		pool, 
 		input, 
 		display.height, 
-		audioPlayer,
-		(a,b) => display.initFade(a, b), 
-		() => display.updateFade()
+		audioPlayer
 	);
 
 	// Initialize
@@ -65,14 +61,8 @@ const debug = {
 		// Game: 
 		// Vaciar mapa game.objects
 		for (const [_, arr] of game.objects) arr.length = 0;
-		// Volver a primera iteracion
-		game.iteration = 0;
-		// Quitar queued functions
-		game.queuedFns.length = 0;
-		// Reset reset counter (lol)
-		game.resetCounter = 0;
-		// Set fade in
-		game.initFade('fromBlack', 1);
+		// Reiniciar game
+		game.init()
 		// Engine: Pause (so that window.requestAnimationFrame stops)
 		engine.pause()
 		// Custom...

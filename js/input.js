@@ -1,12 +1,12 @@
 //////////////////////////
-// INPUT
+// INPUT gamebuttons deberia estar dentro de game.js
 //////////////////////////
 
 class Input {
 	constructor() {
 		this.enabled = true;
-		this.raw = new Array(6).fill(0);
-		this.buttons = new Array(6).fill(0);
+		this.raw = new Array(5).fill(0);
+		this.buttons = new Array(5).fill(0);
 
 		// this.inputHistory = [];
 		// this.savedInputs = localStorage.getItem('savedInputs') || [];
@@ -36,7 +36,7 @@ class Input {
 			case 'ArrowLeft': return arr[3] = pressed;
 			case 'KeyZ':      return arr[4] = pressed;
 			// Ojo este boton no se esta usando
-			case 'KeyX':      return arr[5] = pressed;
+			// case 'KeyX':      return arr[5] = pressed;
 		}
 	}
 
