@@ -40,7 +40,6 @@ class Stage {
         this.bg.numCols = this._displayW / this._tileSize;
         this.bg.tileQty = this._tileQty;
         this.bg.changePattern = false;
-        // this.bg.speed = 0; // Necessary to be able to sum speed on events
     }
     createPatternsObj(rawPatArr){
         let obj = {}
@@ -131,9 +130,9 @@ class Stage {
 		a[2200]	=()=> this.p.free('Tank', 	{x:95, carryItem: true});
 		a[2220]	=()=> this.p.free('Tank', 	{x:117});
 
-		a[2250]	=()=> {game.fade.dir = 'fadeIn'; game.fade.speed = 2;}
-		a[2300]	=()=> {this.bg.palette = 11; game.fade.dir = 'fadeOut';}
-		a[2350]	=()=> {game.fade.speed = 1;}
+		a[2300]	=()=> {game.fade.dir = 'fadeIn'; game.fade.speed = 2;}
+		a[2350]	=()=> {this.bg.palette = 11; game.fade.dir = 'fadeOut';}
+		a[2400]	=()=> game.fade.speed = 1;
 		
 		// a[]	=()=>
 
