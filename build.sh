@@ -17,8 +17,6 @@ rm sprites.png
 rm bg.png
 cd ..
 
-
-
 # Concat javascript files into one file
 cat \
     js/customMath.js \

@@ -3,7 +3,7 @@ body {
     background-color: #000
 }
 
-canvas {
+/* canvas {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -17,5 +17,19 @@ canvas {
     image-rendering: crisp-edges;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: pixelated;
-    -ms-interpolation-mode: nearest-neighbor; */
+    -ms-interpolation-mode: nearest-neighbor; */ /*
+} */
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.shot-btn, .analog {
+    width: 100px;
+    height: 100px;
+    background-color: #bbb;
+    border-radius: 50%;
+    align-self: center;
+    justify-self: center;
 }

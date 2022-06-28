@@ -25,6 +25,14 @@ class Input {
 				this.raw.fill(0);
 			};
 		})
+
+		// Touch: Shot button
+		let shotBtn = document.querySelector('.shot-btn');	
+		shotBtn.addEventListener('touchstart', e=>{this.updateRaw('KeyZ', this.raw, 1);e.preventDefault()})
+		shotBtn.addEventListener('touchend', e=>{this.updateRaw('KeyZ', this.raw, 0);e.preventDefault()})
+
+		let analog = document.querySelector('.analog');
+		analog.addEventListener('touchstart', e=>{this.updateRaw('ArrowDown', this.raw, 1);e.preventDefault()})
 	}
 
 	updateRaw (keyCode, arr, pressed) {
