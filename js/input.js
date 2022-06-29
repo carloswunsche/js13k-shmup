@@ -34,11 +34,10 @@ class Input {
 		// Touch: Analog
 		let analog = document.querySelector('.analog');
 		analog.addEventListener('touchstart', (e)=>this.analogMove(e.targetTouches[0], e))
-		analog.addEventListener('touchmove', (e)=>this.analogMove(e.targetTouches[0]))
+		analog.addEventListener('touchmove', (e)=>this.analogMove(e.targetTouches[0], e))
 		analog.addEventListener('touchend', ()=>this.raw.splice(0,4,...[0,0,0,0]))
 	}
 	analogMove(touch, e){
-		e.returnValue = false;
 		let axisX = (touch.clientX-touch.target.offsetLeft-(touch.target.clientWidth/2));
 		let axisY = (touch.clientY-touch.target.offsetTop-(touch.target.clientHeight/2));
 		
@@ -49,6 +48,7 @@ class Input {
 		if (axisY <= -25) this.raw[0] = 1;
 		if (axisY >= 25)  this.raw[2] = 1;
 		if (axisY > -25 && axisY < 25) {this.raw[0] = this.raw[2] = 0}
+		e.returnValue = false;
 	}
 
 	updateRaw (keyCode, arr, pressed) {
