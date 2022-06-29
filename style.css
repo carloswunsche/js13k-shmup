@@ -25,10 +25,15 @@ body {
 
 
 .c {
-    background-color: #bbb;
+    background: #333;
     border-radius: 50%;
-    width: 150px;
-    height: 150px;
+}
+
+@media (max-width: 900px) {
+    .c {
+        width: 150px;
+        height: 150px;
+    }
 }
 
 @media (max-width: 600px) {
