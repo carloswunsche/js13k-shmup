@@ -3,7 +3,7 @@ body {
     background-color: #000
 }
 
-canvas {
+/* canvas { */
 
     /* The next ones are only necesary if scaling is done through CSS */
     /* width:640px;
@@ -15,11 +15,14 @@ canvas {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: pixelated;
     -ms-interpolation-mode: nearest-neighbor; */
-}
+
+/* } */
 
 .grid {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
+    justify-items: center;
+    align-items: center;
 }
 
 .shot-btn, .analog {
@@ -27,6 +30,4 @@ canvas {
     height: 150px;
     background-color: #bbb;
     border-radius: 50%;
-    align-self: center;
-    justify-self: center;
 }

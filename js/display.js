@@ -28,11 +28,16 @@ class Display {
 		window.addEventListener('touchmove', e=>e.preventDefault(),{passive: false})
         // this.txt = '';
     }
-    setScaleAndResize(forced) {
+    setScaleAndResize(forced, integer = false) {
         // Set scale
-        this.scale = M.min(
-            M.trunc(window.innerWidth / this.width),
-            M.trunc(window.innerHeight / this.height));
+        if (integer) {
+            this.scale = M.min(
+                M.trunc(window.innerWidth / this.width),
+                M.trunc(window.innerHeight / this.height));
+        } else {
+            this.scale = window.innerHeight / this.height;
+        }
+            
         // Unnecesary remove forced scaling
         if (forced) this.scale = forced;
         // Resize
