@@ -47,7 +47,7 @@ class Input {
 			if (this.analogAxis[1] > -25 && this.analogAxis[1] < 25) {this.raw[0] = this.raw[2] = 0}
 		})
 
-		analog.addEventListener('touchend', e=>this.raw.splice(0,4,...[0,0,0,0]))
+		analog.addEventListener('touchend', ()=>this.raw.splice(0,4,...[0,0,0,0]))
 
 
 	}
