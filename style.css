@@ -24,7 +24,7 @@ canvas {
     align-items: center;
 }
 
-.shot-btn, .analog {
+.circle {
     width: 150px;
     height: 150px;
     background-color: #bbb;
@@ -32,10 +32,13 @@ canvas {
 }
 
 @media only screen and (max-width: 600px) {
+    .circle {
+        width: 120px;
+        height: 120px;
+    }
     .grid {
         grid-template-rows: 1fr 1fr;
         grid-template-columns: 1fr 1fr;
-        justify-items: stretch;
     }
     canvas {
         grid-row: 1 / 2;
