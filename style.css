@@ -19,12 +19,12 @@ canvas {
 
 .grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 2fr 1fr;
 }
 
 .shot-btn, .analog {
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     background-color: #bbb;
     border-radius: 50%;
     align-self: center;
