@@ -132,4 +132,4 @@ echo "GZip size: $zippedsize bytes"
 # +8742 = new and better fading system with a fair amount of options
 # -8729 = new eBullet without sprite, renders the same as particles
 # -8719 = wow y eso q no toque mucho
-# +9082 = OUCH... touch screen implementation (can be reduced still)
+# +9007 = OUCH... touch screen implementation

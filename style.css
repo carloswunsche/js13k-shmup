@@ -3,8 +3,7 @@ body {
     background-color: #000
 }
 
-canvas {
-
+/* canvas { */
     /* The next ones are only necesary if scaling is done through CSS */
     /*width:640px;*/
     /* image-rendering: optimizeSpeed;
@@ -15,30 +14,25 @@ canvas {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: pixelated;
     -ms-interpolation-mode: nearest-neighbor; */
-}
+/* } */
 
-.grid {
+.g {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     justify-items: center;
     align-items: center;
 }
 
-.circle {
+
+.c {
     background-color: #bbb;
     border-radius: 50%;
-}
-
-@media only screen and (max-width: 800px) {
- .circle{
     width: 150px;
     height: 150px;
- }
 }
 
-@media only screen and (max-width: 600px) {
-
-    .grid {
+@media (max-width: 600px) {
+    .g {
         grid-template-rows: 1fr 1fr;
         grid-template-columns: 1fr 1fr;
     }

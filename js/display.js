@@ -28,7 +28,7 @@ class Display {
 		window.addEventListener('touchmove', e=>e.preventDefault(),{passive: false})
         // this.txt = '';
     }
-    setScaleAndResize(forced, integer = true) {
+    setScaleAndResize(forced) {
         // Set scale
         this.scale = M.min(
             M.trunc(window.innerWidth / this.width),

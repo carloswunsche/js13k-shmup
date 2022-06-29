@@ -7,7 +7,6 @@ class Input {
 		this.enabled = true;
 		this.raw = new Array(5).fill(0);
 		this.buttons = new Array(5).fill(0);
-		this.analogAxis = [0,0]
 
 		// this.inputHistory = [];
 		// this.savedInputs = localStorage.getItem('savedInputs') || [];
@@ -28,28 +27,27 @@ class Input {
 		})
 
 		// Touch: Shot button
-		let shotBtn = document.querySelector('.shot-btn');	
-		shotBtn.addEventListener('touchstart', e=>this.updateRaw('KeyZ', this.raw, 1))
-		shotBtn.addEventListener('touchend', e=>this.updateRaw('KeyZ', this.raw, 0))
+		let shotBtn = document.querySelector('.shot');	
+		shotBtn.addEventListener('touchstart', e=>this.raw[4] = 1)
+		shotBtn.addEventListener('touchend', e=>this.raw[4] = 0)
 
 		// Touch: Analog
 		let analog = document.querySelector('.analog');
-		analog.addEventListener('touchmove', e=>{
-			this.analogAxis[0] = (e.targetTouches[0].clientX-e.targetTouches[0].target.offsetLeft-(e.targetTouches[0].target.clientWidth/2));
-			this.analogAxis[1] = (e.targetTouches[0].clientY-e.targetTouches[0].target.offsetTop-(e.targetTouches[0].target.clientHeight/2));
-			
-			if (this.analogAxis[0] <= -25) this.raw[3] = 1;
-			if (this.analogAxis[0] >= 25)  this.raw[1] = 1;
-			if (this.analogAxis[0] > -25 && this.analogAxis[0] < 25) {this.raw[3] = this.raw[1] = 0}
-
-			if (this.analogAxis[1] <= -25) this.raw[0] = 1;
-			if (this.analogAxis[1] >= 25)  this.raw[2] = 1;
-			if (this.analogAxis[1] > -25 && this.analogAxis[1] < 25) {this.raw[0] = this.raw[2] = 0}
-		})
-
+		analog.addEventListener('touchstart', (e)=>this.analogMove(e.targetTouches[0]))
+		analog.addEventListener('touchmove', (e)=>this.analogMove(e.targetTouches[0]))
 		analog.addEventListener('touchend', ()=>this.raw.splice(0,4,...[0,0,0,0]))
+	}
+	analogMove(touch){
+		let axisX = (touch.clientX-touch.target.offsetLeft-(touch.target.clientWidth/2));
+		let axisY = (touch.clientY-touch.target.offsetTop-(touch.target.clientHeight/2));
+		
+		if (axisX <= -25) this.raw[3] = 1;
+		if (axisX >= 25)  this.raw[1] = 1;
+		if (axisX > -25 && axisX < 25) {this.raw[3] = this.raw[1] = 0}
 
-
+		if (axisY <= -25) this.raw[0] = 1;
+		if (axisY >= 25)  this.raw[2] = 1;
+		if (axisY > -25 && axisY < 25) {this.raw[0] = this.raw[2] = 0}
 	}
 
 	updateRaw (keyCode, arr, pressed) {
