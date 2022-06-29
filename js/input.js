@@ -33,11 +33,12 @@ class Input {
 
 		// Touch: Analog
 		let analog = document.querySelector('.analog');
-		analog.addEventListener('touchstart', (e)=>this.analogMove(e.targetTouches[0]))
+		analog.addEventListener('touchstart', (e)=>this.analogMove(e.targetTouches[0], e))
 		analog.addEventListener('touchmove', (e)=>this.analogMove(e.targetTouches[0]))
 		analog.addEventListener('touchend', ()=>this.raw.splice(0,4,...[0,0,0,0]))
 	}
-	analogMove(touch){
+	analogMove(touch, e){
+		e.returnValue = false;
 		let axisX = (touch.clientX-touch.target.offsetLeft-(touch.target.clientWidth/2));
 		let axisY = (touch.clientY-touch.target.offsetTop-(touch.target.clientHeight/2));
 		
