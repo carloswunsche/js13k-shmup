@@ -23,6 +23,9 @@ class Display {
             // Unnecesary Also deactivate for best performance
             this.render(stage.bg, game.objects, game.fade);
         });
+
+        // Prevent scrolling with finger
+		window.addEventListener('touchmove', e=>e.preventDefault(),{passive: false})
         // this.txt = '';
     }
     setScaleAndResize(forced) {
