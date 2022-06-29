@@ -35,7 +35,8 @@ class Display {
                 M.trunc(window.innerWidth / this.width),
                 M.trunc(window.innerHeight / this.height));
         } else {
-            this.scale = window.innerHeight / this.height;
+            // this.scale = window.innerHeight / this.height;
+            this.scale = 2.5
         }
             
         // Unnecesary remove forced scaling
@@ -186,11 +187,11 @@ document.get
         this.ctx.lineTo(x*this.scale, y*this.scale);
         this.ctx.stroke();
     }
-    pixelatedLook(x) {
+    pixelatedLook(ctx) {
         // Used if scaling is done through JS
-        x.mozImageSmoothingEnabled = 0;
-        x.webkitImageSmoothingEnabled = 0;
-        x.msImageSmoothingEnabled = 0;
-        x.imageSmoothingEnabled = 0;
+        ctx.mozImageSmoothingEnabled = 0;
+        ctx.webkitImageSmoothingEnabled = 0;
+        ctx.msImageSmoothingEnabled = 0;
+        ctx.imageSmoothingEnabled = 0;
     }
 };
