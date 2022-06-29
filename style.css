@@ -3,10 +3,10 @@ body {
     background-color: #000
 }
 
-/* canvas { */
+canvas {
 
     /* The next ones are only necesary if scaling is done through CSS */
-    /* width:640px;
+    /*width:640px;*/
     image-rendering: optimizeSpeed;
     image-rendering: -moz-crisp-edges;
     image-rendering: -o-crisp-edges;
@@ -14,9 +14,8 @@ body {
     image-rendering: crisp-edges;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: pixelated;
-    -ms-interpolation-mode: nearest-neighbor; */
-
-/* } */
+    -ms-interpolation-mode: nearest-neighbor;
+}
 
 .grid {
     display: grid;
