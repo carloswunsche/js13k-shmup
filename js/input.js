@@ -12,6 +12,7 @@ class Input {
 		// this.savedInputs = localStorage.getItem('savedInputs') || [];
 		// this.savedInputs = typeof this.savedInputs === 'string' ? JSON.parse(this.savedInputs) : [];
 
+		// Keyboard events
 		window.addEventListener('keydown', key => {
 			this.updateRaw(key.code, this.raw, 1);
 			// console.log(key.code)
@@ -26,16 +27,13 @@ class Input {
 			};
 		})
 
-		// Touch: Shot button
-		let shotBtn = document.querySelector('.shot');	
-		shotBtn.addEventListener('touchstart', e=>this.raw[4] = 1)
-		shotBtn.addEventListener('touchend', e=>this.raw[4] = 0)
-
-		// Touch: Analog
-		let analog = document.querySelector('.analog');
-		analog.addEventListener('touchstart',e=>this.analogMove(e.targetTouches[0], e, this.raw))
-		analog.addEventListener('touchmove', e=>this.analogMove(e.targetTouches[0], e, this.raw))
-		analog.addEventListener('touchend', ()=>this.raw.splice(0,4,...[0,0,0,0]))
+		// Touch event
+		let shotBtn = document.querySelector('.shot'), analog = document.querySelector('.analog');	
+		shotBtn.addEventListener('touchstart',e=>this.raw[4] = 1)
+		shotBtn.addEventListener('touchend',  e=>this.raw[4] = 0)
+		analog.addEventListener('touchstart', e=>this.analogMove(e.targetTouches[0], e, this.raw))
+		analog.addEventListener('touchmove',  e=>this.analogMove(e.targetTouches[0], e, this.raw))
+		analog.addEventListener('touchend',  ()=>this.raw.splice(0,4,...[0,0,0,0]))
 	}
 	analogMove(touch, e, raw){
 		let axisX = (touch.clientX-touch.target.offsetLeft-(touch.target.clientWidth/2));

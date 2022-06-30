@@ -132,4 +132,9 @@ echo "GZip size: $zippedsize bytes"
 # +8742 = new and better fading system with a fair amount of options
 # -8729 = new eBullet without sprite, renders the same as particles
 # -8719 = wow y eso q no toque mucho
-# +8992 = OUCH... touch screen implementation
+# +8871 = improved graphics system! assets can now generate 48 extra more graphics using the same source!
+# +9046 = Touch screen implementation
+#  
+# 
+# 
+# 
