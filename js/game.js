@@ -6,7 +6,7 @@ class Game {
     constructor(){
         // Layers Guide
         // Change variable name to this.layers
-        this.objects = new Map(Object.entries({E_Land:[],E_Air:[],Parts:[],Pickups:[],pBullets:[],Players:[],eBullets:[],Hud:[]}));
+        this.objects = new Map(Object.entries({Floor:[],E_Land:[],E_Air:[],Parts:[],Pickups:[],pBullets:[],Players:[],eBullets:[],Hud:[]}));
         this.queuedFns = [];
         this.sfxFlags = {};
         this.fade = {};

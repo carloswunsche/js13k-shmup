@@ -13,13 +13,16 @@ class Pool {
 			[9, 	Assaulter,		0],
 			[9, 	Boat,			1],
 			[9, 	Tank,			2],
-			[9, 	Fatty,			3],
+			[9, 	Fatty,			22],
 			[9, 	Sniper,			5],
 			[9, 	SinePop,		6],
 			[9, 	Item,			7],
 			[18,	PlayerBullet,	8],
+			[1,		BigTank,		55],
 			[35,	EnemyBullet],
-			[120,	Particle],
+			[500,	Particle],
+			// More:
+			// 19: lancha o tanque
 		]
 	}
 	needs(assets, gameObjects){
@@ -35,13 +38,13 @@ class Pool {
 			new Entity(this.assets[assetIndex])
 		);
 	}
-	free(entity,resetPar) {
+	free(entity,resetPar, layer) {
 		let arrSize = this.type[entity].length;
 		for (let i = 0; i < arrSize; i++) {
 			if (this.type[entity][i].free) {
 				this.type[entity][i].free = false;
 				this.type[entity][i].parentReset(resetPar);
-				this.gameObjects.get(this.type[entity][i].layer).push(this.type[entity][i]);
+				this.gameObjects.get(layer || this.type[entity][i].layer).push(this.type[entity][i]);
 				return;
 			};
 		};

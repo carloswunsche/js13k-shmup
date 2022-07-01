@@ -58,14 +58,14 @@ class Entity {
         this.hitbox[2] = this.y - this.yMargin + this.yOffset  //y1 (up)
         this.hitbox[3] = this.y + this.yMargin + this.yOffset  //y2 (down)
     }
-    spawnParticles(data){
+    spawnParticles(data, layer){
         // If no data received, don't spawn any particles
         if (!data) return;
     
         for (let i = 0; i < data.qty; i++)
-        this.queue.push(()=>this.pool.free('Particle',data.options));
+        this.queue.push(()=>this.pool.free('Particle', data.options, layer));
     }
-    timerCount(timeInFrames = 999, timerUsed = 0) {
+    timerCount(timeInFrames = 9999, timerUsed = 0) {
         // Count until chosen time, using selected timer
         if (this.timers[timerUsed] < timeInFrames) this.timers[timerUsed] += 1;
     }
@@ -217,7 +217,7 @@ class Enemy extends AccessToPlayer {
         this.speed = custom?.speed || 1;
         this.alt = custom?.alt || false;
     }
-    shot(howMany = 1, spd, angle, add, offX = 0, offY = 0) {
+    shot(howMany = 1, spd, angle, add, offX = 0, offY = 0, sound) {
         // Reduce layer name
         for(let i = 0; i < howMany; i++)
             this.pool.free('EnemyBullet', 
@@ -230,7 +230,7 @@ class Enemy extends AccessToPlayer {
                 add: add * (i - M.floor(howMany/2)) || 0,
             });
             // Sound
-            this.sfxFlags.eShot = true;
+            this.sfxFlags[sound || 'eShot'] = true;
     }
     // Reduce all moving functions that are not used
     easeOutCubic(xy, startPos, goTo, timeInFrames, timerUsed = 0) {
@@ -239,11 +239,84 @@ class Enemy extends AccessToPlayer {
     easeInOutSine(xy, startPos, goTo, timeInFrames, timerUsed = 0) {
         this[xy] = (goTo - startPos) * (-(M.cos(M.PI * this.timers[timerUsed] / timeInFrames) - 1) / 2) + startPos;
     }
-    sin(xy, halfCycle, freq, centerPoint, timerUsed = 0) {
-        this[xy] = halfCycle * M.sin(this.timers[timerUsed] / 32 * freq) + centerPoint;
+    sin(xy, amp, freq = 1, centerPoint = 0, timerUsed = 0) {
+        this[xy] = 
+        M.sin(this.math.toRadians(this.timers[timerUsed])/freq) * amp/2 + 
+        centerPoint;
     }
-    cos(xy, phase, cycle, freq, centerPoint, timerUsed = 0) {
-        this[xy] = cycle / 2 * phase * M.cos(this.timers[timerUsed] / 32 * freq) + centerPoint;
+    cos(xy, amp, freq = 1, centerPoint = 0, timerUsed = 0, phase = 1) {
+        this[xy] = phase *
+        M.cos(this.math.toRadians(this.timers[timerUsed])/freq) * amp + 
+        centerPoint;
+    }
+}
+class BigTank extends Enemy {
+    constructor(image) {
+        super(image)
+        this.palette = 8;
+        this.setupHitbox((this.width/2 * 2)-2, (this.height / 2 * 2) -5);
+        this.deadBound = 'bottom';
+        this.layer = 'E_Land'
+        this.delayedFree = true;
+        this.colors = ['#443','#454','#432']
+    }
+    reset2(){
+        this.scale = 2;
+        this.height *= 2;
+        this.hp = 70;
+        this.speed = 0.2
+        // Used when there are multiple stages of movement
+        this.pos = 1;
+        this.amp = 1;
+    }
+    updateData(){
+        // Dirt
+        [1,-1].forEach(side => {
+            this.spawnParticles({
+                qty: 1, 
+                options: {
+                    x:this.x+6*side, 
+                    y:this.y,
+                    colors: this.colors,
+                    speed: this.pos === 1 ? 2.5 : 3.5,
+                    scale: 8,
+                    angle: 
+                    this.pos === 1 ? this.math.toRadians(this.math.randomBetween(30, 150))
+                    : this.math.toRadians(this.math.randomBetween(250, 290))
+                }},
+                'Floor'
+            )
+        })
+        // Shooting
+        if (this.pos === 2) {
+            if (this.timers[1] % (this.hp > 30 ? 25 : 20) === 0) 
+                this.shot(
+                    (this.hp > 30 ? 7 : 8), //
+                    1.3, 
+                    0, 
+                    0, 
+                    0, 
+                    12,
+                    'cannon'
+                );
+        }
+        
+
+    }
+    updatePos(){
+        if (this.pos === 1) {
+            this.cos('y', 40, this.speed, 0, 0, -1)
+            this.speed += .004
+            this.timerCount(100,0)
+            if (this.timers[0] === 100) this.pos++;
+        }
+        if (this.pos === 2) {
+            this.cos('y', 8.9, this.speed, 30, 1, 1)
+            this.sin('x', this.amp, 0.9, 80, 1)
+            if (this.timers[1] < 80) this.amp++
+            this.timerCount(9999,1)
+        }
+
     }
 }
 class EnemyBullet extends Enemy {
@@ -267,6 +340,18 @@ class EnemyBullet extends Enemy {
         this.angle += this.math.toRadians(custom?.add) || 0;
     }
     updateData() {
+        this.spawnParticles({
+            qty: 1, 
+            options: {
+                x:this.x, 
+                y:this.y,
+                speed: 0,
+                scale: 2.5,
+                opacity: 55,
+                colors: ['#ffe','#ffd','#ffc'],
+                beheavior: 3
+            }
+        })
         // Rotate
         this.rotation += this.math.toRadians(10)
     }
@@ -280,7 +365,7 @@ class SinePop extends Enemy {
     }
     updatePos() {
         // Cosine movement
-        this.cos('x', this.phase, 130, 1, 80);
+        this.cos('x', 75, 0.6, 80, 0, this.phase);
         this.timerCount();
         this.y += 0.5
     }
@@ -353,6 +438,7 @@ class Tank extends Enemy {
     }
     updatePos() {this.landMovement(0,.1)}
 }
+
 class Assaulter extends Enemy {
     constructor(image) {
         super(image)
@@ -412,38 +498,45 @@ class Particle extends AccessToPlayer {
         this.x = custom?.x;
         this.y = custom?.y;
         this.scale = custom?.scale || 4;
-        this.speed = custom?.speed || 3;
+        this.speed = custom?.speed ?? 3;
         this.subSpdRange = custom?.subSpdRange || [1, 2];
         // Set random angle:
-        this.angle = custom?.angle || this.math.toRadians(this.math.randomBetween(1, 360));
+        this.angle = custom?.angle ?? this.math.toRadians(this.math.randomBetween(1, 360));
         // Randomize rotation direction
-        this.rndDir = this.math.randomBetween(0,1)?-1:1;
+        this.rotateDir = this.math.randomBetween(0,1)?-1:1;
         // Random color
         this.colors = custom?.colors || ['#f61','#fd7','#ff9','#feb','#ffc','#ffe'];
         this.currentColor = this.colors[this.math.randomBetween(0,this.colors.length-1)];
+        this.opacity = custom?.opacity || 100;
+        // Beheavior
         this.beheavior = custom?.beheavior || 1;
     }
     updateData() {
-        this.rotation += .08 * this.rndDir; // 5 degree in a random orientation
+        this.rotation += .08 * this.rotateDir; // 5 degree in a random orientation
         this.opacity -= 5;
-        // Call different beheaviors at the end
+
+        // Call beheavior
         this[`beheavior${this.beheavior}`]()
+
+        // If invisible, kill
+        if (this.scale <= 0 || this.opacity <= 0) this.hp = 0;
     }
+    updatePos() {this.vectorMovement()}
+    // Particles produced on explosion or sparkles from item
     beheavior1(){
-        this.scale-=.2;
+        this.scale -=.2;
         this.speed -= this.math.randomBetween(...this.subSpdRange) / 10
-        // If small enough, bye
-        if (this.scale <= 0) this.hp = 0;
     }
+    // Big particle under player when picking an item
     beheavior2(){
         // Follow player continuosly
         this.x = this.player.x;
         this.y = this.player.y;
         this.scale+=4
-        // If invisible, bye
-        if (this.opacity <= 0) this.hp = 0;
     }
-    updatePos() {this.vectorMovement()}
+    beheavior3(){
+        this.scale -=.2;
+    }
 }
 
 class Item extends Entity {

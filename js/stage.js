@@ -58,27 +58,39 @@ class Stage {
 			this.bg.speed = .5
 			this.bg.palette = 8;
 		}
-		// a[1]	=()=> this.p.free('Item', 'Pickups', {y: 20});
-		// a[1]	=()=> this.p.free('Assaulter', 'E_Air', {x: 30});
-		// a[1]	=()=> this.p.free('Fatty', 'E_Air', {side: 1});
-		// a[1]	=()=> this.p.free('Sniper', 'E_Air', {x: 40});
-		// a[1]	=()=> this.p.free('SinePop', 'E_Air', {phase:-1});
-		// a[1]  	=()=>{game.iteration = 1099}
+		// DEBUG and TESTING
+		// a[1]	=()=> this.p.free('Item', {y: 20});
+		// a[1]	=()=> this.p.free('Assaulter', {x: 30});
+		// a[1]	=()=> this.p.free('Fatty', {side: 1});
+		// a[1]	=()=> this.p.free('Sniper', {x: 40});
+		// a[1]	=()=> this.p.free('SinePop', {phase:-1});
+
+
+
+		// a[1]  	=()=>this.bg.speed = 2.5
+		// a[2]  	=()=>this.bg.queue.push(...this.patterns['5'], ...this.patterns['6'], ...this.patterns['7']);
+		// a[3]	=()=>this.bg.palette = 9;
+		// a[4]  	=()=>game.iteration = 2400;
+
+
+
 
 		a[50] =()=> this.p.free('SinePop',{phase:1});
 		a[60] =()=> this.p.free('SinePop',{phase:1});
 		a[70] =()=> this.p.free('SinePop',{phase:1});
 		a[80] =()=> this.p.free('SinePop',{phase:1});
+		a[90] =()=> this.p.free('SinePop',{phase:1});
 
 
 		a[145]	=()=> this.p.free('Tank',  	{x:55, carryItem: true});
 		a[270]	=()=> this.p.free('Tank',  	{x:105});
 		a[300]	=()=> this.p.free('Sniper',	{x: 40, alt: true});
 
-		a[400] =()=> this.p.free('SinePop',	{phase:1});
-		a[430] =()=> this.p.free('SinePop',	{phase:1});
-		a[460] =()=> this.p.free('SinePop',	{phase:1});
-		a[490] =()=> this.p.free('SinePop',	{phase:1});
+		a[400] =()=> this.p.free('SinePop',	{phase:-1});
+		a[410] =()=> this.p.free('SinePop',	{phase:-1});
+		a[420] =()=> this.p.free('SinePop',	{phase:-1});
+		a[430] =()=> this.p.free('SinePop',	{phase:-1});
+		a[440] =()=> this.p.free('SinePop',	{phase:-1});
 
 		a[550]	=()=>{this.bg.queue.push(...this.patterns['2'], ...this.patterns['3'], ...this.patterns['4']);
 					  this.p.free('Sniper', {x: 120, alt: true})}
@@ -89,7 +101,9 @@ class Stage {
 		a[750]	=()=> this.p.free('Sniper', {alt: true});
 
 		a[820] =()=> this.p.free('SinePop',	{phase:1});
+		a[830] =()=> this.p.free('SinePop',	{phase:1});
 		a[840] =()=> this.p.free('SinePop',	{phase:1});
+		a[850] =()=> this.p.free('SinePop',	{phase:1});
 		a[860] =()=> this.p.free('SinePop',	{phase:1});
 
 		a[880]	=()=> this.p.free('Tank', 	{x:112, carryItem: true});
@@ -115,6 +129,7 @@ class Stage {
 		a[1790]	=()=> this.p.free('SinePop',{phase:-1});
 		a[1800]	=()=> this.p.free('SinePop',{phase:-1});
 		a[1810]	=()=> this.p.free('SinePop',{phase:-1});
+		a[1820]	=()=> this.p.free('SinePop',{phase:-1});
 		a[1850]	=()=> this.bg.speed += .25;
 
 		a[1910]	=()=> this.p.free('Sniper', {x:30});
@@ -133,6 +148,7 @@ class Stage {
 		a[2300]	=()=> {game.fade.dir='fadeIn'; game.fade.speed=2; game.fade.layer=0;}
 		a[2350]	=()=> {this.bg.palette = 9; game.fade.dir = 'fadeOut';}
 		a[2400]	=()=> {game.fade.speed = 1; game.fade.layer='top';}
+		a[2401]	=()=> {this.p.free('BigTank'); game.sfxFlags.bigTank = true}
 		
 		// a[]	=()=>
 
