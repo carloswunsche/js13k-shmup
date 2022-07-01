@@ -69,7 +69,7 @@ class Stage {
 
 		// a[1]  	=()=>this.bg.speed = 2.5
 		// a[2]  	=()=>this.bg.queue.push(...this.patterns['5'], ...this.patterns['6'], ...this.patterns['7']);
-		// a[3]	=()=>this.bg.palette = 9;
+		// a[3]		=()=>this.bg.palette = 9;
 		// a[4]  	=()=>game.iteration = 2400;
 
 

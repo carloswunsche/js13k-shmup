@@ -29,14 +29,14 @@ body {
     border-radius: 50%;
 }
 
-@media (max-width: 300px) {
+@media (max-width: 900px) {
     .c {
         width: 150px;
         height: 150px;
     }
 }
 
-@media (max-width: 200px) {
+@media (max-width: 600px) {
     .g {
         grid-template-rows: 1fr 1fr;
         grid-template-columns: 1fr 1fr;
