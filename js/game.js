@@ -240,8 +240,8 @@ class Game {
             for (let i = arr.length-1; i > -1; i--) {
                 // Si ya no tienen nada de hp, matarlos.
                 if (arr[i].hp <= 0) this.kill(arr[i]);
-                // Si tras la matanza hay entities que esten free, sacarlos del array.
-                if (arr[i].free) arr.splice(i,1);
+                // Si tras la matanza hay entities que esten free, liberar item (if any) y sacarlos del array.
+                if (arr[i].free) {arr[i].releaseItem(); arr.splice(i,1)}
             }
         }
     }
@@ -260,9 +260,6 @@ class Game {
 
         // Finally, all entities EXCEPT those with delayFree flag will be free NOW! Killing is done for these.
         entity.free = true;
-
-        // Oh, also... release item! (if they have the flag carryItem)
-        entity.releaseItem()
     }
     // Freeing everything that's on the queue
     freeQueued(){

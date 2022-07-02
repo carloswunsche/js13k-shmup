@@ -165,53 +165,53 @@ class Assets {
 		this.remaining--;
 		if(!this.remaining) this.runGameFn();
 	}
-	// showcaseGraphics(){
-	// 	// Create canvas to showcase graphics
-	// 	let c=document.createElement('canvas'),ctx=c.getContext('2d'), gap = 30;
-	// 	c.width = gap * this.palettes.length; 
-	// 	c.height = gap * this.gfx.length;
+	showcaseGraphics(){
+		// Create canvas to showcase graphics
+		let c=document.createElement('canvas'),ctx=c.getContext('2d'), gap = 30;
+		c.width = gap * this.palettes.length; 
+		c.height = gap * this.gfx.length;
 
-	// 	// Clear background and append canvas
-	// 	document.body.innerHTML = '';
-	// 	document.body.append(c)
-	// 	// Set webpage and canvas style
-	// 	document.body.style.backgroundColor='white'
-	// 	c.style.border='1px solid grey'
-	// 	c.style.backgroundColor='white'
-	// 	c.style.padding='5px';
-	// 	c.style.imageRendering='pixelated'
-    //     ctx.mozImageSmoothingEnabled = 0;
-    //     ctx.webkitImageSmoothingEnabled = 0;
-    //     ctx.msImageSmoothingEnabled = 0;
-    //     ctx.imageSmoothingEnabled = 0;
+		// Clear background and append canvas
+		document.body.innerHTML = '';
+		document.body.append(c)
+		// Set webpage and canvas style
+		document.body.style.backgroundColor='white'
+		c.style.border='1px solid grey'
+		c.style.backgroundColor='white'
+		c.style.padding='5px';
+		c.style.imageRendering='pixelated'
+        ctx.mozImageSmoothingEnabled = 0;
+        ctx.webkitImageSmoothingEnabled = 0;
+        ctx.msImageSmoothingEnabled = 0;
+        ctx.imageSmoothingEnabled = 0;
 
-	// 	// Draw everything
-	// 	for(let y = 0; y < this.gfx.length; y++){
-	// 		// Break if property does not exist (like background, which is called assets.bg)
-	// 		if (this[y] == void 0) break
-	// 		// Draw
-	// 		for(let x = 0; x < 12; x++){
-	// 			ctx.drawImage(
-	// 				this[y],				// image
-	// 				this.gfx[y].fullW * x,  // source x
-	// 				0,						// source y
-	// 				this.gfx[y].fullW,		// source width
-	// 				this.gfx[y].h,			// source height
-	// 				x * gap,				// destination x
-	// 				y * gap,				// destination y
-	// 				this.gfx[y].fullW,		// destination W
-	// 				this.gfx[y].h			// destination H
-	// 			)
-	// 		}
-	// 		ctx.font = "10px Arial";
-	// 		ctx.fillText(
-	// 			` ↑ Sprite ${y-1}`,
-	// 			0,
-	// 			(y * gap) - gap/8)
-	// 	}
-	// 	return (function () {
-	// 		console.clear();
-	// 		return 'Hola zoy carl. aca estan todos los graficos q hace el game a partir de una imagen de mierda en greyscale. Las filas son las paletas y las columnas los distintos sprites'
-	// 	})()
-	// }
+		// Draw everything
+		for(let y = 0; y < this.gfx.length; y++){
+			// Break if property does not exist (like background, which is called assets.bg)
+			if (this[y] == void 0) break
+			// Draw
+			for(let x = 0; x < 12; x++){
+				ctx.drawImage(
+					this[y],				// image
+					this.gfx[y].fullW * x,  // source x
+					0,						// source y
+					this.gfx[y].fullW,		// source width
+					this.gfx[y].h,			// source height
+					x * gap,				// destination x
+					y * gap,				// destination y
+					this.gfx[y].fullW,		// destination W
+					this.gfx[y].h			// destination H
+				)
+			}
+			ctx.font = "10px Arial";
+			ctx.fillText(
+				` ↑ Sprite ${y-1}`,
+				0,
+				(y * gap) - gap/8)
+		}
+		return (function () {
+			console.clear();
+			return 'Hola zoy carl. aca estan todos los graficos q hace el game a partir de una imagen de mierda en greyscale. Las filas son las paletas y las columnas los distintos sprites'
+		})()
+	}
 };
