@@ -11,7 +11,6 @@ const pool 		  = new Pool();
 const stage 	  = new Stage(8);
 const engine 	  = new Engine(60);
 const game 		  = new Game();
-// const assets 	  = new Assets(runGame).loadAndRun();
 const assets 	  = new Assets(runGame).loadAndRun();
 
 function runGame() {

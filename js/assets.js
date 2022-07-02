@@ -20,11 +20,11 @@ class Assets {
 
 		// Fill gfx array with sourceX info and variations
 		// Variables needed
-		let widthAcc = 0, v = 0, variations = 6, mod = [];
+		let widthAcc = 0, variations = 6, mod = [];
 		// Put sourceX info and, since we are here, the full width of each entity
 		this.gfx.forEach(obj => {obj.sourceX = widthAcc; widthAcc += obj.w; obj.fullW = (obj.w*2)-1})
 		// Put variations and background too (at the end)
-		while(v < variations){this.gfx.forEach(obj => mod.push({...obj, offset: v+1}));v++}
+		for(let v = 0; v < variations; v++)this.gfx.forEach(obj => mod.push({...obj, offset: v+1}))
 		this.gfx.push(...mod, {fullW:176,h:8,bg:'bg'})
 		// Set remaining graphics to load
 		this.remaining = this.gfx.length;
@@ -97,9 +97,9 @@ class Assets {
 
 	loadAndRun() {
 		this.gfx.forEach((entity, index) => {
-			let i = new Image();
-			i.src = entity.bg ? 'i/bg.webp' : 'i/sprites.webp';
-			i.onload = () => {
+			let img = new Image();
+			img.src = entity.bg ? 'i/bg.webp' : 'i/sprites.webp';
+			img.onload = () => {
 				// Create new canvas to work with
 				let c=document.createElement('canvas'),x=c.getContext('2d');
 				c.width = entity.fullW; 
@@ -110,7 +110,7 @@ class Assets {
 					[0,1].forEach(side=>{
 					x.scale(side?-1:1, 1);
 					x.drawImage(
-						i, 							 				// sprites.webp
+						img, 							 			// sprites.webp
 						entity.sourceX + (entity.offset || 0),		// X source
 						0,							 				// Y source
 						entity.w,					 				// Source width
@@ -122,7 +122,7 @@ class Assets {
 						);
 					})
 				// Normal draw for the background
-				} else x.drawImage(i,0,0);
+				} else x.drawImage(img,0,0);
 
 
 				// Get pixel data from canvas and create fakeData to build new image
@@ -132,13 +132,13 @@ class Assets {
 				// Write every palette variation of image into fakeData
 				this.palettes.forEach((_, paletteNumber) => {
 					// Fill fakeData based on dataD shade information
-					for(let ii = 0; ii < dataD.length; ii+=4) {
+					for(let i = 0; i < dataD.length; i+=4) {
 						// If shade on pixel:
-						if (dataD[ii] > 0) {
+						if (dataD[i] > 0) {
 							// Set alpha all the way up
-							fakeData[ii+3] = 255;
+							fakeData[i+3] = 255;
 							// Replace with pallete color if available
-							fakeData.splice(ii,3,...this.palettes[paletteNumber][dataD[ii]] || [0,0,0]); 
+							fakeData.splice(i,3,...this.palettes[paletteNumber][dataD[i]] || [0,0,0]); 
 						}
 					}
 					// Insert data from fakeData Array into a newData Uint8ClampedArray
@@ -165,53 +165,53 @@ class Assets {
 		this.remaining--;
 		if(!this.remaining) this.runGameFn();
 	}
-	showcaseGraphics(){
-		// Create canvas to showcase graphics
-		let c=document.createElement('canvas'),ctx=c.getContext('2d'), gap = 30;
-		c.width = gap * this.palettes.length; 
-		c.height = gap * this.gfx.length;
+	// showcaseGraphics(){
+	// 	// Create canvas to showcase graphics
+	// 	let c=document.createElement('canvas'),ctx=c.getContext('2d'), gap = 30;
+	// 	c.width = gap * this.palettes.length; 
+	// 	c.height = gap * this.gfx.length;
 
-		// Clear background and append canvas
-		document.body.innerHTML = '';
-		document.body.append(c)
-		// Set webpage and canvas style
-		document.body.style.backgroundColor='white'
-		c.style.border='1px solid grey'
-		c.style.backgroundColor='white'
-		c.style.padding='5px';
-		c.style.imageRendering='pixelated'
-        ctx.mozImageSmoothingEnabled = 0;
-        ctx.webkitImageSmoothingEnabled = 0;
-        ctx.msImageSmoothingEnabled = 0;
-        ctx.imageSmoothingEnabled = 0;
+	// 	// Clear background and append canvas
+	// 	document.body.innerHTML = '';
+	// 	document.body.append(c)
+	// 	// Set webpage and canvas style
+	// 	document.body.style.backgroundColor='white'
+	// 	c.style.border='1px solid grey'
+	// 	c.style.backgroundColor='white'
+	// 	c.style.padding='5px';
+	// 	c.style.imageRendering='pixelated'
+    //     ctx.mozImageSmoothingEnabled = 0;
+    //     ctx.webkitImageSmoothingEnabled = 0;
+    //     ctx.msImageSmoothingEnabled = 0;
+    //     ctx.imageSmoothingEnabled = 0;
 
-		// Draw everything
-		for(let y = 0; y < this.gfx.length; y++){
-			// Break if property does not exist (like background, which is called assets.bg)
-			if (this[y] == void 0) break
-			// Draw
-			for(let x = 0; x < 12; x++){
-				ctx.drawImage(
-					this[y],				// image
-					this.gfx[y].fullW * x,  // source x
-					0,						// source y
-					this.gfx[y].fullW,		// source width
-					this.gfx[y].h,			// source height
-					x * gap,				// destination x
-					y * gap,				// destination y
-					this.gfx[y].fullW,		// destination W
-					this.gfx[y].h			// destination H
-				)
-			}
-			ctx.font = "10px Arial";
-			ctx.fillText(
-				` ↑ Sprite ${y-1}`,
-				0,
-				(y * gap) - gap/8)
-		}
-		return (function () {
-			console.clear();
-			return 'Hola zoy carl. aca estan todos los graficos q hace el game a partir de una imagen de mierda en greyscale. Las filas son las paletas y las columnas los distintos sprites'
-		})()
-	}
+	// 	// Draw everything
+	// 	for(let y = 0; y < this.gfx.length; y++){
+	// 		// Break if property does not exist (like background, which is called assets.bg)
+	// 		if (this[y] == void 0) break
+	// 		// Draw
+	// 		for(let x = 0; x < 12; x++){
+	// 			ctx.drawImage(
+	// 				this[y],				// image
+	// 				this.gfx[y].fullW * x,  // source x
+	// 				0,						// source y
+	// 				this.gfx[y].fullW,		// source width
+	// 				this.gfx[y].h,			// source height
+	// 				x * gap,				// destination x
+	// 				y * gap,				// destination y
+	// 				this.gfx[y].fullW,		// destination W
+	// 				this.gfx[y].h			// destination H
+	// 			)
+	// 		}
+	// 		ctx.font = "10px Arial";
+	// 		ctx.fillText(
+	// 			` ↑ Sprite ${y-1}`,
+	// 			0,
+	// 			(y * gap) - gap/8)
+	// 	}
+	// 	return (function () {
+	// 		console.clear();
+	// 		return 'Hola zoy carl. aca estan todos los graficos q hace el game a partir de una imagen de mierda en greyscale. Las filas son las paletas y las columnas los distintos sprites'
+	// 	})()
+	// }
 };

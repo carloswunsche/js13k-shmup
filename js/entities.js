@@ -1,8 +1,7 @@
-//////////////////////////
-// ENTITIES
-//////////////////////////
+////////////
+// PLAYER
+////////////
 
-// Layers Guide
 class Entity {
     constructor(image) {
         this.free = true;
@@ -20,12 +19,11 @@ class Entity {
         this.displayHeight = display.height;
         // Taken from global: To activate sound flags
         this.sfxFlags = game.sfxFlags;
-        // Taken from global: For accurate movement of land enemies by using bg's speed
-        this.stage = stage;
     }
     parentReset(custom){
         // Default hp for living objects
         this.hp = 1;
+        this.deadBound = false;
         // Animation stuff
         this.hitState = 0;
         this.opacity = 100;
@@ -33,6 +31,7 @@ class Entity {
         this.scale = 1;
         if (custom?.palette) this.palette = custom.palette
         // Timers
+        // 8 is reserved for kill animation. 7 is reserved for deadbound flag activation
         this.timers.fill(0);
         // Flags
         this.dying = false;
@@ -63,7 +62,7 @@ class Entity {
         this.queue.push(['Particle', data.options, layer]);
     }
     releaseItem(){
-        if (!this.carryItem) return;
+        if (!this.carryItem || !this.explode) return;
         this.queue.push(['Item', {x: this.x, y: this.y}])
     }
     timerCount(timeInFrames = 9999, timerUsed = 0) {
@@ -81,7 +80,7 @@ class Entity {
         this.x += x;
         this.y += this.stage.bg.speed + y;
     }
-    // Moviemiento por defecto:
+    // Movimiento por defecto
     updatePos() {this.vectorMovement()};
 }
 
@@ -168,35 +167,22 @@ class Player extends Entity {
         this.y = this.displayHeight + 99;
     }
 }
-
-// SHARE MOVEMENT
 class PlayerBullet extends Entity {
     constructor(image) {
         super(image);
         this.palette = 1;
         this.layer = 'pBullets'
-        // this.setupHitbox(); // Omitted because it has to be called on reset
         this.speed = 6;
-        this.deadBound = 'any';
     }
     reset1(custom) {
-        this.setupHitbox();
-        if (custom?.hitbox) this.setupHitbox(...custom.hitbox);
+        this.deadBound = true;
+        if (custom?.hitbox) this.setupHitbox(...custom.hitbox); else this.setupHitbox();
         this.x = custom.x + (custom.offset || 0);
         this.y = custom.y;
         this.rotation = (custom.rotation + 1.5708) || 0;
         this.angle = custom.angle || 1.5708;
     }
-    updateData() {
-        // Destroy if out of the top
-        if (this.y <= 0) this.hp = 0;
-    }
 }
-
-//////////////////////////
-// ENEMIES
-//////////////////////////
-
 class AccessToPlayer extends Entity {
     constructor(image){
         super(image)
@@ -207,12 +193,18 @@ class AccessToPlayer extends Entity {
     }
 }
 
+////////////
+// ENEMIES
+////////////
+
 class Enemy extends AccessToPlayer {
     constructor(image) {
         super(image)
-        this.layer = 'E_Air' // most of the enemies are land enemies
+        this.layer = 'E_Air' // The majority of enemies are aerial
         this.explosionData = function() {return {qty: 9, options: {x:this.x, y:this.y}}};
         this.killAnimation = false;
+        // Taken from global: For accurate movement of land enemies by using bg's speed
+        this.stage = stage;
     }
     reset1(custom) {
         this.x = custom?.x || this.displayWidth / 2;
@@ -240,120 +232,75 @@ class Enemy extends AccessToPlayer {
             this.sfxFlags[sound || 'eShot'] = true;
     }
     // Kill Animations
-    smokeBoom(){
+    commonBoom(every, particleQty, colorArr){
+        //////////////////
+        /// Hard Coded ///
+        //////////////////
+        // Appear 1 frame, Disappear 3 frames. It uses timer 8.
+        this.hitState = this.timers[8]%4 ? 1 : 0;
         // Activating dying flag will call this function instead of the regular updateData and updatePos every iteration
         this.dying = true;
 
 
-        //////////////
-        /// Smoke ///
-        /////////////
-
-        // If timer is 0, 10, 20..etc
-        if (this.timers[8]%10 === 0) {
-
+        ////////////////////////
+        /// Decay explosions ///
+        ////////////////////////
+        // Every amount of frames (including 0)
+        if (this.timers[8]%every === 0 && this.timers[8] < 100) {
             // Little smoke with added random position
             this.spawnParticles({
-                qty: 4,  
+                qty: particleQty,  
                 options: {
                     x: this.x + this.math.randomBetween(-this.width/2,this.width/2), 
                     y: this.y + this.math.randomBetween(-this.height/2,this.height/2), 
                     speed: 1, 
                     subSpdRange:[0.5,1],
-                    colors:['#eee','#ddd','#ccc','#bbb']
+                    colors: colorArr
                 }
             })
             // Sound
             this.sfxFlags.xplos_S = true;
         }
-
-
-        ///////////////
-        // Animation //
-        ///////////////
-
-        // Hit state (dissappear) when timer is NOT 0, 4, 8..etc
-        this.hitState = this.timers[8]%4 ? 1 : 0;
-        // Also fall a little...
-        this.y+=0.2;
-        // Also shrink a bit...
-        this.scale-=0.005
-
-
         /////////////
         /// Timer ///
         /////////////
+        // Start counting
+        this.timerCount(999, 8)
+    }
+    smokeBoom(){
+        this.commonBoom(10,4,['#eee','#ddd','#ccc','#bbb'])
 
-        // Start counting at this moment. Up until now timer was always 0.
-        this.timerCount(60, 8)
-        // When timer ends...
+        // Animation: fall a little and shrink a little
+        this.y+=0.2; this.scale-=0.005
+
+        // Final explosion
         if (this.timers[8] === 60) {
-            // Big explosion at the end
+            // Big explosion at the end with sound
             this.spawnParticles({qty: 20, options: {x: this.x, y:this.y}})
-            // Sound
             this.sfxFlags.xplos_L = true;
             // Finally free entity. Killing is done here.
             this.free = true;
         }
     }
     stutterBoom(){
-        // Activating dying flag will call this function instead of the regular updateData and updatePos every iteration
-        this.dying = true;
+        this.commonBoom(20, 15)
 
-
-        /////////////////
-        /// Mini Xplo ///
-        /////////////////
-
-        // If timer is 0, 20, 40..etc.. but less than 100
-        if (this.timers[8]%20 === 0 && this.timers[8] < 100) {
-            // Mini explosions with added random position
-            this.spawnParticles({
-                qty: 15,  
-                options: {
-                    x: this.x + this.math.randomBetween(-this.width/2,this.width/2), 
-                    y: this.y + this.math.randomBetween(-this.height/2,this.height/2), 
-                    speed: 1, 
-                    subSpdRange:[0.5,1],
-                }
-            })
-            // Sound
-            this.sfxFlags.xplos_S = true;
-        }
-
-
-        ///////////////
-        // Animation //
-        ///////////////
-
-        // Hit state (dissappear) when timer is NOT 0, 4, 8..etc
-        this.hitState = this.timers[8]%4 ? 1 : 0;
-        // Also fall a little...
+        // Animation: Fall very little and stutter randomly on the x axis
         this.y += 0.1;
-        // Also stutter...
         if (this.timers[8] < 100) this.x += this.math.randomBetween(-1,1)
 
-
-        /////////////
-        /// Timer ///
-        /////////////
-
-        // Start counting
-        this.timerCount(999, 8)
-
-        // Boom1
+        // Boom1 with sound
         if (this.timers[8] === 100) {
             this.spawnParticles({qty: 150, options: {x: this.x, y:this.y, speed: 2}})
             this.sfxFlags.xplos_L = true;
         }
-        // Boom2
+        // Boom2 with sound
         if (this.timers[8] === 110) {
             this.spawnParticles({qty: 100, options: {x: this.x, y:this.y}})
             this.spawnParticles({qty: 50, options: {x: this.x, y:this.y, speed: 6}})
             this.sfxFlags.xplos_L = true;
             // Finally free entity. Killing is done here.
             this.free = true;
-            // game.iteration = 3500
         }
     }
     // Reduce all moving functions that are not used
@@ -379,9 +326,7 @@ class BigTank extends Enemy {
         super(image)
         this.palette = 8;
         this.setupHitbox(this.width-2, this.height-5);
-        this.deadBound = 'bottom';
         this.layer = 'E_Land'
-        this.colors = ['#443','#454','#432']
         this.killAnimation = this.stutterBoom
     }
     reset2(){
@@ -400,7 +345,7 @@ class BigTank extends Enemy {
                 options: {
                     x:this.x+6*side, 
                     y:this.y,
-                    colors: this.colors,
+                    colors: ['#443','#454','#432'],
                     speed: this.pos === 1 ? 2.5 : 3.5,
                     scale: 8,
                     angle: 
@@ -446,10 +391,10 @@ class EnemyBullet extends Enemy {
         this.layer = 'eBullets'
         this.setupHitbox(1, 1);
         this.explosionData = () => false;
-        this.deadBound = 'any';
         this.currentColor = '#ff7';
     }
     reset2(custom) {
+        this.deadBound = true;
         // Necessary because it's using particle drawing system now
         this.scale = 3;
 
@@ -482,7 +427,6 @@ class SinePop extends Enemy {
         super(image)
         this.palette = 6
         this.setupHitbox(this.height/2,this.height/2-1,0,-1);
-        this.deadBound = 'bottom';
     }
     updatePos() {
         // Cosine movement
@@ -496,7 +440,6 @@ class Sniper extends Enemy {
         super(image)
         this.palette = 0;
         this.setupHitbox(this.width/2-1, this.height/2-1);
-        this.deadBound = 'bottom';
     }
     reset2(){
         this.hp = 3;
@@ -530,8 +473,6 @@ class Fatty extends Enemy {
         this.hp = 4;
         // Set x starting position based on side
         this.x = this.displayWidth / 2 - (this.displayWidth / 2 + this.width/2) * this.side;
-        // Set this.deadBound based on this.side
-        this.deadBound = custom?.side === 1 ? 'right' : 'left';
     }
     updateData() {
         this.timerCount(80);
@@ -551,7 +492,6 @@ class Tank extends Enemy {
         super(image)
         this.palette = 6;
         this.setupHitbox(this.width / 2, this.height / 2-2);
-        this.deadBound = 'bottom';
         this.layer = 'E_Land'
     }
     reset2(){
@@ -559,13 +499,11 @@ class Tank extends Enemy {
     }
     updatePos() {this.bgMovement(0,.1)}
 }
-
 class Assaulter extends Enemy {
     constructor(image) {
         super(image)
         this.palette = 4;
         this.setupHitbox(10, 10);
-        this.deadBound = 'any';
         this.killAnimation = this.smokeBoom
     }
     reset2() {
@@ -590,7 +528,6 @@ class Boat extends Enemy {
         super(image)
         this.palette = 1;
         this.setupHitbox();
-        this.deadBound = 'bottom';
     }
     reset2(){this.hp = 4}
     updateData(){
@@ -604,19 +541,19 @@ class Boat extends Enemy {
     updatePos() {this.bgMovement(.05 * this.side, .05)}
 }
 
-//////////////////////////
+/////////////
 // PARTICLES
-//////////////////////////
+/////////////
 
 class Particle extends AccessToPlayer {
     constructor(){
         super()
-        this.deadBound = 'any';
         this.layer = 'Parts'
         // Nullify hitbox (to skip hitbox update function on particles)
         this.hitbox = 0;
     }
     reset1(custom) {
+        this.deadBound = true;
         this.x = custom?.x;
         this.y = custom?.y;
         this.scale = custom?.scale || 4;
@@ -632,16 +569,18 @@ class Particle extends AccessToPlayer {
         this.opacity = custom?.opacity || 100;
         // Beheavior
         this.beheavior = custom?.beheavior || 1;
+        // 
     }
     updateData() {
+        // If invisible, kill and return
+        if (this.scale <= 0 || this.opacity <= 0) return this.hp = 0;
+
+        // General beheavior
         this.rotation += .08 * this.rotateDir; // 5 degree in a random orientation
         this.opacity -= 5;
 
         // Call beheavior
         this[`beheavior${this.beheavior}`]()
-
-        // If invisible, kill
-        if (this.scale <= 0 || this.opacity <= 0) this.hp = 0;
     }
     updatePos() {this.vectorMovement()}
     // Particles produced on explosion or sparkles from item
@@ -654,18 +593,22 @@ class Particle extends AccessToPlayer {
         // Follow player continuosly
         this.x = this.player.x;
         this.y = this.player.y;
-        this.scale+=4
+        this.scale += 4
     }
+    // Used by EnemyBullets
     beheavior3(){
         this.scale -=.2;
     }
 }
 
+/////////////
+// ITEMS
+/////////////
+
 class Item extends Entity {
     constructor(image) {
         super(image)
         this.setupHitbox();
-        this.deadBound = 'bottom';
         this.layer = 'Pickups';
         this.colors = ['#9ff','#aff','#bff','#dff','#eff'];
         this.explosionData = function() {

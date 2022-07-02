@@ -4,8 +4,9 @@
 
 class Stage {
     constructor(tileSize){
+		// this.r__rows = [-8,0,8,16,24,32,40,48,56,64,72,80,88,96,104,112];
+        this.r__rows = new Array(16).fill(-8).map((n,i)=>n+8*i)
         this._tileSize = tileSize;
-        this.r__rows = [-8, 0, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112];
         this._tileQty = 320;
     }
     needs(assets, displayW, displayH){
@@ -65,32 +66,39 @@ class Stage {
 		// a[1]	=()=> this.p.free('Sniper', {x: 40});
 		// a[1]	=()=> this.p.free('SinePop', {phase:-1});
 
-
-
-		// a[1]  	=()=>this.bg.speed = 2.5
-		// a[2]  	=()=>this.bg.queue.push(...this.patterns['5'], ...this.patterns['6'], ...this.patterns['7']);
+		// a[1] =()=>this.bg.speed = 2.5
+		// a[2] =()=>this.bg.queue.push(...this.patterns['5'], ...this.patterns['6'], ...this.patterns['7']);
 		// a[3]	=()=>this.bg.palette = 9;
-		// a[4]  	=()=>game.iteration = 2400;
+		// a[1] =()=>game.iteration = 1399;
 
 
 
-
-		a[50] =()=> this.p.free('SinePop',{phase:1});
-		a[60] =()=> this.p.free('SinePop',{phase:1});
-		a[70] =()=> this.p.free('SinePop',{phase:1});
-		a[80] =()=> this.p.free('SinePop',{phase:1});
-		a[90] =()=> this.p.free('SinePop',{phase:1});
+		// New
+		// let 
+		// sinepop1 =()=> this.p.free('SinePop',{phase:1}),
+		// sinepop2 =()=> this.p.free('SinePop',{phase:-1});
+		// [50,60,70,80,90,820,830,840,850,860].forEach(n=>a[n]=sinepop1);
+		// [400,410,420,430,440,1780,1790,1800,1810,1820].forEach(n=>a[n]=sinepop2);
+		
+		// Old
+		a[50] 	=()=> this.p.free('SinePop',{phase:1});
+		a[60] 	=()=> this.p.free('SinePop',{phase:1});
+		a[70] 	=()=> this.p.free('SinePop',{phase:1});
+		a[80] 	=()=> this.p.free('SinePop',{phase:1});
+		a[90] 	=()=> this.p.free('SinePop',{phase:1});
 
 
 		a[145]	=()=> this.p.free('Tank',  	{x:55, carryItem: true});
 		a[270]	=()=> this.p.free('Tank',  	{x:105});
 		a[300]	=()=> this.p.free('Sniper',	{x: 40, alt: true});
 
-		a[400] =()=> this.p.free('SinePop',	{phase:-1});
-		a[410] =()=> this.p.free('SinePop',	{phase:-1});
-		a[420] =()=> this.p.free('SinePop',	{phase:-1});
-		a[430] =()=> this.p.free('SinePop',	{phase:-1});
-		a[440] =()=> this.p.free('SinePop',	{phase:-1});
+
+		// Old
+		a[400] 	=()=> this.p.free('SinePop',	{phase:-1});
+		a[410] 	=()=> this.p.free('SinePop',	{phase:-1});
+		a[420] 	=()=> this.p.free('SinePop',	{phase:-1});
+		a[430] 	=()=> this.p.free('SinePop',	{phase:-1});
+		a[440] 	=()=> this.p.free('SinePop',	{phase:-1});
 
 		a[550]	=()=>{this.bg.queue.push(...this.patterns['2'], ...this.patterns['3'], ...this.patterns['4']);
 					  this.p.free('Sniper', {x: 120, alt: true})}
@@ -100,11 +108,13 @@ class Stage {
 		a[660]	=()=> this.p.free('Tank', 	{x:52});
 		a[750]	=()=> this.p.free('Sniper', {alt: true});
 
-		a[820] =()=> this.p.free('SinePop',	{phase:1});
-		a[830] =()=> this.p.free('SinePop',	{phase:1});
-		a[840] =()=> this.p.free('SinePop',	{phase:1});
-		a[850] =()=> this.p.free('SinePop',	{phase:1});
-		a[860] =()=> this.p.free('SinePop',	{phase:1});
+
+		// Old
+		a[820] 	=()=> this.p.free('SinePop',	{phase:1});
+		a[830] 	=()=> this.p.free('SinePop',	{phase:1});
+		a[840] 	=()=> this.p.free('SinePop',	{phase:1});
+		a[850] 	=()=> this.p.free('SinePop',	{phase:1});
+		a[860] 	=()=> this.p.free('SinePop',	{phase:1});
 
 		a[880]	=()=> this.p.free('Tank', 	{x:112, carryItem: true});
 		a[1000]	=()=> this.p.free('Sniper');
@@ -125,6 +135,7 @@ class Stage {
 		a[1700]	=()=> this.p.free('Assaulter',{carryItem: true});
 		a[1750]	=()=> this.bg.speed += .25;
 
+		// Old
 		a[1780]	=()=> this.p.free('SinePop',{phase:-1});
 		a[1790]	=()=> this.p.free('SinePop',{phase:-1});
 		a[1800]	=()=> this.p.free('SinePop',{phase:-1});
@@ -150,7 +161,6 @@ class Stage {
 		a[2400]	=()=> {game.fade.speed = 1; game.fade.layer='top';}
 		a[2401]	=()=> {this.p.free('BigTank'); game.sfxFlags.bigTank = true}
 		a[3001]	=()=> {this.p.free('BigTank', {palette: 6}); game.sfxFlags.bigTank = true}
-		
 		// a[]	=()=>
 
 		// Reset level at the end of array

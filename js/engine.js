@@ -37,7 +37,7 @@ class Engine {
         // Render Acc t
         this.renderAcc = 0;
         // Time slice
-        this.s = 1000 / this.ups;
+        this.slice = 1000 / this.ups;
         // Fps
         this.oneFrameInMs = 1000 / 60;
         // Difference between this.lastStamp and newStamp
@@ -59,11 +59,11 @@ class Engine {
         // Se acumula delta
         this.timeAcc += this.delta;
         
-        while (this.timeAcc > this.s) {
+        while (this.timeAcc > this.slice) {
             this.callUpdate();
-            this.timeAcc -=  this.s;
+            this.timeAcc -=  this.slice;
             // Necesary for render section
-            this.renderAcc += this.s;
+            this.renderAcc += this.slice;
             // this.iterations[0]++;
             // console.log('%cupdate', 'color:grey')
         };
@@ -77,7 +77,7 @@ class Engine {
         // Segun la documentacion de mozilla, lo primero que hacer en el main loop es ya pedirle el siguiente frame al navegador
         if (!this.paused) window.requestAnimationFrame((newStamp) => this.loop(newStamp));
     }    
-    // Necesary for game reset (almost...)
+    // Necesary for game reset (mm....)
     pause () {
         if (!this.paused) return this.paused = !0;
         if (this.paused) {this.callUpdate();this.callRender()};

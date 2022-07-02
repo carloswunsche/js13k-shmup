@@ -37,10 +37,6 @@ cat \
 uglifyjs build/game.js -c drop_console=true --compress --mangle -o build/game.min.js
 
 # Roadroll JS
-# roadroller --max-memory 600 -Zab32 -Zdy0 -Zlr1500 -Zmd50 -S0,1,2,3,6,7,13,21,50,57,173,458 build/game.min.js -o build/game.roadrolled.js
-#####################################
-# Use the next one to SAVE a bit more
-#####################################
 roadroller --max-memory 600 build/game.min.js -o build/game.roadrolled.js
 
 # Uglify CSS
@@ -136,5 +132,5 @@ echo "GZip size: $zippedsize bytes"
 # +9046 = Touch screen implementation
 # +9302 = Midboss + better architecture
 # +9377 = New big explosion for midboss (needs refactoring)
-# 
+# -9375
 # 

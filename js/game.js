@@ -188,10 +188,13 @@ class Game {
     }
     // Entities update function
     updateEntity(entity) {
-        // Entities that are dying, call big explosion and return now.
-        if(entity.dying) return entity.killAnimation(); 
-        // General updates for all entities
+        // General updates for all entities (start)
         entity.hitState = 0;
+        // Timer to set deadBound to those who don't have one yet
+        // 50 is a good number that allows Items to survive the top bound when "jumping" up
+        entity.timerCount(50,7); if (entity.timers[7]===50) entity.deadBound = true;
+        // For entities that are dying now, keep calling killAnimation and return
+        if(entity.dying) return entity.killAnimation();
         // Particular updateData
         entity.updateData?.(this.input.buttons);
         // Update position
@@ -202,37 +205,17 @@ class Game {
         if (entity.deadBound) this.testDeadBound(entity);
         // Every entity that is NOT a particle gets their hitbox updated
         if (entity.hitbox) entity.updateHitbox();
-        // Fix opacity if under 0
+        // General updates for all entities (end)
         if (entity.opacity < 0) entity.opacity = 0;
     }
     testDeadBound(entity){
-        switch (entity.deadBound) {
-            // Player bullets
-            case 'top': 
-                if (entity.y <= 0) entity.hp = 0; 
-                break;
-            // Most enemies
-            case 'bottom':
-                if (entity.y >= entity.displayHeight + entity.height / 2) entity.hp = 0;
-                break;
-            // Enemy Bullets
-            case 'any':
-                if (entity.y >= entity.displayHeight + entity.height / 2 ||
-                    entity.y <= 0 - entity.height / 2                    ||
-                    entity.x >= entity.displayWidth + entity.width / 2   ||
-                    entity.x <= 0 - entity.width / 2) {
-                        entity.hp = 0;
-                }
-                break;
-            // Some enemies
-            case 'left':
-                if (entity.x <= 0 - entity.width / 2) entity.hp = 0;
-                break;
-            // Some enemies
-            case 'right':
-                if (entity.x >= entity.displayWidth + entity.width / 2) entity.hp = 0;
-                break;
-        }
+        if (!entity.deadBound) return;
+
+        if (entity.y >= entity.displayHeight + entity.height / 2 ||
+            entity.y <= 0 - entity.height / 2                    ||
+            entity.x >= entity.displayWidth + entity.width / 2   ||
+            entity.x <= 0 - entity.width / 2)
+                entity.hp = 0;
     }
     // Killing entities
     handleDeadEntities(){
@@ -240,22 +223,27 @@ class Game {
             for (let i = arr.length-1; i > -1; i--) {
                 // Si ya no tienen nada de hp, matarlos.
                 if (arr[i].hp <= 0) this.kill(arr[i]);
-                // Si tras la matanza hay entities que esten free, liberar item (if any) y sacarlos del array.
-                if (arr[i].free) {arr[i].releaseItem(); arr.splice(i,1)}
+                // Si tras la matanza hay entities que esten free...
+                if (arr[i].free) {
+                    // Liberar item (will only happen if they have carryItem flag and if killed by collision)
+                    arr[i].releaseItem()
+                    // Sacar del array
+                    arr.splice(i,1)
+                }
             }
         }
     }
     kill(entity){
-        // Si entity ya se encuentra muriendo (killAnimationFn), return.
+        // Si entity ya se encuentra on it's kill Animation, return.
         if (entity.dying) return;
 
-        // Enemies with flag killAnimation will not be free instantly but will run an animation first.
-        if (entity.killAnimation) return entity.killAnimation();
+        // Enemies with flag killAnimation that have been killed by collision will not be free instantly but will go through an animation first.
+        if (entity.killAnimation && entity.explode) return entity.killAnimation();
 
-        // Para los demas: Si ha sido matado por colision y tiene data de la explosion, generar particulas
+        // Para los demas: Si ha sido matado por colision, generar particulas de explosion (will only happen if they have explosionData)
         if (entity.explode) entity.spawnParticles(entity.explosionData());
 
-        // Player will also be positioned far so that eBullets will always go down
+        // In the case of the Player, it will be positioned far so that new eBullets will always go down
         if (entity instanceof Player) entity.positionFar();
 
         // Finally, all entities EXCEPT those with delayFree flag will be free NOW! Killing is done for these.
