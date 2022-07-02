@@ -13,14 +13,12 @@ class Entity {
         this.timers = new Array(9);
         // Taken from global: Math object
         this.math = customMath;
-        // Taken from global: Used for bullet shooting
-        this.pool = pool;
         // Taken from global: Used for queue spawning bullets and particles
         this.queue = game.queuedFns;
         // Taken from global: Used for positioning relative to display
         this.displayWidth = display.width;
         this.displayHeight = display.height;
-        // Taken from global: To activate sounds
+        // Taken from global: To activate sound flags
         this.sfxFlags = game.sfxFlags;
         // Taken from global: For accurate movement of land enemies by using bg's speed
         this.stage = stage;
@@ -33,16 +31,18 @@ class Entity {
         this.opacity = 100;
         this.rotation = 0;
         this.scale = 1;
+        if (custom?.palette) this.palette = custom.palette
         // Timers
         this.timers.fill(0);
         // Flags
         this.dying = false;
+        this.explode = false;
         this.carryItem = custom?.carryItem || false;
         // Custom resets if any
         this.reset1?.(custom);
         this.reset2?.(custom);
-        // Always leave hitbox update for the end of reset function
-        this.updateHitbox();
+        // Always leave hitbox update for the end of reset function. This excludes particles which doesn't have hitbox
+        if (this.hitbox) this.updateHitbox();
         // Useful when chaining method in pool
         return this;
     }
@@ -58,12 +58,13 @@ class Entity {
         this.hitbox[2] = this.y - this.yMargin + this.yOffset  //y1 (up)
         this.hitbox[3] = this.y + this.yMargin + this.yOffset  //y2 (down)
     }
-    spawnParticles(data, layer){
-        // If no data received, don't spawn any particles
-        if (!data) return;
-    
+    spawnParticles(data, layer){ 
         for (let i = 0; i < data.qty; i++)
-        this.queue.push(()=>this.pool.free('Particle', data.options, layer));
+        this.queue.push(['Particle', data.options, layer]);
+    }
+    releaseItem(){
+        if (!this.carryItem) return;
+        this.queue.push(['Item', {x: this.x, y: this.y}])
     }
     timerCount(timeInFrames = 9999, timerUsed = 0) {
         // Count until chosen time, using selected timer
@@ -71,21 +72,11 @@ class Entity {
     }
     // Movimiento por vector
     vectorMovement(){
-        // this.x += 
-        // custom?.xAng !== void 0 ? custom.xAng : M.cos(this.angle) 
-        // * this.speed;
-
-        // this.y -= 
-        // custom?.yAng !== void 0 ? custom.yAng : M.sin(this.angle) 
-        // * this.speed;
-
-
-        // Less space:
         this.x += M.cos(this.angle) * this.speed;
         this.y -= M.sin(this.angle) * this.speed;
     }
-    // Movimiento de tierra
-    landMovement(x,y) {
+    // Movimiento con el background
+    bgMovement(x,y) {
         // Go down at the speed of background
         this.x += x;
         this.y += this.stage.bg.speed + y;
@@ -98,24 +89,22 @@ class Player extends Entity {
     constructor(image) {
         super(image);
         this.palette = 7;
-        this.layer = 'Players'
+        this.layer = 'Players';
         this.setupHitbox(2, 2, 0, 2);
         this.explosionData = function() {return {qty: 40, options: {x:this.x, y:this.y,speed: 4}}};
         this.shotTime = 6;
-        // Taken from global: Used for moving and shooting
-        this.buttons = input.buttons;
     }
     reset1() {
         this.outOfBounds = false;
         this.x = this.displayWidth / 2;
         this.y = 95;
     }
-    updateData() {
+    updateData(buttons) {
         ////////////
         // SHOT
         ///////////
         // If button pressed & timer has reached destination
-        if (this.buttons[4] > 0 && this.timers[0] === this.shotTime) {
+        if (buttons[4] > 0 && this.timers[0] === this.shotTime) {
 
             // Queue bullets version 2
             let parms = [
@@ -124,7 +113,8 @@ class Player extends Entity {
                 {x: this.x+7, y: this.y-4, angle: 1.0472, rotation: 5.2359, hitbox: [1,2]},
                 {x: this.x-7, y: this.y-4, angle: 2.0944, rotation: 4.1887, hitbox: [1,2]}
             ];
-            for(let i = 0; i < 4; i++)this.queue.push(() => this.pool.free('PlayerBullet', parms[i]));
+            // for(let i = 0; i < 4; i++)this.queue.push(() => this.pool.free('PlayerBullet', parms[i]));
+            for(let i = 0; i < 4; i++) this.queue.push(['PlayerBullet', parms[i]]);
             
             // Sound
             this.sfxFlags.pShot = true;
@@ -134,30 +124,44 @@ class Player extends Entity {
         // Shot timer always counting up
         this.timerCount(this.shotTime);
     }
-    updatePos() {
+    updatePos(buttons) {
         // Always start with no angle
         this.angle = 0;
         // Evaluate directions
-        if (this.buttons[0]) this.angle = 1.570;
-        if (this.buttons[1]) this.angle = 6.283;
-        if (this.buttons[2]) this.angle = 4.712;
-        if (this.buttons[3]) this.angle = 3.141;
-        if (this.buttons[0] && this.buttons[1]) this.angle = .785;
-        if (this.buttons[1] && this.buttons[2]) this.angle = 5.497;
-        if (this.buttons[2] && this.buttons[3]) this.angle = 3.926;
-        if (this.buttons[0] && this.buttons[3]) this.angle = 2.356;
+        if (buttons[0]) this.angle = 1.570;
+        if (buttons[1]) this.angle = 6.283;
+        if (buttons[2]) this.angle = 4.712;
+        if (buttons[3]) this.angle = 3.141;
+        if (buttons[0] && buttons[1]) this.angle = .785;
+        if (buttons[1] && buttons[2]) this.angle = 5.497;
+        if (buttons[2] && buttons[3]) this.angle = 3.926;
+        if (buttons[0] && buttons[3]) this.angle = 2.356;
         // This is just to stop moving if opposite directions are pressed (Can be omitted if space needed)
-        if (this.buttons[0] && this.buttons[2] || this.buttons[1] && this.buttons[3]) this.angle = 0;
+        if (buttons[0] && buttons[2] || buttons[1] && buttons[3]) this.angle = 0;
         // Set speed
         this.speed = !this.angle ? 0 : 1.5;
         // Move
         this.vectorMovement(this.angle)
     }
     fixOutOfBounds() {
-        if (this.hitbox[2] < 0) this.y = this.yMargin - this.yOffset;
-        if (this.hitbox[1] > this.displayWidth) this.x = this.displayWidth - this.xMargin - this.xOffset;
-        if (this.hitbox[3] > this.displayHeight) this.y = this.displayHeight - this.yMargin - this.yOffset;
-        if (this.hitbox[0] < 0) this.x = this.xMargin - this.xOffset;
+        // Correct (but bigger) way. Also no margin here.
+        // if (this.y < this.yMargin - this.yOffset) this.y = this.yMargin - this.yOffset;
+        // if (this.y > this.displayHeight - this.yMargin - this.yOffset) this.y = this.displayHeight - this.yMargin - this.yOffset;
+        // if (this.x > this.displayWidth - this.xMargin - this.xOffset) this.x = this.displayWidth - this.xMargin - this.xOffset;
+        // if (this.x < this.xMargin - this.xOffset) this.x = this.xMargin - this.xOffset;
+
+        // Faster (and smaller) way. But be careful if you set up the hitbox differently
+        // let margin = 3;
+        // if (this.y < 0 + margin) this.y = 0 + margin;
+        // if (this.y > 116 - margin) this.y = 116 - margin;
+        // if (this.x > 158 - margin) this.x = 158 - margin;
+        // if (this.x < 2 + margin) this.x = 2 + margin;
+
+        // Even faster (with a margin of 3)
+        if (this.y < 3) this.y = 3;
+        if (this.y > 113) this.y = 113;
+        if (this.x > 155) this.x = 155;
+        if (this.x < 5) this.x = 5;
     }
     positionFar() {
         this.x = this.displayWidth / 2;
@@ -173,7 +177,7 @@ class PlayerBullet extends Entity {
         this.layer = 'pBullets'
         // this.setupHitbox(); // Omitted because it has to be called on reset
         this.speed = 6;
-        this.deadBound = 'top';
+        this.deadBound = 'any';
     }
     reset1(custom) {
         this.setupHitbox();
@@ -208,6 +212,7 @@ class Enemy extends AccessToPlayer {
         super(image)
         this.layer = 'E_Air' // most of the enemies are land enemies
         this.explosionData = function() {return {qty: 9, options: {x:this.x, y:this.y}}};
+        this.killAnimation = false;
     }
     reset1(custom) {
         this.x = custom?.x || this.displayWidth / 2;
@@ -218,19 +223,138 @@ class Enemy extends AccessToPlayer {
         this.alt = custom?.alt || false;
     }
     shot(howMany = 1, spd, angle, add, offX = 0, offY = 0, sound) {
-        // Reduce layer name
         for(let i = 0; i < howMany; i++)
-            this.pool.free('EnemyBullet', 
-                {x: this.x + offX, 
-                y: this.y + offY, 
-                speed: spd, 
-                // This angle parameter can be the string 'auto' to go towards Player
-                angle: angle || 270 + i * (360 / howMany),
-                // Multiply add to spread, if any
-                add: add * (i - M.floor(howMany/2)) || 0,
-            });
+            this.queue.push(
+                [
+                    'EnemyBullet', 
+                    {x: this.x + offX, 
+                    y: this.y + offY, 
+                    speed: spd, 
+                    // This angle parameter can be the string 'auto' to go towards Player
+                    angle: angle || 270 + i * (360 / howMany),
+                    // Multiply add to spread, if any
+                    add: add * (i - M.floor(howMany/2)) || 0}
+                ]
+            )
             // Sound
             this.sfxFlags[sound || 'eShot'] = true;
+    }
+    // Kill Animations
+    smokeBoom(){
+        // Activating dying flag will call this function instead of the regular updateData and updatePos every iteration
+        this.dying = true;
+
+
+        //////////////
+        /// Smoke ///
+        /////////////
+
+        // If timer is 0, 10, 20..etc
+        if (this.timers[8]%10 === 0) {
+
+            // Little smoke with added random position
+            this.spawnParticles({
+                qty: 4,  
+                options: {
+                    x: this.x + this.math.randomBetween(-this.width/2,this.width/2), 
+                    y: this.y + this.math.randomBetween(-this.height/2,this.height/2), 
+                    speed: 1, 
+                    subSpdRange:[0.5,1],
+                    colors:['#eee','#ddd','#ccc','#bbb']
+                }
+            })
+            // Sound
+            this.sfxFlags.xplos_S = true;
+        }
+
+
+        ///////////////
+        // Animation //
+        ///////////////
+
+        // Hit state (dissappear) when timer is NOT 0, 4, 8..etc
+        this.hitState = this.timers[8]%4 ? 1 : 0;
+        // Also fall a little...
+        this.y+=0.2;
+        // Also shrink a bit...
+        this.scale-=0.005
+
+
+        /////////////
+        /// Timer ///
+        /////////////
+
+        // Start counting at this moment. Up until now timer was always 0.
+        this.timerCount(60, 8)
+        // When timer ends...
+        if (this.timers[8] === 60) {
+            // Big explosion at the end
+            this.spawnParticles({qty: 20, options: {x: this.x, y:this.y}})
+            // Sound
+            this.sfxFlags.xplos_L = true;
+            // Finally free entity. Killing is done here.
+            this.free = true;
+        }
+    }
+    stutterBoom(){
+        // Activating dying flag will call this function instead of the regular updateData and updatePos every iteration
+        this.dying = true;
+
+
+        /////////////////
+        /// Mini Xplo ///
+        /////////////////
+
+        // If timer is 0, 20, 40..etc.. but less than 100
+        if (this.timers[8]%20 === 0 && this.timers[8] < 100) {
+            // Mini explosions with added random position
+            this.spawnParticles({
+                qty: 15,  
+                options: {
+                    x: this.x + this.math.randomBetween(-this.width/2,this.width/2), 
+                    y: this.y + this.math.randomBetween(-this.height/2,this.height/2), 
+                    speed: 1, 
+                    subSpdRange:[0.5,1],
+                }
+            })
+            // Sound
+            this.sfxFlags.xplos_S = true;
+        }
+
+
+        ///////////////
+        // Animation //
+        ///////////////
+
+        // Hit state (dissappear) when timer is NOT 0, 4, 8..etc
+        this.hitState = this.timers[8]%4 ? 1 : 0;
+        // Also fall a little...
+        this.y += 0.1;
+        // Also stutter...
+        if (this.timers[8] < 100) this.x += this.math.randomBetween(-1,1)
+
+
+        /////////////
+        /// Timer ///
+        /////////////
+
+        // Start counting
+        this.timerCount(999, 8)
+
+        // Boom1
+        if (this.timers[8] === 100) {
+            this.spawnParticles({qty: 150, options: {x: this.x, y:this.y, speed: 2}})
+            this.sfxFlags.xplos_L = true;
+        }
+        // Boom2
+        if (this.timers[8] === 110) {
+            this.spawnParticles({qty: 100, options: {x: this.x, y:this.y}})
+            this.spawnParticles({qty: 50, options: {x: this.x, y:this.y, speed: 6}})
+            this.sfxFlags.xplos_L = true;
+            // Finally free entity. Killing is done here.
+            this.free = true;
+            // game.iteration = 3500
+        }
     }
     // Reduce all moving functions that are not used
     easeOutCubic(xy, startPos, goTo, timeInFrames, timerUsed = 0) {
@@ -254,15 +378,14 @@ class BigTank extends Enemy {
     constructor(image) {
         super(image)
         this.palette = 8;
-        this.setupHitbox((this.width/2 * 2)-2, (this.height / 2 * 2) -5);
+        this.setupHitbox(this.width-2, this.height-5);
         this.deadBound = 'bottom';
         this.layer = 'E_Land'
-        this.delayedFree = true;
         this.colors = ['#443','#454','#432']
+        this.killAnimation = this.stutterBoom
     }
     reset2(){
         this.scale = 2;
-        this.height *= 2;
         this.hp = 70;
         this.speed = 0.2
         // Used when there are multiple stages of movement
@@ -300,8 +423,6 @@ class BigTank extends Enemy {
                     'cannon'
                 );
         }
-        
-
     }
     updatePos(){
         if (this.pos === 1) {
@@ -436,7 +557,7 @@ class Tank extends Enemy {
     reset2(){
         this.hp = 3;
     }
-    updatePos() {this.landMovement(0,.1)}
+    updatePos() {this.bgMovement(0,.1)}
 }
 
 class Assaulter extends Enemy {
@@ -445,7 +566,7 @@ class Assaulter extends Enemy {
         this.palette = 4;
         this.setupHitbox(10, 10);
         this.deadBound = 'any';
-        this.delayedFree = true;
+        this.killAnimation = this.smokeBoom
     }
     reset2() {
         this.hp = 22;
@@ -480,19 +601,20 @@ class Boat extends Enemy {
             this.timers[0] > 39 && this.timers[0] < 81)
                 this.shot(1,1,'auto')
     }
-    updatePos() {this.landMovement(.05 * this.side, .05)}
+    updatePos() {this.bgMovement(.05 * this.side, .05)}
 }
 
 //////////////////////////
 // PARTICLES
 //////////////////////////
 
-// Particles doesn't have a hitbox not palette
 class Particle extends AccessToPlayer {
     constructor(){
         super()
         this.deadBound = 'any';
         this.layer = 'Parts'
+        // Nullify hitbox (to skip hitbox update function on particles)
+        this.hitbox = 0;
     }
     reset1(custom) {
         this.x = custom?.x;

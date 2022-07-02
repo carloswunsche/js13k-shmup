@@ -69,7 +69,7 @@ class Stage {
 
 		// a[1]  	=()=>this.bg.speed = 2.5
 		// a[2]  	=()=>this.bg.queue.push(...this.patterns['5'], ...this.patterns['6'], ...this.patterns['7']);
-		// a[3]		=()=>this.bg.palette = 9;
+		// a[3]	=()=>this.bg.palette = 9;
 		// a[4]  	=()=>game.iteration = 2400;
 
 
@@ -149,6 +149,7 @@ class Stage {
 		a[2350]	=()=> {this.bg.palette = 9; game.fade.dir = 'fadeOut';}
 		a[2400]	=()=> {game.fade.speed = 1; game.fade.layer='top';}
 		a[2401]	=()=> {this.p.free('BigTank'); game.sfxFlags.bigTank = true}
+		a[3001]	=()=> {this.p.free('BigTank', {palette: 6}); game.sfxFlags.bigTank = true}
 		
 		// a[]	=()=>
 

@@ -134,7 +134,7 @@ echo "GZip size: $zippedsize bytes"
 # -8719 = wow y eso q no toque mucho
 # +8871 = improved graphics system! assets can now generate 48 extra more graphics using the same source!
 # +9046 = Touch screen implementation
-#  
-# 
+# +9302 = Midboss + better architecture
+# +9377 = New big explosion for midboss (needs refactoring)
 # 
 # 

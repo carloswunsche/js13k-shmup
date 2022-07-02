@@ -15,6 +15,8 @@ class Input {
 		// Keyboard events
 		window.addEventListener('keydown', key => {
 			this.updateRaw(key.code, this.raw, 1);
+			// Prevents scrolling window with keyboard
+			key.preventDefault()
 			// console.log(key.code)
 		})
 		window.addEventListener('keyup', key => {
@@ -24,6 +26,7 @@ class Input {
 		window.addEventListener('visibilitychange', e => {
 			if (e.target.visibilityState === 'hidden') {
 				this.raw.fill(0);
+				engine.pause();
 			};
 		})
 

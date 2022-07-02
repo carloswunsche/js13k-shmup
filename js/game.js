@@ -60,7 +60,7 @@ class Game {
         // Current level events
         this.stopFlag = this.stage.events[this.iteration]();
         // If an events returns a reset flag, abort update (fixes bug of player dying)
-        if (this.stopFlag == 'stopGameUpdate') {this.stopFlag = 0; return}
+        if (this.stopFlag === 'stopGameUpdate') {this.stopFlag = 0; return}
 
         // Update Frame Counter
         this.iteration++;
@@ -68,16 +68,15 @@ class Game {
         // Update Background Position
         this.scrollBackground(this.stage.bg.speed);
 
-        // Run update function passing each gameObject
+        // Run update function on each gameObject
         for (const [_, arr] of this.objects) arr.forEach(entity => this.updateEntity(entity));
    
-        // At this point call functions inside queue (usually bullet creation)
-        this.runQueued();
+        // At this point call functions inside queue (bullet and particle freeing)
+        this.freeQueued();
 
-        // Test for collisions between PlayerBullets and airHazards
+        // Test for collisions between Player and airHazards
         this.testCollision(this.playersArr, this.airHazardsGroup, (player,hazard) => {
             hazard.hp = player.hp = 0;
-            hazard.explode = false; 
             player.explode = true;
             // Sfx
             this.sfxFlags.die = true;
@@ -88,8 +87,8 @@ class Game {
             // Item dies and explodes
             item.hp = 0; 
             item.explode = true;
-            // Create a single particle with beheavior 2
-            item.pool.free('Particle',{x:player.x, y:player.y,colors: item.colors,beheavior: 2});
+            // Create a single particle with beheavior 2 (follows player)
+            this.queuedFns.push(['Particle',{x:player.x, y:player.y,colors: item.colors,beheavior: 2}]);
             // Sfx
             this.sfxFlags.item = true;
         });
@@ -108,11 +107,11 @@ class Game {
             }
         });
 
-        // Remove entities from layer if hp <= 0 and call kill method on them
-        this.removeDeadEntities();
+        // Handle entities if hp <= 0
+        this.handleDeadEntities();
 
-        // Call functions inside queue again (usually particle creation)
-        this.runQueued();
+        // Call functions inside queue again (particle freeing)
+        this.freeQueued();
 
         // Play sounds passing flags, then set all flags to false
         this.audioPlayer.playSfx(this.sfxFlags);
@@ -159,27 +158,28 @@ class Game {
             // Move
             this.stage.bg.rows[y] += spd
 
-            // If row position is greater than display height
+            // If row position is greater or equal than display height
             if (this.stage.bg.rows[y] >= this.displayHeight) { 
                 // Move to the top
                 this.stage.bg.rows[y] -= this.displayHeight + this.stage.bg.tileSize;
 
-                // If i === last row AND if queue is full, activate changePattern flag
+                // If index is equal to last row AND if queue is full, activate changePattern flag
                 // changePattern will remain true until all rows has been replaced in array
                 if (y === this.stage.bg.rows.length-1 && this.stage.bg.queue.length >= this.stage.bg.tileQty) {
-                    this.stage.bg.changePattern = 1;
+                    this.stage.bg.changePattern = true;
                 }
 
                 // If changePattern is true, change each next row for next pattern's row
                 if (this.stage.bg.changePattern) {
                     for (let tile = 0; tile < this.stage.bg.numCols; tile++) {
-                        this.stage.bg.pattern[tile + (y * this.stage.bg.numCols)] = this.stage.bg.queue[tile + (y * this.stage.bg.numCols)];
+                        let targetTile = tile + (y * this.stage.bg.numCols)
+                        this.stage.bg.pattern[targetTile] = this.stage.bg.queue[targetTile];
                     };
                 };
 
-                // If changePattern is true but i === 0, deactivate changePattern flag
+                // If changePattern is true but index === 0, deactivate changePattern flag
                 if (this.stage.bg.changePattern && !y) {
-                    this.stage.bg.changePattern = 0;
+                    this.stage.bg.changePattern = false;
                     // Also delete 1 full pattern from queue
                     this.stage.bg.queue.splice(0, this.stage.bg.numCols * this.stage.bg.rows.length);
                 };
@@ -188,28 +188,20 @@ class Game {
     }
     // Entities update function
     updateEntity(entity) {
-        if(!entity.dying) { 
-            // General updates for all entities
-            entity.hitState = 0;
-            // Particular updateData
-            entity.updateData?.();
-            // Update position
-            entity.updatePos?.();
-        } else {
-            // Only dying enemies
-            this.flickerDelayedAndDie(entity);
-        }
-        // Anything besides the player must be killed if out of bounds.
-        // These entities has a deadBound string that specifies on which bound must be killed
-        if(entity.deadBound) this.testDeadBound(entity);
-        // Non-particles get their hitbox updated
-        entity.updateHitbox();
+        // Entities that are dying, call big explosion and return now.
+        if(entity.dying) return entity.killAnimation(); 
+        // General updates for all entities
+        entity.hitState = 0;
+        // Particular updateData
+        entity.updateData?.(this.input.buttons);
+        // Update position
+        entity.updatePos?.(this.input.buttons);
         // Test for out of bounds (Player only)
-        if (entity instanceof Player) {
-            entity.fixOutOfBounds();
-            // Next can be disabled if performance or space needed
-            entity.updateHitbox();
-        };
+        if (entity instanceof Player) entity.fixOutOfBounds();
+        // Anything besides the player must be killed if out of bounds.
+        if (entity.deadBound) this.testDeadBound(entity);
+        // Every entity that is NOT a particle gets their hitbox updated
+        if (entity.hitbox) entity.updateHitbox();
         // Fix opacity if under 0
         if (entity.opacity < 0) entity.opacity = 0;
     }
@@ -243,103 +235,38 @@ class Game {
         }
     }
     // Killing entities
-    removeDeadEntities(){
+    handleDeadEntities(){
         for (const [_, arr] of this.objects){
-            for (let i = arr.length-1; i >= 0; i--) {
-                // Si no tiene hp y no tiene flag dying activada, kill.
-                if (arr[i].hp <= 0 && !arr[i].dying) this.explodeAndFree(arr[i]);
-                // Tras eso, todos los que hayan quedado free, sacarlos del array.
-                // Si tenian un item, liberarlo justo antes sacarlo del array
-                if (arr[i].free) {
-                    this.giveItem(arr[i]);
-                    arr.splice(i,1);
-                }
-
-
-            };
+            for (let i = arr.length-1; i > -1; i--) {
+                // Si ya no tienen nada de hp, matarlos.
+                if (arr[i].hp <= 0) this.kill(arr[i]);
+                // Si tras la matanza hay entities que esten free, sacarlos del array.
+                if (arr[i].free) arr.splice(i,1);
+            }
         }
     }
-    giveItem(entity){
-        if (!entity.carryItem) return;
-        // If enemy was carrying an item then spawn it
-        entity.pool.free('Item', {x: entity.x, y: entity.y});
-    }
-    explodeAndFree(entity){
-        // If it has any last words... this is the time before saying goodbye
-        // if (entity.beforeDying) entity.beforeDying();
+    kill(entity){
+        // Si entity ya se encuentra muriendo (killAnimationFn), return.
+        if (entity.dying) return;
 
-        // Enemies with flag delayFree which want an explosion will not die/explode instantly...
-        if (entity.explode && entity.delayedFree) {
-            // Start dying process right away
-            this.flickerDelayedAndDie(entity);
-            // Activating this flag will call flickerAndDie() instead of the regular update fns every frame
-            entity.dying = true;
-            // Reset flag to false
-            entity.explode = false;
-            // Return here
-            return
-        }
+        // Enemies with flag killAnimation will not be free instantly but will run an animation first.
+        if (entity.killAnimation) return entity.killAnimation();
 
         // Para los demas: Si ha sido matado por colision y tiene data de la explosion, generar particulas
-        if (entity.explode) {
-            // Queue particles passing current entity data
-            entity.spawnParticles(entity.explosionData());
-            // Reset flag to false
-            entity.explode = false;
-        }
+        if (entity.explode) entity.spawnParticles(entity.explosionData());
 
         // Player will also be positioned far so that eBullets will always go down
-        if (entity instanceof Player) {
-            entity.positionFar();
-        }
+        if (entity instanceof Player) entity.positionFar();
 
-        // Finally, all entities EXCEPT those with delayFree flag will be free NOW
-        entity.free = 1;
+        // Finally, all entities EXCEPT those with delayFree flag will be free NOW! Killing is done for these.
+        entity.free = true;
+
+        // Oh, also... release item! (if they have the flag carryItem)
+        entity.releaseItem()
     }
-    flickerDelayedAndDie(entity){
-        // (use timer 8 for explosions and stuff) Will adjust this later on
-        // Set randomness
-        let rndX = this.math.randomBetween(-entity.width/2,entity.width/2);
-        let rndY = this.math.randomBetween(-entity.height/2,entity.height/2);
-
-        // If timer is 0, 10, 20..etc
-        if (entity.timers[8]%10 === 0) {
-            // Little smoke with added random position
-            entity.spawnParticles({
-                qty: 4,  
-                options: {
-                    x: entity.x+rndX, 
-                    y:entity.y+rndY, 
-                    speed: 1, 
-                    subSpdRange:[0.5,1],
-                    colors:['#eee','#ddd','#ccc','#bbb']
-                }
-            })
-            // Sound
-            entity.sfxFlags.xplos_S = true;
-        }
-        // Hit state (dissappear) when timer is NOT 0, 4, 8..etc
-        entity.hitState = entity.timers[8]%4 ? 1 : 0;
-        // Start counting at this moment. Up until now timer was always 0.
-        entity.timerCount(60, 8)
-        // More: Also fall...
-        entity.y+=0.2;
-        // More: Also shrink a bit
-        entity.scale-=0.005
-
-        // When timer ends
-        if (entity.timers[8] === 60) {
-            // Big explosion at the end
-            entity.spawnParticles({qty: 20, options: {x: entity.x, y:entity.y}})
-            // Sound
-            entity.sfxFlags.xplos_L = true;
-            // Free entity for reuse
-            entity.free = true;
-        }
-    }
-    // Extra
-    runQueued(){
-        this.queuedFns.forEach(fn => fn());
+    // Freeing everything that's on the queue
+    freeQueued(){
+        this.queuedFns.forEach(parameters => this.pool.free(...parameters))
         this.queuedFns.length = 0;
     }
 }
