@@ -14,11 +14,11 @@ class Entity {
         this.math = customMath;
         // Taken from global: Used for queue spawning bullets and particles
         this.queue = game.queuedFns;
+        // Taken from global: To activate sound flags
+        this.sfxFlags = game.sfxFlags;
         // Taken from global: Used for positioning relative to display
         this.displayWidth = display.width;
         this.displayHeight = display.height;
-        // Taken from global: To activate sound flags
-        this.sfxFlags = game.sfxFlags;
     }
     parentReset(custom){
         // Default hp for living objects
@@ -30,8 +30,7 @@ class Entity {
         this.rotation = 0;
         this.scale = 1;
         if (custom?.palette) this.palette = custom.palette
-        // Timers
-        // 8 is reserved for kill animation. 7 is reserved for deadbound flag activation
+        // Timers: 8 is reserved for kill animation. 7 is reserved for deadbound flag activation
         this.timers.fill(0);
         // Flags
         this.dying = false;
@@ -58,16 +57,18 @@ class Entity {
         this.hitbox[3] = this.y + this.yMargin + this.yOffset  //y2 (down)
     }
     spawnParticles(data, layer){ 
-        for (let i = 0; i < data.qty; i++)
-        this.queue.push(['Particle', data.options, layer]);
+        for (let i = 0; i < data.qty; i++) this.queue.push(['Particle', data.options, layer]);
     }
     releaseItem(){
         if (!this.carryItem || !this.explode) return;
         this.queue.push(['Item', {x: this.x, y: this.y}])
     }
     timerCount(timeInFrames = 9999, timerUsed = 0) {
+        // Return true if timer has finished
+        if (this.timers[timerUsed] === timeInFrames) return true;
         // Count until chosen time, using selected timer
         if (this.timers[timerUsed] < timeInFrames) this.timers[timerUsed] += 1;
+
     }
     // Movimiento por vector
     vectorMovement(){

@@ -3,10 +3,10 @@
 //////////////////////////
 
 class Stage {
-    constructor(tileSize){
+    constructor(){
 		// this.r__rows = [-8,0,8,16,24,32,40,48,56,64,72,80,88,96,104,112];
         this.r__rows = new Array(16).fill(-8).map((n,i)=>n+8*i)
-        this._tileSize = tileSize;
+        this._tileSize = 8;
         this._tileQty = 320;
     }
     needs(assets, displayW, displayH){
@@ -70,7 +70,6 @@ class Stage {
 		// a[2] =()=>this.bg.queue.push(...this.patterns['5'], ...this.patterns['6'], ...this.patterns['7']);
 		// a[3]	=()=>this.bg.palette = 9;
 		// a[1] =()=>game.iteration = 1399;
-
 
 
 		// New
@@ -164,7 +163,7 @@ class Stage {
 		// a[]	=()=>
 
 		// Reset level at the end of array
-		a.push(()=>{debug.gameReset(); return 'stopGameUpdate'});
+		a.push(()=>{debug.gameReset(); return 'stop'});
 		return a
     }
 };

@@ -14,13 +14,13 @@ class Input {
 
 		// Keyboard events
 		window.addEventListener('keydown', key => {
-			this.updateRaw(key.code, this.raw, 1);
+			this.keyToRaw(key.code, this.raw, 1);
 			// Prevents scrolling window with keyboard
-			key.preventDefault()
+			// key.preventDefault()
 			// console.log(key.code)
 		})
 		window.addEventListener('keyup', key => {
-			this.updateRaw(key.code, this.raw, 0);
+			this.keyToRaw(key.code, this.raw, 0);
 		})
 		// Unnecesary ?
 		window.addEventListener('visibilitychange', e => {
@@ -30,13 +30,13 @@ class Input {
 			};
 		})
 
-		// Touch event
+		// Touch events
 		let shotBtn = document.querySelector('.shot'), analog = document.querySelector('.analog');	
-		shotBtn.addEventListener('touchstart',e=>this.raw[4] = 1)
-		shotBtn.addEventListener('touchend',  e=>this.raw[4] = 0)
-		analog.addEventListener('touchstart', e=>this.analogMove(e.targetTouches[0], e, this.raw))
-		analog.addEventListener('touchmove',  e=>this.analogMove(e.targetTouches[0], e, this.raw))
-		analog.addEventListener('touchend',  ()=>this.raw.splice(0,4,...[0,0,0,0]))
+		shotBtn.addEventListener('touchstart',()=>this.raw[4] = 1)
+		shotBtn.addEventListener('touchend',  ()=>this.raw[4] = 0)
+		analog.addEventListener('touchstart',  e=>this.analogMove(e.targetTouches[0], e, this.raw))
+		analog.addEventListener('touchmove',   e=>this.analogMove(e.targetTouches[0], e, this.raw))
+		analog.addEventListener('touchend',   ()=>this.raw.splice(0,4,...[0,0,0,0]))
 	}
 	analogMove(touch, e, raw){
 		let axisX = (touch.clientX-touch.target.offsetLeft-(touch.target.clientWidth/2));
@@ -50,7 +50,18 @@ class Input {
 		e.returnValue = false;
 	}
 
-	updateRaw (keyCode, arr, pressed) {
+	gamepadToRaw(){
+		this.gamepad = navigator.getGamepads()[0]
+		if (!this.gamepad) return
+
+		this.raw[0] = this.gamepad.buttons[12].pressed;
+		this.raw[1] = this.gamepad.buttons[15].pressed;
+		this.raw[2] = this.gamepad.buttons[13].pressed;
+		this.raw[3] = this.gamepad.buttons[14].pressed;
+		this.raw[4] = this.gamepad.buttons[1].pressed;
+	}
+
+	keyToRaw (keyCode, arr, pressed) {
 		// Switch case es mas economico en bytes que if
 		switch(keyCode){
 			case 'ArrowUp':   return arr[0] = pressed;
@@ -71,4 +82,6 @@ class Input {
 			if(!this.raw[i]) this.buttons[i] = 0;
 		}
 	}
+
+	
 };

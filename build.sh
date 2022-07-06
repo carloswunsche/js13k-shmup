@@ -132,5 +132,8 @@ echo "GZip size: $zippedsize bytes"
 # +9046 = Touch screen implementation
 # +9302 = Midboss + better architecture
 # +9377 = New big explosion for midboss (needs refactoring)
-# -9375
+# -9315 = ligher deadbound system + killExplosions refactored
+# 
+# 
+# 
 # 

@@ -10,7 +10,6 @@ class Game {
         this.queuedFns = [];
         this.sfxFlags = {};
         this.fade = {};
-        this.stopFlag;
     }
     needs(customMath, stage, pool, input, displayHeight, audioPlayer){
         // Custom math functions
@@ -27,6 +26,7 @@ class Game {
         this.audioPlayer = audioPlayer;
     }
     init() {
+        this.stopFlag = false;
         this.iteration = 0;
         this.queuedFns.length = 0;
         this.resetCounter = 0;
@@ -54,13 +54,14 @@ class Game {
         // Update fade transparency
         this.updateFade(this.fade);
 
+        // Gamepad to Raw input
+        this.input.gamepadToRaw()
+
         // Update arr of pressed buttons
         this.input.updateButtons();
 
-        // Current level events
-        this.stopFlag = this.stage.events[this.iteration]();
-        // If an events returns a reset flag, abort update (fixes bug of player dying)
-        if (this.stopFlag === 'stopGameUpdate') {this.stopFlag = 0; return}
+        // Current level events. If an events returns something, abort update (fixes bug of player dying)
+        if (this.stage.events[this.iteration]() === 'stop') return;
 
         // Update Frame Counter
         this.iteration++;
@@ -95,12 +96,12 @@ class Game {
 
         // Test for collisions between pBullets and Enemies
         this.testCollision(this.pBulletsArr, this.enemiesGroup, (pBullet,enemy) => {
-            // pBullet muere y enemy pierde HP
+            // pBullet muere
             pBullet.hp = 0; 
+            // Enemy pierde HP y activa animacion de hitState
             enemy.hp--;
-            // Enemy activa animacion de hitState solo si no murio
-            if (enemy.hp > 0) enemy.hitState = 1;
-            // Si el enemy evaluado murio en la colision, explotar y activar Sfx
+            enemy.hitState = 1;
+            // Si el enemy evaluado murio en la colision, explotar y marcar flag de Sfx
             if (enemy.hp <= 0) {
                 enemy.explode = true;
                 this.sfxFlags.xplos = true;
@@ -115,7 +116,7 @@ class Game {
 
         // Play sounds passing flags, then set all flags to false
         this.audioPlayer.playSfx(this.sfxFlags);
-        for(const soundName in this.sfxFlags) this.sfxFlags[soundName] = 0;
+        for(const flag in this.sfxFlags) this.sfxFlags[flag] = false;
 
         // Reset game if player dies
         if (!this.playersArr[0]) {
@@ -190,9 +191,9 @@ class Game {
     updateEntity(entity) {
         // General updates for all entities (start)
         entity.hitState = 0;
-        // Timer to set deadBound to those who don't have one yet
+        // Allow 50 frames to pass on timer 7 and then set deadBound flag to true
         // 50 is a good number that allows Items to survive the top bound when "jumping" up
-        entity.timerCount(50,7); if (entity.timers[7]===50) entity.deadBound = true;
+        if (entity.timerCount(50,7)) entity.deadBound = true;
         // For entities that are dying now, keep calling killAnimation and return
         if(entity.dying) return entity.killAnimation();
         // Particular updateData
@@ -215,7 +216,7 @@ class Game {
             entity.y <= 0 - entity.height / 2                    ||
             entity.x >= entity.displayWidth + entity.width / 2   ||
             entity.x <= 0 - entity.width / 2)
-                entity.hp = 0;
+        entity.hp = 0;
     }
     // Killing entities
     handleDeadEntities(){

@@ -5,10 +5,10 @@
 
 const customMath  = new CustomMath();
 const input 	  = new Input();
-const display 	  = new Display(160, 120, 8);
+const display 	  = new Display(160, 120);
 const audioPlayer = new AudioPlayer();
 const pool 		  = new Pool();
-const stage 	  = new Stage(8);
+const stage 	  = new Stage();
 const engine 	  = new Engine(60);
 const game 		  = new Game();
 const assets 	  = new Assets(runGame).loadAndRun();
