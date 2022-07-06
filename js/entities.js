@@ -470,7 +470,7 @@ class Fatty extends Enemy {
         this.palette = 5;
         this.setupHitbox(5, 5);
     }
-    reset2(custom) {
+    reset2() {
         this.hp = 4;
         // Set x starting position based on side
         this.x = this.displayWidth / 2 - (this.displayWidth / 2 + this.width/2) * this.side;
