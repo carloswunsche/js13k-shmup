@@ -2,10 +2,6 @@
 // DISPLAY (falta agregar los fades)
 //////////////////////////
 
-// const canvasTxt = window.canvasTxt.default
-// canvasTxt.align = 'left';
-// canvasTxt.vAlign = 'top';
-
 class Display {
     constructor(width, height) {
         this.width = width;

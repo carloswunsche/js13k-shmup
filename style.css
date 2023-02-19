@@ -1,20 +1,7 @@
-body {
+* {
     margin: 0;
-    background-color: #000
+    background: #000
 }
-
-/* canvas { */
-    /* The next ones are only necesary if scaling is done through CSS */
-    /*width:640px;*/
-    /* image-rendering: optimizeSpeed;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: -o-crisp-edges;
-    image-rendering: -webkit-crisp-edges;
-    image-rendering: crisp-edges;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: pixelated;
-    -ms-interpolation-mode: nearest-neighbor; */
-/* } */
 
 .g {
     display: grid;
@@ -22,7 +9,6 @@ body {
     justify-items: center;
     align-items: center;
 }
-
 
 .c {
     background: #333;
@@ -41,6 +27,7 @@ body {
         grid-template-rows: 1fr 1fr;
         grid-template-columns: 1fr 1fr;
     }
+
     canvas {
         grid-row: 1 / 2;
         grid-column: 1 / -1;

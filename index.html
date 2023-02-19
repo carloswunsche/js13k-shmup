@@ -1,51 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="style.css" />
-        <title>Javascript Shmup</title>
-    </head>
-    <body>
-        <!-- Canvas -->
-        <div class="g">
-            <div class="c analog"></div>
-            <canvas></canvas>
-            <div class="c shot"></div>
-        </div>
-        <div style="top:0;position:absolute">
-            <!-- <button onClick="debug.changeFps(60, 30)">30fps</button> -->
-            <!-- <button onClick="debug.changeFps(60, 60)">60fps</button> -->
-            <!-- <button onClick="debug.changeFps(120, 120)">120fps</button> -->
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>13kb Shmup</title>
+  </head>
+  <body>
+    <div class="g">
+      <div class="c analog"></div>
 
-            <!-- <button title="R key" onClick="debug.gameReset()">Reset</button> -->
-            <!-- <button title="K key" onClick="debug.enginePause()">Pause/Advance</button> -->
-            <!-- <button title="P key" onClick="debug.engineStart()">Resume</button> -->
-            <!-- <button title="H key" onClick="debug.toggleHitboxes()">Toggle hitboxes</button> -->
-            <!-- <span style="color: #999">Press F11 for full screen</span> -->
+      <!-- Canvas -->
+      <canvas></canvas>
 
-            <!-- <button title="S key" onClick="debug.toggleScanlines()">Toggle scanlines</button> -->
-            <!-- <button title="+ or = key" onClick="debug.bgSpeedAdd(0.25)">BG Speed up</button> -->
-            <!-- <button title="- key" onClick="debug.bgSpeedSub(0.25)">BG Speed down</button> -->
-            <!-- <button title="E key" onClick="debug.spawnEnemy()">Spawn enemy</button> -->    
-        </div>
+      <div class="c shot"></div>
+    </div>
 
-        <!-- Canvas TXT -->
-        <!-- <script src="//unpkg.com/canvas-txt"></script> -->
-        <!-- Audio -->
-        <script type="text/javascript" src="js/ZzFXMicro.min.js"></script>
-        <!-- Game scripts -->
-        <script type="text/javascript" src="js/customMath.js"></script>
-        <script type="text/javascript" src="js/assets.js"></script>
-        <script type="text/javascript" src="js/entities.js"></script>
-        <script type="text/javascript" src="js/stage.js"></script>
-        <script type="text/javascript" src="js/engine.js"></script>
-        <script type="text/javascript" src="js/input.js"></script>
-        <script type="text/javascript" src="js/game.js"></script>
-        <script type="text/javascript" src="js/audio.js"></script>
-        <script type="text/javascript" src="js/display.js"></script>
-        <script type="text/javascript" src="js/pool.js"></script>
-        <!-- Setup.js always at the end -->
-        <script type="text/javascript" src="js/setup.js"></script>
+    <!-- Debug wrapper -->
+    <div style="top: 0; position: absolute">
+      <!-- <button onClick="debug.changeFps(60, 30)">30fps</button> -->
+      <!-- <button onClick="debug.changeFps(60, 60)">60fps</button> -->
+      <!-- <button onClick="debug.changeFps(120, 120)">120fps</button> -->
 
-    </body>
+      <!-- <button title="R key" onClick="debug.gameReset()">Reset</button> -->
+      <!-- <button title="K key" onClick="debug.enginePause()">Pause/Advance</button> -->
+      <!-- <button title="P key" onClick="debug.engineStart()">Resume</button> -->
+      <!-- <button title="H key" onClick="debug.toggleHitboxes()">Toggle hitboxes</button> -->
+      <!-- <span style="color: #999">Press F11 for full screen</span> -->
+
+      <!-- <button title="S key" onClick="debug.toggleScanlines()">Toggle scanlines</button> -->
+      <!-- <button title="+ or = key" onClick="debug.bgSpeedAdd(0.25)">BG Speed up</button> -->
+      <!-- <button title="- key" onClick="debug.bgSpeedSub(0.25)">BG Speed down</button> -->
+      <!-- <button title="E key" onClick="debug.spawnEnemy()">Spawn enemy</button> -->
+    </div>
+
+    <!-- Canvas TXT -->
+    <!-- <script src="//unpkg.com/canvas-txt"></script> -->
+    <!-- Audio -->
+    <script type="text/javascript" src="js/ZzFXMicro.min.js"></script>
+    <!-- Game scripts -->
+    <script type="text/javascript" src="js/customMath.js"></script>
+    <script type="text/javascript" src="js/assets.js"></script>
+    <script type="text/javascript" src="js/entities.js"></script>
+    <script type="text/javascript" src="js/stage.js"></script>
+    <script type="text/javascript" src="js/engine.js"></script>
+    <script type="text/javascript" src="js/input.js"></script>
+    <script type="text/javascript" src="js/game.js"></script>
+    <script type="text/javascript" src="js/audio.js"></script>
+    <script type="text/javascript" src="js/display.js"></script>
+    <script type="text/javascript" src="js/pool.js"></script>
+    <!-- Setup.js always at the end -->
+    <script type="text/javascript" src="js/setup.js"></script>
+  </body>
 </html>

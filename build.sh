@@ -1,81 +1,113 @@
-# Run using ./build.sh
+# --------------------------------------------------- #
+#         BUILD SCRIPT (Run using ./build.sh)         #
+# --------------------------------------------------- #
 
-# Remove build images directory (build/i) and its contents
-rm -r build/i
-mkdir build/i
 
-# Copy source png's from /source_images into /i
-cp source_images/sprites-3shades-indexed.png  i/sprites.png
-cp source_images/bg-5colors.png      i/bg.png
 
-cd i
+# -------------- SETTING UP ENVIRONMENT ------------- #
+# Remove files and subdirectories in build directory (hide output)
+rm -rfv build/* > /dev/null
+
+# Create build/img-source and build/img directories
+mkdir build/img-source
+mkdir build/img
+
+# Copy source PNG's into build/img
+cp sources/sprites-3shades-indexed.png  build/img-source/sprites-source.png
+cp sources/bg-5colors.png               build/img-source/bg-source.png
+
+# Copy js directory and its contents into build
+cp -r js build/js-source
+
+# Copy style.css into build
+cp style.css build/style-source.css
+
+# Copy HTML template from sources into build
+cp sources/html-template.html   build/html-template.html
+
+# Move to build directory
+cd build
+
+
+
+# ---------------------- IMAGES --------------------- #
+# Move to build/img directory
+cd img-source
+
 # Convert from PNG to WEBP with loseless compression and maximum effort
-cwebp -lossless -z 9 -quiet sprites.png  -o sprites.webp
-cwebp -lossless -z 9 -quiet bg.png       -o bg.webp
-# Remove png's
-rm sprites.png
-rm bg.png
+cwebp -lossless -z 9 -quiet sprites-source.png  -o ../img/sprites.webp
+cwebp -lossless -z 9 -quiet bg-source.png       -o ../img/bg.webp
+
+# Go back to build directory
 cd ..
 
-# Concat javascript files into one file
+
+
+# -------------- JAVASCRIPT GAME LOGIC -------------- #
+# Enter scripts source directory
+cd js-source
+
+# Concatenate JavaScript files and put the output in parent directory
 cat \
-    js/customMath.js \
-    js/assets.js \
-    js/audio.js \
-    js/display.js \
-    js/engine.js \
-    js/entities.js \
-    js/game.js \
-    js/input.js \
-    js/pool.js \
-    js/ZzFXMicro.min.js \
-    js/stage.js \
-    js/setup.js \
-    > build/game.js
+    customMath.js \
+    assets.js \
+    audio.js \
+    display.js \
+    engine.js \
+    entities.js \
+    game.js \
+    input.js \
+    pool.js \
+    ZzFXMicro.min.js \
+    stage.js \
+    setup.js \
+    > ../script.concat.js
 
-# Uglify JS
-uglifyjs build/game.js -c drop_console=true --compress --mangle -o build/game.min.js
+# Go back to parent directory (build)
+cd ..
 
-# Roadroll JS
-roadroller --max-memory 600 build/game.min.js -o build/game.roadrolled.js
+# Uglify JS (minifies JavaScript file)
+uglifyjs script.concat.js -c drop_console=true --compress --mangle -o script.min.js
 
-# Uglify CSS
-uglifycss style.css --output build/style.min.css
+# Roadroll JS (compresses JavaScript file)
+roadroller --max-memory 600 script.min.js -o script.roadrolled.js
+
+
+
+# ----------------- FINAL HTML FILE ----------------- #
+# Uglify CSS (minifies CSS file)
+uglifycss style-source.css --output style.min.css
 
 # Embed CSS into HTML
-sed -e '/CSS_SOURCE/{r build/style.min.css' -e 'd}' build/html_template.html > build/css_ready.html
+sed -e '/CSS_SOURCE/{r style.min.css' -e 'd}' html-template.html > html-with-css.html
 
 # Embed JS into HTML
-sed -e '/GAME_SOURCE/{r build/game.roadrolled.js' -e 'd}' build/css_ready.html > build/index.html
+sed -e '/GAME_SOURCE/{r script.roadrolled.js' -e 'd}' html-with-css.html > index.html
 
-# Copy assets (i) folder into build
-# cp -a i build/
-cp i/sprites.webp   build/i/sprites.webp
-cp i/bg.webp        build/i/bg.webp
 
-# Build gzip of tar archive containing index.html and assets (i) folder
-cd build
-tar -czf final.tar.gz index.html i
-cd ..
+# --- COMPRESS, FILL DIST FOLDER AND DISPLAY INFO --- #
+# Build gzip of tar archive containing index.html and images folder
+tar -czf game.tar.gz index.html img
 
-# Get file sizes before cleaning
-minisize=$(ls -l build/game.min.js | awk '{print $5}')
-roadsize=$(ls -l build/game.roadrolled.js | awk '{print $5}')
-imagessize=$(du -sb build/i | awk '{print $1}')
-zippedsize=$(ls -l build/final.tar.gz | awk '{print $5}')
+# Copy final files into dist folder
+cp game.tar.gz ../dist
+cp index.html ../dist
+cp -r img ../dist
 
-# Clean
-rm build/game.js
-rm build/game.min.js
-rm build/game.roadrolled.js
-rm build/style.min.css
-rm build/css_ready.html
+# Get file sizes 
+minisize=$(ls -l script.min.js | awk '{print $5}')
+roadsize=$(ls -l script.roadrolled.js | awk '{print $5}')
+imagessize=$(du -sb img | awk '{print $1}')
+zippedsize=$(ls -l game.tar.gz | awk '{print $5}')
 
-# Display game logic and tar.gz sizes
+# End displaying game logic and tar.gz sizes
 echo "Minified   js size: $minisize bytes"
 echo "Roadrolled js size: $roadsize bytes"
 echo "Images size: $imagessize bytes"
 echo "GZip size: $zippedsize bytes"
+
+# Exit build directory
+cd ..
 
 
 # History of build sizes (in bytes):
@@ -133,6 +165,9 @@ echo "GZip size: $zippedsize bytes"
 # +9302 = Midboss + better architecture
 # +9377 = New big explosion for midboss (needs refactoring)
 # -9315 = ligher deadbound system + killExplosions refactored
+# +9347 = last time I tested ()
+# 
+# 
 # 
 # 
 # 

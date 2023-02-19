@@ -80,15 +80,15 @@ class Stage {
 		// [400,410,420,430,440,1780,1790,1800,1810,1820].forEach(n=>a[n]=sinepop2);
 		
 		// Old
-		a[50] 	=()=> this.p.free('SinePop',{phase:1});
-		a[60] 	=()=> this.p.free('SinePop',{phase:1});
-		a[70] 	=()=> this.p.free('SinePop',{phase:1});
-		a[80] 	=()=> this.p.free('SinePop',{phase:1});
-		a[90] 	=()=> this.p.free('SinePop',{phase:1});
+		// a[50] 	=()=> this.p.free('SinePop',{phase:1});
+		// a[60] 	=()=> this.p.free('SinePop',{phase:1});
+		// a[70] 	=()=> this.p.free('SinePop',{phase:1});
+		// a[80] 	=()=> this.p.free('SinePop',{phase:1});
+		// a[90] 	=()=> this.p.free('SinePop',{phase:1});
 
 
 		a[145]	=()=> this.p.free('Tank',  	{x:55, carryItem: true});
-		a[270]	=()=> this.p.free('Tank',  	{x:105});
+		// a[270]	=()=> this.p.free('Tank',  	{x:105});
 		a[300]	=()=> this.p.free('Sniper',	{x: 40, alt: true});
 
 
@@ -155,11 +155,20 @@ class Stage {
 		a[2200]	=()=> this.p.free('Tank', 	{x:95, carryItem: true});
 		a[2220]	=()=> this.p.free('Tank', 	{x:117});
 
+		// Background fades to darker color, enter tanks
 		a[2300]	=()=> {game.fade.dir='fadeIn'; game.fade.speed=2; game.fade.layer=0;}
 		a[2350]	=()=> {this.bg.palette = 9; game.fade.dir = 'fadeOut';}
 		a[2400]	=()=> {game.fade.speed = 1; game.fade.layer='top';}
 		a[2401]	=()=> {this.p.free('BigTank'); game.sfxFlags.bigTank = true}
 		a[3001]	=()=> {this.p.free('BigTank', {palette: 6}); game.sfxFlags.bigTank = true}
+
+		// Background fades to previous color and changes route
+		a[3300]	=()=> {game.fade.dir='fadeIn'; game.fade.speed=2; game.fade.layer=0;}
+		a[3350]	=()=> {this.bg.palette = 2; game.fade.dir = 'fadeOut';}
+		a[3400]	=()=> {game.fade.speed = 1; game.fade.layer='top';}
+		a[3401]	=()=> this.bg.queue.push(...this.patterns['5'])
+	
+
 		// a[]	=()=>
 
 		// Reset level at the end of array
