@@ -13,14 +13,15 @@ class Stage {
 		// Decompress Algorithm
 		let index=0; for(let i=0; i<arr.length;i++) {index = arr[i] === undefined ? index : arr[i]; arr.splice(i,1,index)}
 		// Create patterns from big array;
-		let obj = {};
-    for (let i = 0; i < arr.length; i += tileQty) {
-      obj[1 + i / tileQty] = arr.slice(
-        arr.length - tileQty * (1 + i / tileQty),
-        arr.length - tileQty * (i / tileQty)
-      );
-    }
-    return obj;
+		let obj = {}
+		for(let i = 0; i < arr.length; i+=tileQty){
+				obj[1+i/tileQty] = arr.slice(
+						arr.length-tileQty*(1+i/tileQty),
+						arr.length-tileQty*(i/tileQty)
+				);
+		};
+		console.log(arr)
+		return obj;
 	} 
 
   needs(display, pool) {
