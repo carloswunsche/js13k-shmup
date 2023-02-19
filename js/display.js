@@ -33,13 +33,12 @@ class Display {
       M.trunc(window.innerHeight / this.height)
     );
 
-    // Unnecesary remove forced scaling
-    if (forced) this.scale = forced;
+    // REMOVE FROM FINAL BUILD
+    // if (forced) this.scale = forced;
+
     // Resize
     this.c.width = this.scale * this.width;
     this.c.height = this.scale * this.height;
-
-    // this.tileTimesScaledCanvas = this.tileSize * this.scale;
   }
   render(bg, gameObjects, fade) {
     // Render Background
@@ -48,14 +47,14 @@ class Display {
     if (fade.layer === 'top') {
       // Regular order
       this.renderGameObjects(gameObjects);
-      // this.renderFade(fade);
+      this.renderFade(fade);
     } else {
       // Reverse order
       this.renderFade(fade);
       this.renderGameObjects(gameObjects);
     }
 
-    // Hitboxes
+    // Hitboxes REMOVE FROM FINAL BUILD
     if (this.hitboxes) this.renderHitboxes(gameObjects);
   }
   renderBackground(bg) {
@@ -72,7 +71,7 @@ class Display {
         // Draw
         this.ctx.drawImage(
           bg.image,
-          bg.pattern[i] * bg.image.height + (bg.image.width * bg.palette),
+          bg.pattern[i] * bg.image.width + (bg.image.width * bg.palette),
           0,
           bg.image.height,
           bg.image.height,
