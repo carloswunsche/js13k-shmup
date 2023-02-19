@@ -6,17 +6,17 @@ class Assets {
 	constructor(runGameFn) {
 		this.runGameFn = runGameFn;
 		this.gfx = [
-			// Tienen que estar en el orden en que aparecen en el spritesheet
-			{w:8, h:15},
-			{w:6, h:15},
-			{w:6, h:15},
-			{w:7, h:13}, 
-			{w:6, h:13},
-			{w:7, h:11},
-			{w:6, h:8},
-			{w:4, h:8},
-			{w:1, h:7},
-		];
+		// 	// Tienen que estar en el orden en que aparecen en el spritesheet
+		// 	{w:8, h:15},
+		// 	{w:6, h:15},
+		// 	{w:6, h:15},
+		// 	{w:7, h:13}, 
+		// 	{w:6, h:13},
+		// 	{w:7, h:11},
+		// 	{w:6, h:8},
+		// 	{w:4, h:8},
+		// 	{w:1, h:7},
+		// ];
  
 		// Fill gfx array with sourceX info and variations
 		// Variables needed
