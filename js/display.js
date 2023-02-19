@@ -63,22 +63,22 @@ class Display {
       let destY = bg.rows[y] * this.scale;
       for (let x = 0; x < this.width; x += this.tileSize) {
         // Para no renderizar al pedo el row que queda out of bounds (arriba)
-        if (bg.rows[y] <= -this.tileSize) {
-          i++;
-          continue;
-        }
+        if (bg.rows[y] <= -this.tileSize) {i++;continue;}
+
+        // Si es transparente, skippear
+        if (bg.pattern[i] === 0) {i++;continue;}
 
         // Draw
         this.ctx.drawImage(
           bg.image,
-          bg.pattern[i] * bg.image.width + (bg.image.width * bg.palette),
+          bg.pattern[i] * this.tileSize + (bg.image.width * bg.palette) -this.tileSize,
           0,
-          bg.image.height,
-          bg.image.height,
+          this.tileSize,
+          this.tileSize,
           x * this.scale,
           destY,
-          bg.image.height * this.scale,
-          bg.image.height * this.scale
+          this.tileSize * this.scale,
+          this.tileSize * this.scale
         );
         // Update pattern index
         i++;

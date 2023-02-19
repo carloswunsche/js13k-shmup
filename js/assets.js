@@ -49,18 +49,16 @@ class Assets {
 				39: 	[0, 78, 180]
 			},
 			{ // 8) BG Palette 1
-				165:[120,180,83],		//highlights
-				133:[72, 149, 81],		//pasto
-				99:	[180,172,172],		//barro
-				60:	[46, 106, 189],		//agua
-				39: [64, 64, 88]		//grone
+				// 46, 106, 189
+				// 180,172,172
+				39 :[120,180,83],		// gris oscuro => verde
+				99:	[180,172,172],	// gris claro => gris
+				60:	[180,172,172]	// gris medio => azul agua
 			},
 			{ // 9) BG Palette 2
-				165:[51, 74, 117],		//highlights
-				133:[53, 46, 95],		//pasto
-				99:	[64, 81, 65],		//barro
-				60:	[32, 23, 85],		//agua
-				39: [56, 41, 41]		//grone
+				39:[53, 46, 95],		// gris oscuro => verde
+				99:	[64, 81, 65],		// gris claro => gris
+				60:	[32, 23, 85],		// gris medio => purpura
 			},
 		]
 	}
