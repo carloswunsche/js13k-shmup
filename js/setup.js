@@ -4,29 +4,25 @@
 'use strict';
 
 const customMath  = new CustomMath();
-const input 	  = new Input();
+const input 	  	= new Input();
 const display 	  = new Display(160, 120);
 const audioPlayer = new AudioPlayer();
-const pool 		  = new Pool();
-const stage 	  = new Stage();
-const engine 	  = new Engine(60);
-const game 		  = new Game();
-const assets 	  = new Assets(runGame).loadAndRun();
+const pool 		  	= new Pool();
+const stage 	  	= new Stage();
+const engine 	  	= new Engine(60);
+const game 		  	= new Game();
+const assets 	  	= new Assets();
 
-function runGame() {
-	// Pool Dependencies
+assets.load(startGame)
+
+function startGame() {
+	// Access to APIs
 	pool.needs(assets, game.objects);
-
-	// Stage Dependencies
 	stage.needs(assets, display.width, display.height);
-
-	// Engine Dependencies
 	engine.needs(
 		() => game.update(), 
 		() => display.render(stage.bg, game.objects, game.fade)
 	);
-
-	// Game Dependencies
 	game.needs(
 		customMath,
 		stage, 
@@ -43,6 +39,9 @@ function runGame() {
 	// Start engine
 	engine.start();
 }
+
+
+
 
 // Debug
 const debug = {

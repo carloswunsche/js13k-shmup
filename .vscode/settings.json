@@ -1,4 +1,7 @@
 {
   "liveServer.settings.port": 5501,
-  "prettier.enable": false
+  "prettier.enable": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.arrowParens": "avoid",
+  "editor.formatOnSave": true
 }
