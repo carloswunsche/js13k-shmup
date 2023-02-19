@@ -48,7 +48,7 @@ class Display {
     if (fade.layer === 'top') {
       // Regular order
       this.renderGameObjects(gameObjects);
-      this.renderFade(fade);
+      // this.renderFade(fade);
     } else {
       // Reverse order
       this.renderFade(fade);

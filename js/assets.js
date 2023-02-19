@@ -133,8 +133,8 @@ class Assets {
 						entity.h					 				// Destination height
 						);
 					})
-				// Normal draw for the background
-				} else x.drawImage(img,0,0);
+				// Regular draw for the background (no mirroring)
+				} else {x.drawImage(img,0,0)}
 
 
 				// Get pixel data from canvas and create fakeData to build new image
@@ -168,7 +168,7 @@ class Assets {
 				// Add source width property as the full width of entity
 				this[name].sWidth = entity.fullW;
 				/** Add width and height to this.bg */
-				if (entity.bg) this.bg.width = entity.fullW * 1.06;
+				if (entity.bg) this.bg.width = entity.fullW;
 				if (entity.bg) this.bg.height = entity.h;
 
 				// When source finishes loading, count down
