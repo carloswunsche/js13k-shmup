@@ -3,3 +3,4 @@ build
 sources
 js/assets.js
 js/stage.js
+js/display.js

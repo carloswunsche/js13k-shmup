@@ -72,14 +72,14 @@ class Display {
         // Draw
         this.ctx.drawImage(
           bg.image,
-          bg.pattern[i] * bg.image.height + bg.image.width * bg.palette,
+          bg.pattern[i] * bg.image.height + (bg.image.width * bg.palette),
           0,
-          8,
-          8,
+          bg.image.height,
+          bg.image.height,
           x * this.scale,
           destY,
-          8 * this.scale,
-          8 * this.scale
+          bg.image.height * this.scale,
+          bg.image.height * this.scale
         );
         // Update pattern index
         i++;

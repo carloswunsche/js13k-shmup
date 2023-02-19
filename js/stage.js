@@ -50,7 +50,6 @@ class Stage {
 						arr.length-tileQty*(i/tileQty)
 				);
 		};
-    console.log(patterns)
 		return patterns;
 	} 
 
