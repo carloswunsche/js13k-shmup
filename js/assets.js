@@ -49,16 +49,14 @@ class Assets {
 				39: 	[0, 78, 180]
 			},
 			{ // 8) BG Palette 1
-				// 46, 106, 189
-				// 180,172,172
-				39 :[120,180,83],		// gris oscuro => verde
-				99:	[180,172,172],	// gris claro => gris
-				60:	[180,172,172]	// gris medio => azul agua
+				99:	[46, 106, 189],	// gris claro => gris
+				60:	[180,172,172],	// gris medio => azul agua
+				39 :[64, 64, 88],		// gris oscuro => verde
 			},
 			{ // 9) BG Palette 2
-				39:[53, 46, 95],		// gris oscuro => verde
 				99:	[64, 81, 65],		// gris claro => gris
 				60:	[32, 23, 85],		// gris medio => purpura
+				39:[53, 46, 95]			// gris oscuro => verde
 			},
 		]
 	}
