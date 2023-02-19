@@ -1,3 +1,5 @@
 # Ignore artifacts:
 build
 sources
+js/assets.js
+js/stage.js

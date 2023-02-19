@@ -60,7 +60,7 @@ cat \
     pool.js \
     ZzFXMicro.min.js \
     stage.js \
-    setup.js \
+    main.js \
     > ../script.concat.js
 
 # Go back to parent directory (build)
