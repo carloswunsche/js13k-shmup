@@ -59,8 +59,6 @@ class Display {
     if (this.hitboxes) this.renderHitboxes(gameObjects);
   }
   renderBackground(bg) {
-    // Only used if decompression of bigPattern is not activated
-    // let currentTile;
     let i = 0;
     bg.rows.forEach((_, y) => {
       let destY = bg.rows[y] * this.scale;
@@ -70,16 +68,11 @@ class Display {
           i++;
           continue;
         }
-        // Update scanned tile if not undefined (void 0 === undefined but less characters lol)
-
-        // Draw: Only used if decompression of bigPattern is not activated
-        // if(bg.pattern[i] != void 0) currentTile = bg.pattern[i];
-        // this.ctx.drawImage(bg.image,currentTile*8+(304*0),0,8,8,x*this.scale,p__destY,8*this.scale,8*this.scale);
 
         // Draw
         this.ctx.drawImage(
           bg.image,
-          bg.pattern[i] * 8 + 176 * bg.palette,
+          bg.pattern[i] * bg.image.height + bg.image.width * bg.palette,
           0,
           8,
           8,

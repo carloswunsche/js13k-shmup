@@ -92,7 +92,7 @@ class Assets {
 		// Add sprite variations
 		for(let v = 0; v < variations; v++) spriteSizes.forEach(obj => mod.push({...obj, offset: v+1}))
 		// Add background
-		spriteSizes.push(...mod, {fullW:176,h:8,bg:'bg'})
+		spriteSizes.push(...mod, {fullW:72,h:8,bg:'bg'})
 		return spriteSizes
 	}
 
@@ -165,8 +165,12 @@ class Assets {
 				// Create final image and set canvas as the source
 				this[name] = new Image();
 				this[name].src = c.toDataURL();
-				// Add source height property as the full height of entity
+				// Add source width property as the full width of entity
 				this[name].sWidth = entity.fullW;
+				/** Add width and height to this.bg */
+				if (entity.bg) this.bg.width = entity.fullW;
+				if (entity.bg) this.bg.height = entity.h;
+
 				// When source finishes loading, count down
 				this[name].onload = () => this.countDown();
 			}

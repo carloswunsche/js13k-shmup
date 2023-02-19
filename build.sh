@@ -13,8 +13,8 @@ mkdir build/img-source
 mkdir build/img
 
 # Copy source PNG's into build/img
-cp sources/sprites-3shades-indexed.png  build/img-source/sprites-source.png
-cp sources/bg-5colors.png               build/img-source/bg-source.png
+cp sources/sprites-3-colors-indexed-gimp.png build/img-source/sprites-source.png
+cp sources/bg-4-indexed-colors-gimp.png build/img-source/bg-source.png
 
 # Copy js directory and its contents into build
 cp -r js build/js-source
@@ -37,6 +37,10 @@ cd img-source
 # Convert from PNG to WEBP with loseless compression and maximum effort
 cwebp -lossless -z 9 -quiet sprites-source.png  -o ../img/sprites.webp
 cwebp -lossless -z 9 -quiet bg-source.png       -o ../img/bg.webp
+
+# Just as a cortesy: Convert again and put WEBPs in root /img folder
+cwebp -lossless -z 9 -quiet sprites-source.png  -o ../../img/sprites.webp
+cwebp -lossless -z 9 -quiet bg-source.png       -o ../../img/bg.webp
 
 # Go back to build directory
 cd ..
@@ -167,8 +171,8 @@ cd ..
 # -9315 = ligher deadbound system + killExplosions refactored
 # +9347 = last time I tested ()
 # -9316 = stage refactoring
-# 
-# 
-# 
+# -9194 = halving source image tile quantity and reducing indexed colors from 5 to 3 + transparency
+# -8999 = without using a compressed bigPattern! Well, it also has no number over 9, so thats a 1-digit-everything.
+# +9080 = forgot to add 16 rox in maps (higher size array)
 # 
 # 
