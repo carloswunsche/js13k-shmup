@@ -7,6 +7,9 @@ class Assets {
 	}
 
 	getPalettesArr(){
+			// 99: gris claro
+			// 60: gris medio
+			// 39: gris oscuro
 		return [
 			{ // 0) Fuchsia
 				99:	[243, 119, 250],
@@ -48,15 +51,33 @@ class Assets {
 				60:	[250, 178, 0],
 				39: 	[0, 78, 180]
 			},
-			{ // 8) BG Palette 1
-				99:	[46, 106, 189],	// gris claro => gris
-				60:	[180,172,172],	// gris medio => azul agua
-				39 :[64, 64, 88],		// gris oscuro => verde
+			// { // 8) BG Palette 1 (old one)
+			// 	99:	[46, 106, 189],
+			// 	60:	[180,172,172],
+			// 	39 :[64, 64, 88],
+			// },
+				
+			/** 8) BG Palette 1 (Blue Generic Gradient Palette) 
+			 * https://mycolor.space/?hex=%230062C4&sub=1
+			 */
+			// { 
+			// 	99:	[	0, 210, 173],
+			// 	60:	[	0, 179, 212],
+			// 	39 :[0, 142, 223]
+			// },
+
+			/** 8) BG Palette 1 (Blue Shades)
+			 * https://mycolor.space/?hex=%230062C4&sub=1
+			 */
+			{ 
+				99:	[142, 187, 255], //#8EBBFF
+				60:	[106, 156, 255], //#6A9CFF
+				39 :[	67, 126, 229]  //#437EE5
 			},
 			{ // 9) BG Palette 2
-				99:	[64, 81, 65],		// gris claro => gris
-				60:	[32, 23, 85],		// gris medio => purpura
-				39:[53, 46, 95]			// gris oscuro => verde
+				99:	[64, 81, 65],
+				60:	[32, 23, 85],
+				39:[53, 46, 95]
 			},
 		]
 	}

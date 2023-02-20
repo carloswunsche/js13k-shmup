@@ -41,8 +41,10 @@ class Display {
     this.c.height = this.scale * this.height;
   }
   render(bg, gameObjects, fade) {
+
+    this.renderBackground()
     // Render Background
-    this.renderBackground(bg);
+    this.renderScrollingBg(bg);
 
     if (fade.layer === 'top') {
       // Regular order
@@ -57,7 +59,12 @@ class Display {
     // Hitboxes REMOVE FROM FINAL BUILD
     if (this.hitboxes) this.renderHitboxes(gameObjects);
   }
-  renderBackground(bg) {
+  renderBackground(){
+    this.ctx.fillStyle = '#0062c4';
+    this.ctx.fillRect(0, 0, this.c.width, this.c.height);
+  }
+
+  renderScrollingBg(bg) {
     let i = 0;
     bg.rows.forEach((_, y) => {
       let destY = bg.rows[y] * this.scale;

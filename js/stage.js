@@ -17,7 +17,7 @@ class Stage {
 				patterns[1+i/tileQty] = arr.slice(
 						arr.length-tileQty*(1+i/tileQty),
 						arr.length-tileQty*(i/tileQty)
-				);
+				)
 		};
 		return patterns;
 	} 
