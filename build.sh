@@ -8,7 +8,8 @@
 # Remove files and subdirectories in build directory (hide output)
 rm -rfv build/* > /dev/null
 
-# Create build/img-source and build/img directories
+# Create build build/img-source and build/img directories
+mkdir build
 mkdir build/img-source
 mkdir build/img
 

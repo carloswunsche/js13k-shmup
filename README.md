@@ -11,29 +11,33 @@ Retro caravan shmup made for the JS13K contest. Work in progress! My plan is to 
 - Robust engine and collision system
 - Supports keyboard, xinput-compatible, and touchscreen controllers
 - Awesome particle system (?)
-- SFX and ~~music~~ (not yet...)
+- SFX and ~~music~~ (not yet...) thanks to [ZzFX](https://killedbyapixel.github.io/ZzFX/).
 
-## Dependencies
+## Play Online
+
+By following [this link.](https://js13k-shmup.netlify.app)
+
+## Play Locally
+
+Open /dist/index.html and enjoy 🛩️
+
+## Build Dependencies
 
 - [uglify-js](https://www.npmjs.com/package/uglify-js)
 - [cwebp](https://developers.google.com/speed/webp/docs/cwebp)
 - [roadroller](https://github.com/lifthrasiir/roadroller)
 - tar, cat, sed (Windows users: install through [cygwin](https://www.cygwin.com/))
-- Zuper Zmall Zound Zynth (included in this repo)
+- (included in this repo though)
 
-## Build
+## Build it Yourself
 
-Clone repo, open directory in a terminal and run script:
+Clone repo, open directory in terminal and run script:
 
 ```bash
 ./build.sh
 ```
 
 Compressed game size (game.tar.gz) is around 8979 bytes as of 2-23-2023.
-
-## Usage
-
-Open /dist/index.html and enjoy!
 
 ## Screenshots
 
@@ -51,7 +55,7 @@ Made by [Carlos Wunsche](https://carloswunsche.github.io)
 
 This project could not be possible without the help of:
 
-- [Frank Force](https://killedbyapixel.github.io/ZzFX/)
+- [Frank Force](https://frankforce.com/)
 - [Jonas Schmedtmann](https://codingheroes.io/)
 - [The Coding Train](https://www.youtube.com/@TheCodingTrain)
 - [One Lone Coder](https://www.youtube.com/@javidx9)

@@ -1,6 +1,5 @@
 .vscode
 other
 build
-dist
 sources
 build(old).sh
