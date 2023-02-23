@@ -4,7 +4,7 @@
 
 ## Overview
 
-Retro caravan shmup made for the JS13K contest. Work in progress! My plan is to use it for future entries once the engine is completed.
+Retro caravan shmup made for the js13k-games contest. Work in progress. My plan is to use it for future entries once the engine is completed.
 
 ## Features
 
