@@ -175,4 +175,8 @@ cd ..
 # -8999 = without using a compressed bigPattern! Well, it also has no number over 9, so thats a 1-digit-everything.
 # +9080 = forgot to add 16 rox in maps (higher size array)
 # -9072 = fixed bugs related to new bg system, I still need to remove the 16th row from the array
-# 
+# -8979 = 15 row maps now!
+#
+#
+#
+#
