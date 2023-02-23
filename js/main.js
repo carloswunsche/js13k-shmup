@@ -25,7 +25,7 @@ function connectInitStart() {
   game.needs(customMath, stage, pool, input, display.height, audioPlayer);
 
   /** Initialize */
-  stage.init(assets.bg, display, pool);
+  stage.init(assets.bg, pool);
   game.init();
 
   /** Start engine */
@@ -40,7 +40,7 @@ const debug = {
     // Pool: Liberar todos los objetos del los pools
     for (const key in pool.type) pool.type[key].forEach(el => (el.free = true));
     /* --------------------- STAGE --------------------- */
-    stage.init(assets.bg, display, pool);
+    stage.init(assets.bg, pool);
     /* ---------------------- GAME --------------------- */
     // Reinicializar game
     game.init();

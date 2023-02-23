@@ -60,7 +60,7 @@ class Game {
 
     // Fade stuff
     this.fade = {
-      opacity: 100,
+      opacity: 0, // original was 100
       color: '#000',
       dir: 'fadeOut',
       speed: 1,

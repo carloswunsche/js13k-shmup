@@ -7,8 +7,7 @@ class Display {
     this.width = 160;
     this.height = 120;
     this.tileSize = 8;
-    this.tileQty = 320;
-
+    this.tileQty = 300; // original was 320
     this.c = document.querySelector('canvas');
     this.ctx = this.c.getContext('2d');
 
