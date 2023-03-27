@@ -12,7 +12,7 @@ class Display {
     this.c = document.querySelector('canvas');
     this.ctx = this.c.getContext('2d');
 
-    this.hitboxes = 0;
+    this.hitboxes = false;
     this.setScaleAndResize();
     this.pixelatedLook(this.ctx);
     window.addEventListener('resize', () => {
