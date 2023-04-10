@@ -19,6 +19,8 @@ By following [this link.](https://js13k-shmup.netlify.app)
 ### Keyboard controls
 - Movement: Arrow keys
 - Shot: "z" key
+- Reset: "r" key
+- Show hitboxes: "h" key
 ### Gamepad controls
 - Movement: Dpad
 - Shot: B button (Xbox)
