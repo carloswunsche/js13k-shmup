@@ -16,6 +16,12 @@ Retro caravan shmup made for the js13k-games contest. Work in progress. My plan 
 ## Try it Online
 
 By following [this link.](https://js13k-shmup.netlify.app)
+### Keyboard controls
+- Movement: Arrow keys
+- Shot: "z" key
+### Gamepad controls
+- Movement: Dpad
+- Shot: B button (Xbox)
 
 ## Play Locally
 
