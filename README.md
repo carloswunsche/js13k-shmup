@@ -13,7 +13,7 @@ Retro caravan shmup made for the js13k-games contest. Work in progress. My plan 
 - Awesome particle system (?)
 - SFX and ~~music~~ (not yet...) thanks to [ZzFX](https://killedbyapixel.github.io/ZzFX/).
 
-## Play Online
+## Try it Online
 
 By following [this link.](https://js13k-shmup.netlify.app)
 
