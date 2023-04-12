@@ -35,7 +35,6 @@ Open /dist/index.html and enjoy 🛩️
 - [cwebp](https://developers.google.com/speed/webp/docs/cwebp)
 - [roadroller](https://github.com/lifthrasiir/roadroller)
 - tar, cat, sed (Windows users: install through [cygwin](https://www.cygwin.com/))
-- (included in this repo though)
 
 ## Build it Yourself
 
