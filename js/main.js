@@ -59,10 +59,17 @@ const debug = {
   engineStart() {
     engine.start();
   },
+  toggleFullScreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  },
 };
 window.addEventListener('keydown', key => {
-  if (key.code === 'KeyK') debug.enginePause();
-  if (key.code === 'KeyP') debug.engineStart();
+  if (key.code === 'KeyP') debug.enginePause();
+  if (key.code === 'Enter') debug.engineStart();
   if (key.code === 'KeyH') debug.toggleHitboxes();
   if (key.code === 'KeyR') debug.gameReset();
 });
