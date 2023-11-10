@@ -13,9 +13,17 @@ Retro caravan shmup made for the js13k-games contest. Work in progress. My plan 
 - Awesome particle system (?)
 - SFX and ~~music~~ (not yet...) thanks to [ZzFX](https://killedbyapixel.github.io/ZzFX/).
 
-## Play Online
+## Try it Online
 
 By following [this link.](https://js13k-shmup.netlify.app)
+### Keyboard controls
+- Movement: Arrow keys
+- Shot: "z" key
+- Reset: "r" key
+- Show hitboxes: "h" key
+### Gamepad controls
+- Movement: Dpad
+- Shot: B button (Xbox)
 
 ## Play Locally
 
@@ -27,7 +35,6 @@ Open /dist/index.html and enjoy 🛩️
 - [cwebp](https://developers.google.com/speed/webp/docs/cwebp)
 - [roadroller](https://github.com/lifthrasiir/roadroller)
 - tar, cat, sed (Windows users: install through [cygwin](https://www.cygwin.com/))
-- (included in this repo though)
 
 ## Build it Yourself
 
