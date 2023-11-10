@@ -13,33 +13,48 @@ h1 {
 }
 
 .container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    margin-bottom: 100px;
 }
 
-.buttons {display: hidden;}
+.canvas-container {
+    width: 100%;
+    text-align: center;
+}
+
+canvas {
+    display: inline;
+}
+
+.buttons {
+    display: hidden;
+}
 
 @media (max-width: 900px) {
     .buttons {
-        margin-top: 50px;
         display: grid;
+        margin-top: 50px;
         grid-template-columns: 1fr 1fr;
         justify-items: center;
         align-items: center;
     }
+
     .button {
         background: #333;
         border-radius: 50%;
         width: 150px;
         height: 150px;
     }
+    .container {margin-bottom: 0;}
 }
 
 @media all and (display-mode: fullscreen) {
-    .header {display: none;}
-    .buttons {display: none;}
+    .header {
+        display: none;
+    }
+
+    .buttons {
+        display: none;
+    }
 }
 
 /* .hide {display: none;} */

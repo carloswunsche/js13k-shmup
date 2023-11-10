@@ -12,19 +12,29 @@
         <p>Move with the arrow keys. Shoot with Z.</p>
         <div class="debug">
           <button title="R key" onClick="debug.gameReset()">Reset (R)</button>
-          <button title="P key" onClick="debug.enginePause()">Pause/Advance (P)</button>
-          <button title="Enter key" onClick="debug.engineStart()">Resume (Enter)</button>
-          <button title="H key" onClick="debug.toggleHitboxes()">Hitboxes (H)</button>
-          <button title="F11 key" onClick="debug.toggleFullScreen()">Full Screen (F11)</button>
+          <button title="P key" onClick="debug.enginePause()">
+            Pause/Advance (P)
+          </button>
+          <button title="Enter key" onClick="debug.engineStart()">
+            Resume (Enter)
+          </button>
+          <button title="H key" onClick="debug.toggleHitboxes()">
+            Hitboxes (H)
+          </button>
+          <button title="F11 key" onClick="debug.toggleFullScreen()">
+            Full Screen (F11)
+          </button>
         </div>
       </div>
-
-      <canvas></canvas>
-
-      <div class="buttons">
-        <div class="button analog"></div>
-        <div class="button shot"></div>
+    
+      <div class="canvas-container">
+        <canvas></canvas>
       </div>
+    </div>
+
+    <div class="buttons">
+      <div class="button analog"></div>
+      <div class="button shot"></div>
     </div>
 
     <!-- Audio -->
