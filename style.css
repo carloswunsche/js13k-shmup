@@ -8,12 +8,12 @@ body {
     color: whitesmoke;
 }
 
-h1 {
-    margin: 0;
-}
-
 .container {
     margin-bottom: 100px;
+}
+
+.header {
+    margin-bottom: 10px;
 }
 
 .canvas-container {
@@ -44,7 +44,10 @@ canvas {
         width: 150px;
         height: 150px;
     }
-    .container {margin-bottom: 0;}
+
+    .container {
+        margin-bottom: 0;
+    }
 }
 
 @media all and (display-mode: fullscreen) {
