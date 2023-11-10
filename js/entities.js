@@ -141,7 +141,7 @@ class Player extends Entity {
         // Set speed
         this.speed = !this.angle ? 0 : 1.5;
         // Move
-        this.vectorMovement(this.angle)
+        this.vectorMovement()
     }
     fixOutOfBounds() {
         // Correct (but bigger) way. Also no margin here.
