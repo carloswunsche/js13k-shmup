@@ -23,7 +23,7 @@ h1 {
 
 @media (max-width: 900px) {
     .buttons {
-        margin-top: 100px;
+        margin-top: 50px;
         display: grid;
         grid-template-columns: 1fr 1fr;
         justify-items: center;
@@ -38,7 +38,8 @@ h1 {
 }
 
 @media all and (display-mode: fullscreen) {
-    .fullscreen-excluded {display: none;}
+    .header {display: none;}
+    .buttons {display: none;}
 }
 
 /* .hide {display: none;} */
