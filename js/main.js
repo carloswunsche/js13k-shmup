@@ -53,23 +53,24 @@ const debug = {
     display.hitboxes = display.hitboxes ? undefined : 'hitboxes';
     display.render(stage.bg, game.objects, game.fade);
   },
-  enginePause() {
-    engine.pause();
-  },
-  engineStart() {
-    engine.start();
-  },
-  toggleFullScreen() {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else if (document.exitFullscreen) {
-      document.exitFullscreen();
-    }
-  },
 };
 window.addEventListener('keydown', key => {
-  if (key.code === 'KeyP') debug.enginePause();
-  if (key.code === 'Enter') debug.engineStart();
+  if (key.code === 'KeyP') engine.pause();
+  if (key.code === 'Enter') engine.start();
   if (key.code === 'KeyH') debug.toggleHitboxes();
   if (key.code === 'KeyR') debug.gameReset();
+});
+
+document.getElementById('resetBtn').addEventListener('click', debug.gameReset);
+document.getElementById('pauseBtn').addEventListener('click', engine.pause);
+document.getElementById('continueBtn').addEventListener('click', engine.start);
+document
+  .getElementById('hitboxBtn')
+  .addEventListener('click', debug.toggleHitboxes);
+document.getElementById('fullScreenBtn').addEventListener('click', () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else if (document.exitFullscreen) {
+    document.exitFullscreen();
+  }
 });

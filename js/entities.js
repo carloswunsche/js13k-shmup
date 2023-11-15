@@ -656,4 +656,4 @@ class Item extends Entity {
         if (this.ySpd < 0) this.ySpd -= 0.02
         this.vectorMovement();
     }
-}
+};

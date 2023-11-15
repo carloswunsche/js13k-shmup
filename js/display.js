@@ -186,4 +186,4 @@ class Display {
     this.ctx.lineTo(x * this.scale, y * this.scale);
     this.ctx.stroke();
   }
-}
+};

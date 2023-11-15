@@ -1,15 +1,14 @@
 # --------------------------------------------------- #
 #         BUILD SCRIPT (Run using ./build.sh)         #
 # --------------------------------------------------- #
-# How to run this thing?
-# Using Git Bash terminal, type "./build.sh"
+
 
 
 # -------------- SETTING UP ENVIRONMENT ------------- #
-# Remove files and subdirectories in build directory (hide output)
-rm -rfv build/* > /dev/null
+# Remove previous build directory (hide output and error if directory doesn't exist)
+rm -rfv -f build/* > /dev/null
 
-# Create build build/img-source and build/img directories
+# Create directories
 mkdir build
 mkdir build/img-source
 mkdir build/img
@@ -40,9 +39,9 @@ cd img-source
 cwebp -lossless -z 9 -quiet sprites-source.png  -o ../img/sprites.webp
 cwebp -lossless -z 9 -quiet bg-source.png       -o ../img/bg.webp
 
-# Just as a cortesy: Convert again and put WEBPs in root /img folder
-cwebp -lossless -z 9 -quiet sprites-source.png  -o ../../img/sprites.webp
-cwebp -lossless -z 9 -quiet bg-source.png       -o ../../img/bg.webp
+# Only for Development: Convert again but put output in root /img folder
+# cwebp -lossless -z 9 -quiet sprites-source.png  -o ../../img/sprites.webp
+# cwebp -lossless -z 9 -quiet bg-source.png       -o ../../img/bg.webp
 
 # Go back to build directory
 cd ..
@@ -55,17 +54,17 @@ cd js-source
 
 # Concatenate JavaScript files and put the output in parent directory
 cat \
+    ZzFXMicro.min.js \
     customMath.js \
     assets.js \
+    entities.js \
+    stage.js \
+    engine.js \
+    input.js \
+    game.js \
     audio.js \
     display.js \
-    engine.js \
-    entities.js \
-    game.js \
-    input.js \
     pool.js \
-    ZzFXMicro.min.js \
-    stage.js \
     main.js \
     > ../script.concat.js
 
@@ -76,7 +75,8 @@ cd ..
 uglifyjs script.concat.js -c drop_console=true --compress --mangle -o script.min.js
 
 # Roadroll JS (compresses JavaScript file)
-roadroller --max-memory 600 script.min.js -o script.roadrolled.js
+# roadroller script.min.js -o script.roadrolled.js
+roadroller -Zab32 -Zdy0 -Zlr1000 -Zpr14 -S0,1,2,3,6,7,13,25,42,57,453,505 script.min.js -o script.roadrolled.js
 
 
 
@@ -85,11 +85,13 @@ roadroller --max-memory 600 script.min.js -o script.roadrolled.js
 uglifycss style-source.css --output style.min.css
 
 # Embed CSS into HTML
-sed -e '/CSS_SOURCE/{r style.min.css' -e 'd}' html-template.html > html-with-css.html
+sed -e '/CSS_SOURCE/{r style.min.css' -e 'd}' html-template.html > html-css.html
 
 # Embed JS into HTML
-sed -e '/GAME_SOURCE/{r script.roadrolled.js' -e 'd}' html-with-css.html > index.html
+sed -e '/GAME_SOURCE/{r script.roadrolled.js' -e 'd}' html-css.html > html-css-js.html
 
+# Minify HTML
+html-minifier --collapse-whitespace --remove-comments --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-tag-whitespace --use-short-doctype html-css-js.html --output index.html
 
 # --- COMPRESS, FILL DIST FOLDER AND DISPLAY INFO --- #
 # Build gzip of tar archive containing index.html and images folder
@@ -116,7 +118,8 @@ echo "GZip size: $zippedsize bytes"
 cd ..
 
 
-# History of build sizes (in bytes):
+
+# --------- HISTORY OF BUILD SIZE (IN BYTES) -------- #
 # -10116 (roadroller implementation)
 # -9917 (compressing most images to webp + 15 color limit)
 # -9916 (changing event function system)
@@ -179,8 +182,4 @@ cd ..
 # -9072 = fixed bugs related to new bg system, I still need to remove the 16th row from the array
 # -8979 = 15 row maps now!
 # +9017 = volvimos a 16 row porque 15 era para problemass
-# +9146 = CSS and HTML stuff
-#
-#
-#
-#
+# +9369 = Adding more CSS and HTML and using html-minify

@@ -64,4 +64,4 @@ class Engine {
       this.callRender();
     }
   }
-}
+};

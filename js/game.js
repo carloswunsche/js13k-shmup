@@ -307,4 +307,4 @@ class Game {
     this.queuedFns.forEach(parameters => this.pool.free(...parameters));
     this.queuedFns.length = 0;
   }
-}
+};

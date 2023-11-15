@@ -10,4 +10,4 @@ class CustomMath {
     randomBetween(min, max) {
         return M.floor(M.random() * (max - min + 1) + min)
     }
-}
+};

@@ -97,4 +97,4 @@ class Input {
       if (!this.raw[i]) this.buttons[i] = 0;
     }
   }
-}
+};

@@ -3,15 +3,14 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
-    <title>13kb Shmup!</title>
   </head>
   <body>
     <div class="container">
       <div class="header">
-        <h1>13kb Javascript Shmup</h1>
+        <h1>13kb JS Shmup</h1>
         <p>Move with the arrow keys. Shoot with Z.</p>
         <div class="debug">
-          <button title="R key" onClick="debug.gameReset()">Reset (R)</button>
+          <button id="resetBtn" title="R key">Reset (R)</button>
           <button title="P key" onClick="debug.enginePause()">
             Pause/Advance (P)
           </button>
@@ -26,7 +25,7 @@
           </button>
         </div>
       </div>
-    
+
       <div class="canvas-container">
         <canvas></canvas>
       </div>
