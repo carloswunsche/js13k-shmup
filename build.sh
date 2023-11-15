@@ -145,7 +145,7 @@ cd ..
 # 8129 = after changing architecture...
 # 8145 = after improving architecture...
 # 8111 = cleaning entities.js
-# -8087 = using timers for player shot
+# 8087 = using timers for player shot
 # 8118 = standarizing vector movement
 # 8147
 # 8226
