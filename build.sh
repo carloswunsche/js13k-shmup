@@ -163,8 +163,8 @@ cd ..
 # 8499 = back to colored background (limit 5 colors)
 # 8485 = even less tiles on bg
 # 8488 = now a palette of 5 colors can be selected for bg!
-# 8547 = only 2 background palettes more...
-# 8580 = better collision system...
+# 8547 = only 2 background palettes more
+# 8580 = better collision system
 # 8573 = better pool/layer comunication
 # 8742 = new and better fading system with a fair amount of options
 # 8729 = new eBullet without sprite, renders the same as particles
@@ -174,7 +174,7 @@ cd ..
 # 9302 = Midboss + better architecture
 # 9377 = New big explosion for midboss (needs refactoring)
 # 9315 = ligher deadbound system + killExplosions refactored
-# 9347 = last time I tested ()
+# 9347 = last time I tested
 # 9316 = stage refactoring
 # 9194 = halving source image tile quantity and reducing indexed colors from 5 to 3 + transparency
 # 8999 = without using a compressed bigPattern! Well, it also has no number over 9, so thats a 1-digit-everything.
