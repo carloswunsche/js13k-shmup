@@ -120,47 +120,47 @@ cd ..
 
 
 # --------- HISTORY OF BUILD SIZE (IN BYTES) -------- #
-# -10116 (roadroller implementation)
-# -9917 (compressing most images to webp + 15 color limit)
-# -9916 (changing event function system)
-# -9777 (without firefox scrolling support)
-# -9347 (compressing background to webp + 5 color limit)
-# -9233 (removing 120hz functionality and step intervention)
-# -9123 (removing unused stuff from engine and some debug functions)
-# -9105 (simplifying render background function)
-# -7977 (simpler backgrounds and new SINGLE standarized spritesheet (8 color limit))
-# -7903 (simplified sintax on stage.js)
-# -7898 (simplified sintax on audio.js a bit)
-# -7890 (simplified sintax on collisions a bit)
-# -7861 (unused functions on stage.js)
-# -7853 (simplified code on setup.js)
+# -10116 = roadroller implementation
+# -9917 = compressing most images to webp + 15 color limit
+# -9916 = changing event function system
+# -9777 = without firefox scrolling support
+# -9347 = compressing background to webp + 5 color limit
+# -9233 = removing 120hz functionality and step intervention
+# -9123 = removing unused stuff from engine and some debug functions
+# -9105 = simplifying render background function
+# -7977 = simpler backgrounds and new SINGLE standarized spritesheet (8 color limit)
+# -7903 = simplified sintax on stage.js
+# -7898 = simplified sintax on audio.js a bit
+# -7890 = simplified sintax on collisions a bit
+# -7861 = unused functions on stage.js
+# -7853 = simplified code on setup.js
 # -7795
-# -7764 (Some more shrinking here and there)
-# +7816 (new particle system)
-# -7802 (some optimizations)
-# -7798 (some optimizations)
-# +8049 (new explosion system + sound fixed)
-# +8084 (further polishing of particle system)
-# -8075 (before changing the architecture)
-# +8129 (after changing architecture...)
-# +8145 (after improving architecture...)
-# -8111 (cleaning entities.js)
-# -8087 (using timers for player shot)
-# +8118 (standarizing vector movement)
+# -7764 = some more shrinking here and there
+# +7816 = new particle system
+# -7802 = some optimizations
+# -7798 = some optimizations
+# +8049 = new explosion system + sound fixed
+# +8084 = further polishing of particle system
+# -8075 = before changing the architecture
+# +8129 = after changing architecture...
+# +8145 = after improving architecture...
+# -8111 = cleaning entities.js
+# -8087 = using timers for player shot
+# +8118 = standarizing vector movement
 # +8147
 # +8226
-# +8291 (better pattern 1, comfortable method of reducing image color, and lighter player movement) 
-# +8549 (more particles logic and item/power up system)
-# +8706 (new palette system!)
-# +8774 (11 different palettes) (thats TOO much hahha we will lower this number eventually)
-# +8978 (more palettes, palette swap, new enemy (boat))
-# -8935 (new image that has less and less pixels from left to right)
-# -8905 (letting roadroller do its thing several times, without specifying parameters)
-# +8915 (using greyscale bg)
-# +8939 (using greyscale bg with custom background palettes also)
-# -8397 (using new limited tileset (9 tiles) of solid background image, and ligther decompression algorithm for bigPattern)
-# -8366 (same as before but greyscale bg image (needs it's own palette) Also reduce total palette number to only used ones)
-# +8499 (back to colored background (limit 5 colors)
+# +8291 = better pattern 1, comfortable method of reducing image color, and lighter player movement)
+# +8549 = more particles logic and item/power up system
+# +8706 = new palette system!
+# +8774 = 11 different palettes (thats TOO much hahha we will lower this number eventually
+# +8978 = more palettes, palette swap, new enemy (boat)
+# -8935 = new image that has less and less pixels from left to right
+# -8905 = letting roadroller do its thing several times, without specifying parameters
+# +8915 = using greyscale bg
+# +8939 = using greyscale bg with custom background palettes also
+# -8397 = using new limited tileset (9 tiles) of solid background image, and ligther decompression algorithm for bigPattern
+# -8366 = same as before but greyscale bg image (needs it's own palette) Also reduce total palette number to only used ones
+# +8499 = back to colored background (limit 5 colors)
 # +8485 = even less tiles on bg
 # +8488 = now a palette of 5 colors can be selected for bg!
 # -8547 = only 2 background palettes more...
