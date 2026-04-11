@@ -56,7 +56,7 @@ Compressed game size (game.tar.gz) is around 8979 bytes as of 2-23-2023.
 
 ## Credits
 
-Made by [Carlos Wunsche](https://carloswunsche.github.io)
+Made by [Carlos Wunsche](https://carlosw.site)
 
 ## Thanks
 
